@@ -101,3 +101,35 @@
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+
+user_problem_statement: "la informacion del proyecto esta en vault, y ejecuta mejoras.md"
+
+frontend:
+  - task: "Implementación de experiencia interactiva y cinematográfica en HERO (mejora.md)"
+    implemented: true
+    working: true
+    file: "frontend/src/components/Hero.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Se implementó la separación completa entre Sistema A (Scroll-driven camera transforms en 4 fases, sticky container) y Sistema B (Mouse 3D tilt con resortes, parallax interior de 4-8px y specular glare reactivo dinámico con useMotionTemplate). Build de producción completado con éxito."
+
+metadata:
+  created_by: "main_agent"
+  version: "1.0"
+  test_sequence: 1
+  run_ui: false
+
+test_plan:
+  current_focus:
+    - "Hero component scroll-driven animation & mouse tilt"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+  - agent: "main"
+    message: "Implementación de mejora.md en Hero.jsx completada y validada con build de producción sin errores."
