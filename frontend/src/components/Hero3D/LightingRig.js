@@ -103,6 +103,11 @@ export function createLightingRig() {
   rimEPPRight.position.set(6, 3, -87);
   group.add(rimEPPRight);
 
+  // Rim light de seguridad (rojo advertencia) para zona EPP
+  const rimEPPSafety = new THREE.PointLight(0xff3300, 2.0, 22);
+  rimEPPSafety.position.set(0, 5, -92);
+  group.add(rimEPPSafety);
+
   // Dynamic reactive cursor light
   const cursorLight = new THREE.PointLight(0x00f0ff, 2.8, 35);
   cursorLight.position.set(0, 2, 8);
@@ -132,6 +137,7 @@ export function createLightingRig() {
       frontFillEPP.dispose();
       rimEPPLeft.dispose();
       rimEPPRight.dispose();
+      rimEPPSafety.dispose();
       cursorLight.dispose();
     },
   };

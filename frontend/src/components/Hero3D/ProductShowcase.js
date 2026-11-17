@@ -172,10 +172,10 @@ export function createProductShowcase() {
           roughness: 0.15,
           metalness: 0.05,
           side: THREE.DoubleSide,
-          alphaTest: 0.04,
+          alphaTest: 0.08,
           emissive: 0xffffff,
           emissiveMap: texture,
-          emissiveIntensity: 0.32,
+          emissiveIntensity: 0.60,
         });
 
         const mesh = new THREE.Mesh(planeGeo, planeMat);
@@ -183,6 +183,21 @@ export function createProductShowcase() {
 
         const productGroup = products[itemKey].group;
         productGroup.position.copy(position);
+
+        // Contact reflection plane
+        const reflGeo = new THREE.PlaneGeometry(width * 0.85, height * 0.35);
+        const reflMat = new THREE.MeshBasicMaterial({
+          map: texture,
+          transparent: true,
+          opacity: 0.15,
+          side: THREE.DoubleSide,
+          depthWrite: false,
+        });
+        const reflMesh = new THREE.Mesh(reflGeo, reflMat);
+        reflMesh.rotation.x = Math.PI / 2;
+        reflMesh.scale.y = -1;
+        reflMesh.position.y = -height / 2 - 0.08;
+        productGroup.add(reflMesh);
 
         // Add 3D Frame Enclosure
         const frame = create3DIndustrialBox(width, height, 0.7, accentColor);
@@ -238,8 +253,8 @@ export function createProductShowcase() {
   // 4. Zona EPP (Seguridad Industrial para Soldador)
   setupProductMesh(
     "epp",
-    "/assets/hero/products/epp-zone/front.webp",
-    7.5,
+    "/assets/hero/products/epp-zone/team.webp",
+    9.0,   // era 7.5 — más ancho para formato landscape
     6.0,
     products.epp.targetPos,
     0xffb703 // Safety Amber
@@ -252,8 +267,8 @@ export function createProductShowcase() {
       ["warrior", "rustler", "rogue", "epp"].forEach((key) => {
         const p = products[key];
         if (p.mesh && p.frameGroup) {
-          const rotY = normMouseX * 0.14;
-          const rotX = -normMouseY * 0.1;
+          const rotY = normMouseX * 0.22;  // era 0.14
+          const rotX = -normMouseY * 0.16; // era 0.10
           p.mesh.rotation.y = rotY;
           p.mesh.rotation.x = rotX;
           p.frameGroup.rotation.y = rotY * 0.8;

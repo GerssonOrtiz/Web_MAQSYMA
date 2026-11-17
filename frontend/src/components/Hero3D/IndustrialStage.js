@@ -60,6 +60,38 @@ export function createIndustrialStage() {
       ctx.stroke();
     }
 
+    // Oil stain spots (manchas de aceite)
+    for (let s = 0; s < 12; s++) {
+      const cx = Math.random() * 1024;
+      const cy = Math.random() * 1024;
+      const r0 = 20 + Math.random() * 20;
+      const r1 = 50 + Math.random() * 30;
+      const grad = ctx.createRadialGradient(cx, cy, r0, cx, cy, r1);
+      grad.addColorStop(0, "rgba(5, 8, 10, 0.55)");
+      grad.addColorStop(1, "rgba(5, 8, 10, 0)");
+      ctx.save();
+      ctx.fillStyle = grad;
+      ctx.translate(cx, cy);
+      ctx.rotate(Math.random() * Math.PI * 2);
+      ctx.scale(1.0, 0.5 + Math.random() * 0.5);
+      ctx.beginPath();
+      ctx.ellipse(0, 0, r1, r1 * 0.6, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+
+    // Tire track marks (marcas de rodado diagonales)
+    ctx.strokeStyle = "rgba(255, 200, 0, 0.08)";
+    ctx.lineWidth = 3;
+    for (let t = 0; t < 4; t++) {
+      const x0 = Math.random() * 800;
+      const y0 = Math.random() * 800;
+      ctx.beginPath();
+      ctx.moveTo(x0, y0);
+      ctx.lineTo(x0 + 150 + Math.random() * 100, y0 + 100 + Math.random() * 150);
+      ctx.stroke();
+    }
+
     const tex = new THREE.CanvasTexture(canvas);
     tex.wrapS = THREE.RepeatWrapping;
     tex.wrapT = THREE.RepeatWrapping;
@@ -93,6 +125,13 @@ export function createIndustrialStage() {
     color: 0xffb703,
     roughness: 0.35,
     metalness: 0.2,
+  });
+
+  // Safety orange for rack shelf beams
+  const safetyOrangeMat = new THREE.MeshStandardMaterial({
+    color: 0xe36712,
+    roughness: 0.35,
+    metalness: 0.3,
   });
 
   const safetyHazardMat = (() => {
@@ -160,6 +199,10 @@ export function createIndustrialStage() {
     roughness: 0.35,
     metalness: 0.4,
   });
+
+  // Track all totem canvas textures for disposal
+  const totemTextures = [];
+  const ringGeometries = [];
 
   // ==========================================
   // 2. CONCRETE WORKSHOP FLOOR & SAFETY LANES
@@ -350,19 +393,52 @@ export function createIndustrialStage() {
   group.add(hoist2);
 
   // ==========================================
-  // 6. INDUSTRIAL WALLS, WINDOWS & MEZZANINE
+  // 6. PANELED INDUSTRIAL WALLS
   // ==========================================
-  const wallGeo = new THREE.PlaneGeometry(160, 24);
+  /**
+   * Creates a corrugated/paneled industrial wall by stacking BoxGeometry panels.
+   * @param {number} side  -1 for left wall (facing +X), +1 for right wall (facing -X)
+   */
+  const createCorrugatedWall = (side) => {
+    const wallGroup = new THREE.Group();
+    const wallWidth = 160;   // Z extent
+    const wallHeight = 24;   // Y extent
+    const panelW = 3.0;      // per-panel Z size
+    const panelH = 3.5;      // per-panel Y size
 
-  // Left Corrugated Industrial Wall
-  const leftWall = new THREE.Mesh(wallGeo, wallPanelMat);
-  leftWall.rotation.y = Math.PI / 2;
+    const cols = Math.ceil(wallWidth / panelW);
+    const rows = Math.ceil(wallHeight / panelH);
+
+    for (let col = 0; col < cols; col++) {
+      for (let row = 0; row < rows; row++) {
+        const idx = col + row;
+        const color = idx % 2 === 0 ? 0x0f1318 : 0x11161c;
+        const depth = idx % 2 === 0 ? 0.08 : 0.12;
+
+        const mat = new THREE.MeshStandardMaterial({
+          color,
+          roughness: 0.72,
+          metalness: 0.45,
+        });
+
+        const geo = new THREE.BoxGeometry(depth, panelH - 0.04, panelW - 0.04);
+        const mesh = new THREE.Mesh(geo, mat);
+
+        // Position relative to group origin
+        const pz = -wallWidth / 2 + col * panelW + panelW / 2;
+        const py = -wallHeight / 2 + row * panelH + panelH / 2;
+        mesh.position.set(0, py, pz);
+        wallGroup.add(mesh);
+      }
+    }
+    return wallGroup;
+  };
+
+  const leftWall = createCorrugatedWall(-1);
   leftWall.position.set(-19, 8.8, -55);
   group.add(leftWall);
 
-  // Right Wall
-  const rightWall = new THREE.Mesh(wallGeo, wallPanelMat);
-  rightWall.rotation.y = -Math.PI / 2;
+  const rightWall = createCorrugatedWall(1);
   rightWall.position.set(19, 8.8, -55);
   group.add(rightWall);
 
@@ -443,6 +519,59 @@ export function createIndustrialStage() {
   // 8. ARCHITECTURAL SHOWCASE PEDESTALS (THE 4 KEY POINTS)
   // ==========================================
 
+  // Zone demarcation ring helper
+  const createZoneMarker = (radius, color) => {
+    const ringGeo = new THREE.RingGeometry(radius - 0.15, radius, 48);
+    ringGeometries.push(ringGeo);
+    const ringMat = new THREE.MeshBasicMaterial({
+      color,
+      transparent: true,
+      opacity: 0.6,
+      side: THREE.DoubleSide,
+    });
+    const ring = new THREE.Mesh(ringGeo, ringMat);
+    ring.rotation.x = -Math.PI / 2;
+    ring.position.y = -3.17;
+    return ring;
+  };
+
+  // Product totem helper
+  const createProductTotem = (label, accentHex) => {
+    const totemGroup = new THREE.Group();
+
+    // Vertical post
+    const postGeo = new THREE.BoxGeometry(0.08, 4.0, 0.08);
+    const post = new THREE.Mesh(postGeo, darkSteelMat);
+    totemGroup.add(post);
+
+    // Canvas label plate
+    const plateCanvas = document.createElement("canvas");
+    plateCanvas.width = 256;
+    plateCanvas.height = 128;
+    const pCtx = plateCanvas.getContext("2d");
+    pCtx.fillStyle = "#0b1016";
+    pCtx.fillRect(0, 0, 256, 128);
+    pCtx.fillStyle = `#${accentHex.toString(16).padStart(6, "0")}`;
+    pCtx.font = "bold 20px monospace";
+    pCtx.textAlign = "center";
+    pCtx.textBaseline = "middle";
+    pCtx.fillText(label, 128, 64);
+
+    const plateTex = new THREE.CanvasTexture(plateCanvas);
+    totemTextures.push(plateTex);
+
+    const plateGeo = new THREE.PlaneGeometry(1.6, 0.8);
+    const plateMat = new THREE.MeshBasicMaterial({
+      map: plateTex,
+      side: THREE.DoubleSide,
+    });
+    const plate = new THREE.Mesh(plateGeo, plateMat);
+    plate.position.y = 2.0;
+    totemGroup.add(plate);
+
+    return totemGroup;
+  };
+
   // --- PUNTO 01: ESAB WARRIOR 500i (Potencia Industrial Pesada) ---
   // Heavy stepped steel podium with yellow perimeter & illuminated chamfer
   const warriorBase = new THREE.Group();
@@ -476,8 +605,16 @@ export function createIndustrialStage() {
   wTotemNeon.position.set(-4.2, -1.2, 2.5);
   warriorBase.add(wTotemNeon);
 
+  // Zone marker
+  warriorBase.add(createZoneMarker(5.5, 0x00f0ff));
+
   warriorBase.position.set(0, 0, 0);
   group.add(warriorBase);
+
+  // Warrior totem
+  const warriorTotem = createProductTotem("WARRIOR 500i", 0x00f0ff);
+  warriorTotem.position.set(-5.5, -0.5, 2.0);
+  group.add(warriorTotem);
 
   // --- PUNTO 02: ESAB RUSTLER EM455i (Productividad y Taller Metalmecánico) ---
   // Heavy industrial fabrication workstation
@@ -504,8 +641,16 @@ export function createIndustrialStage() {
     rustlerBase.add(cap);
   });
 
+  // Zone marker
+  rustlerBase.add(createZoneMarker(4.8, 0xffaa00));
+
   rustlerBase.position.set(9.0, 0, -26);
   group.add(rustlerBase);
+
+  // Rustler totem
+  const rustlerTotem = createProductTotem("RUSTLER EM455i", 0xffaa00);
+  rustlerTotem.position.set(-5.5, -0.5, -26);
+  group.add(rustlerTotem);
 
   // --- PUNTO 03: ESAB ROGUE EM210 PRO (Versatilidad y Taller Profesional) ---
   // Precision technical workbench with tool cabinet
@@ -527,8 +672,16 @@ export function createIndustrialStage() {
   cartTop.position.set(-2.6, -0.66, 1.5);
   rogueBase.add(cartTop);
 
+  // Zone marker
+  rogueBase.add(createZoneMarker(4.2, 0x00e5ff));
+
   rogueBase.position.set(-8.5, 0, -54);
   group.add(rogueBase);
+
+  // Rogue totem
+  const rogueTotem = createProductTotem("ROGUE EM210 PRO", 0x00e5ff);
+  rogueTotem.position.set(0, -0.5, -57);
+  group.add(rogueTotem);
 
   // --- PUNTO 04: ZONA EQUIPOS DE PROTECCIÓN PERSONAL (EPP) ---
   // Grand technical exhibition pavilion: elevated stage, modular backwall, illuminated display shelves
@@ -581,51 +734,78 @@ export function createIndustrialStage() {
     });
   });
 
+  // Zone marker
+  eppBase.add(createZoneMarker(8.0, 0xffb703));
+
   eppBase.position.set(0, 0, -88);
   group.add(eppBase);
 
+  // EPP totem
+  const eppTotem = createProductTotem("ZONA EPP", 0xffb703);
+  eppTotem.position.set(-9.0, -0.5, -88);
+  group.add(eppTotem);
+
   // ==========================================
-  // 9. HEAVY STORAGE RACKS & WORKSHOP SURROUNDINGS
+  // 9. HEAVY STORAGE RACKS WITH STRUCTURE
   // ==========================================
-  // Heavy pallet racks (Estanterías de carga pesada) along wall bays
-  const rackZ = [8, -12, -32, -50, -70, -100];
-  rackZ.forEach((rz, idx) => {
-    // Rack structure
-    const rackFrameL = new THREE.Mesh(new THREE.BoxGeometry(3.0, 8.5, 9.0), darkSteelMat);
-    rackFrameL.position.set(-16.8, 1.1, rz);
-    group.add(rackFrameL);
+  /**
+   * Creates an industrial rack with 4 corner posts and 3 horizontal shelf beams.
+   * @param {number} rz   World Z position of rack center
+   * @param {number} side  -1 = left wall side (X ≈ -16.8), +1 = right wall side (X ≈ 16.8)
+   */
+  const createIndustrialRack = (rz, side) => {
+    const rackGroup = new THREE.Group();
+    const wx = side < 0 ? -16.8 : 16.8;
 
-    const rackFrameR = new THREE.Mesh(new THREE.BoxGeometry(3.0, 8.5, 9.0), darkSteelMat);
-    rackFrameR.position.set(16.8, 1.1, rz);
-    group.add(rackFrameR);
-
-    // Rack orange/yellow shelf beams
-    [-1.2, 1.6, 4.2].forEach((ry) => {
-      const shelfBeamL = new THREE.Mesh(new THREE.BoxGeometry(3.1, 0.15, 8.8), safetyYellowMat);
-      shelfBeamL.position.set(-16.8, ry, rz);
-      group.add(shelfBeamL);
-
-      const shelfBeamR = new THREE.Mesh(new THREE.BoxGeometry(3.1, 0.15, 8.8), safetyYellowMat);
-      shelfBeamR.position.set(16.8, ry, rz);
-      group.add(shelfBeamR);
+    // 4 corner vertical posts: ±1.2 X local, ±4.0 Z local
+    [[-1.2, -4.0], [-1.2, 4.0], [1.2, -4.0], [1.2, 4.0]].forEach(([px, pz]) => {
+      const post = new THREE.Mesh(new THREE.BoxGeometry(0.12, 8.5, 0.12), darkSteelMat);
+      post.position.set(px, 0, pz);
+      rackGroup.add(post);
     });
+
+    // 3 horizontal shelf beams
+    [-1.2, 1.6, 4.2].forEach((ry) => {
+      const beam = new THREE.Mesh(new THREE.BoxGeometry(2.5, 0.12, 8.6), safetyOrangeMat);
+      beam.position.set(0, ry, 0);
+      rackGroup.add(beam);
+    });
+
+    rackGroup.position.set(wx, 1.1, rz);
+    return rackGroup;
+  };
+
+  const rackZ = [8, -12, -32, -50, -70, -100];
+  rackZ.forEach((rz) => {
+    group.add(createIndustrialRack(rz, -1));
+    group.add(createIndustrialRack(rz, +1));
   });
 
   // ==========================================
-  // 10. REALISTIC WELDING SPARKS / AMBIENT GLOW
+  // 10. PHYSICAL WELDING SPARKS SYSTEM
   // ==========================================
   const sparkCount = 180;
   const sparkPositions = new Float32Array(sparkCount * 3);
   const sparkColors = new Float32Array(sparkCount * 3);
+  const sparkVelocities = new Float32Array(sparkCount * 3);
+  const sparkLifes = new Float32Array(sparkCount);
 
   for (let i = 0; i < sparkCount; i++) {
     const i3 = i * 3;
-    sparkPositions[i3] = (Math.random() - 0.5) * 26;
+    sparkPositions[i3]     = (Math.random() - 0.5) * 26;
     sparkPositions[i3 + 1] = Math.random() * 9 - 1;
     sparkPositions[i3 + 2] = Math.random() * -120 + 15;
 
+    // Velocities
+    sparkVelocities[i3]     = (Math.random() - 0.5) * 0.03;
+    sparkVelocities[i3 + 1] = -0.015 - Math.random() * 0.025;
+    sparkVelocities[i3 + 2] = (Math.random() - 0.5) * 0.02;
+
+    // Life [0..1]
+    sparkLifes[i] = Math.random();
+
     // Golden amber and electric sparks
-    sparkColors[i3] = 1.0;
+    sparkColors[i3]     = 1.0;
     sparkColors[i3 + 1] = 0.65 + Math.random() * 0.35;
     sparkColors[i3 + 2] = Math.random() * 0.3;
   }
@@ -652,9 +832,22 @@ export function createIndustrialStage() {
       const positions = sparkGeo.attributes.position.array;
       for (let i = 0; i < sparkCount; i++) {
         const i3 = i * 3;
-        positions[i3 + 1] -= 0.015;
-        if (positions[i3 + 1] < -3.1) {
+
+        // Apply velocity
+        positions[i3]     += sparkVelocities[i3];
+        positions[i3 + 1] += sparkVelocities[i3 + 1];
+        positions[i3 + 2] += sparkVelocities[i3 + 2];
+        sparkLifes[i]     -= 0.008;
+
+        // Reset if fallen below floor or life expired
+        if (positions[i3 + 1] < -3.1 || sparkLifes[i] <= 0) {
+          positions[i3]     = (Math.random() - 0.5) * 26;
           positions[i3 + 1] = Math.random() * 7 + 1;
+          positions[i3 + 2] = Math.random() * -120 + 15;
+          sparkVelocities[i3]     = (Math.random() - 0.5) * 0.03;
+          sparkVelocities[i3 + 1] = -0.015 - Math.random() * 0.025;
+          sparkVelocities[i3 + 2] = (Math.random() - 0.5) * 0.02;
+          sparkLifes[i] = Math.random();
         }
       }
       sparkGeo.attributes.position.needsUpdate = true;
@@ -666,6 +859,7 @@ export function createIndustrialStage() {
       darkSteelMat.dispose();
       structuralSteelMat.dispose();
       safetyYellowMat.dispose();
+      safetyOrangeMat.dispose();
       safetyHazardMat.dispose();
       wallPanelMat.dispose();
       glassMat.dispose();
@@ -675,6 +869,10 @@ export function createIndustrialStage() {
       maqsymaRedMat.dispose();
       sparkGeo.dispose();
       sparkMat.dispose();
+      // Dispose ring geometries and their materials
+      ringGeometries.forEach((g) => g.dispose());
+      // Dispose totem canvas textures
+      totemTextures.forEach((t) => t.dispose());
     },
   };
 }

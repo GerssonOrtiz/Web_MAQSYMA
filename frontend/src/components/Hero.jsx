@@ -19,6 +19,9 @@ export default function Hero() {
   // Mouse coordinates (normalized -1 to 1)
   const mouseRef = useRef({ x: 0, y: 0, targetX: 0, targetY: 0 });
 
+  // Active scene ref for RAF access (avoids stale closure)
+  const activeSceneRef = useRef(0);
+
   // WebGL context tracking
   const webglStateRef = useRef(null);
 
@@ -45,7 +48,14 @@ export default function Hero() {
     // 1. THREE.JS SCENE SETUP
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x06080a);
-    scene.fog = new THREE.FogExp2(0x06080a, 0.015);
+    scene.fog = new THREE.Fog(0x06080a, 65, 180);
+
+    const fogConfig = [
+      { near: 55, far: 160 },   // Escena 0 — nave entera visible
+      { near: 45, far: 130 },   // Escena 1 — foco corto
+      { near: 40, far: 115 },   // Escena 2 — foco corto
+      { near: 65, far: 210 },   // Escena 3 — EPP necesita fondo despejado
+    ];
 
     const camera = new THREE.PerspectiveCamera(
       45,
@@ -83,6 +93,7 @@ export default function Hero() {
       camera,
       onSceneChange: (sceneIdx, progress) => {
         setActiveScene(sceneIdx);
+        activeSceneRef.current = sceneIdx;  // ← keep ref in sync for RAF
       },
       onProgressUpdate: (progress) => {
         setScrollProgress(progress);
@@ -105,6 +116,13 @@ export default function Hero() {
 
       // Update particles
       stage.updateParticles(elapsedTime);
+
+      // Smooth fog transition based on active scene
+      const targetFog = fogConfig[activeSceneRef.current] || fogConfig[0];
+      if (scene.fog) {
+        scene.fog.near += (targetFog.near - scene.fog.near) * 0.02;
+        scene.fog.far  += (targetFog.far  - scene.fog.far)  * 0.02;
+      }
 
       // Independent cursor effect on products
       products.updateCursorEffect(mouse.x, mouse.y);

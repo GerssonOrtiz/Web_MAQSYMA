@@ -58,6 +58,7 @@ const SCENE_CONTENT = [
   {
     id: "scene-4",
     tag: "PUNTO 04 · PROTECCIÓN Y SEGURIDAD INTEGRAL",
+    heroImage: "/assets/hero/products/epp-zone/team.webp",
     title: "EQUIPOS DE PROTECCIÓN",
     highlight: "PARA EL SOLDADOR PROFESIONAL.",
     description:
@@ -73,6 +74,13 @@ const SCENE_CONTENT = [
     secondaryCta: { label: "Consultar asesor técnico", action: "quote" },
   },
 ];
+
+const SCENE_ACCENT_CLASSES = {
+  0: { dot: 'bg-cyan-400 shadow-[0_0_8px_#00f0ff]', text: 'text-cyan-400' },
+  1: { dot: 'bg-amber-400 shadow-[0_0_8px_#fbbf24]', text: 'text-amber-400' },
+  2: { dot: 'bg-sky-400 shadow-[0_0_8px_#38bdf8]',   text: 'text-sky-400'  },
+  3: { dot: 'bg-orange-400 shadow-[0_0_8px_#fb923c]', text: 'text-orange-400' },
+};
 
 export default function CinemaOverlay({ activeScene = 0, progress = 0 }) {
   const current = SCENE_CONTENT[activeScene] || SCENE_CONTENT[0];
@@ -90,25 +98,40 @@ export default function CinemaOverlay({ activeScene = 0, progress = 0 }) {
       {/* Top Bar Indicators */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="h-2 w-2 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_8px_#00f0ff]" />
-          <span className="font-mono text-xs tracking-widest text-white/80 uppercase">
+          <div className={`h-2 w-2 rounded-full animate-pulse ${SCENE_ACCENT_CLASSES[activeScene].dot}`} />
+          <span className={`font-mono text-xs tracking-widest uppercase ${SCENE_ACCENT_CLASSES[activeScene].text}`}>
             {current.tag}
           </span>
         </div>
 
-        {/* Scene Steps Indicator */}
-        <div className="flex items-center gap-2 font-mono text-xs">
-          {SCENE_CONTENT.map((s, idx) => (
+        {/* Linear minimap */}
+        <div className="flex items-center gap-2 font-mono text-[10px]">
+          <span className="text-white/40">NAVE</span>
+          <div className="relative h-1.5 w-32 rounded-full bg-white/10">
+            {/* Track de progreso */}
             <div
-              key={s.id}
-              className={`flex items-center gap-1.5 transition-colors duration-300 ${
-                activeScene === idx ? "text-cyan-400 font-bold" : "text-white/40"
-              }`}
-            >
-              <span>0{idx + 1}</span>
-              {idx < 3 && <span className="text-white/20">—</span>}
-            </div>
-          ))}
+              className="absolute h-full rounded-full bg-white/5 transition-all duration-75"
+              style={{ width: `${Math.round(progress * 100)}%` }}
+            />
+            {/* Marcadores de los 4 puntos */}
+            {[0, 33.3, 66.6, 100].map((pct, i) => (
+              <div
+                key={i}
+                className={`absolute top-1/2 h-2 w-2 rounded-full border transition-colors duration-300 ${
+                  activeScene === i
+                    ? 'bg-amber-400 border-amber-400'
+                    : 'bg-transparent border-white/30'
+                }`}
+                style={{ left: `${pct}%`, transform: 'translate(-50%, -50%)' }}
+              />
+            ))}
+            {/* Punto de cámara actual */}
+            <div
+              className="absolute top-1/2 h-2.5 w-2.5 rounded-full bg-cyan-400 shadow-[0_0_6px_#00f0ff] transition-all duration-75"
+              style={{ left: `${Math.round(progress * 100)}%`, transform: 'translate(-50%, -50%)' }}
+            />
+          </div>
+          <span className="text-white/40">EPP</span>
         </div>
       </div>
 
@@ -187,14 +210,45 @@ export default function CinemaOverlay({ activeScene = 0, progress = 0 }) {
               </div>
 
               {/* Scene Specs Grid */}
+              {current.heroImage && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.5 }}
+                  className="relative overflow-hidden rounded border border-amber-400/30 mb-2"
+                  style={{ aspectRatio: '16/9' }}
+                >
+                  <img
+                    src={current.heroImage}
+                    alt="Equipo EPP"
+                    className="w-full h-full object-contain object-center bg-black/40"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+                  <div className="absolute bottom-1.5 left-2">
+                    <span className="font-mono text-[8px] uppercase tracking-widest text-amber-400">
+                      PROTECCIÓN EN ACCIÓN
+                    </span>
+                  </div>
+                </motion.div>
+              )}
+              {/* Scene Specs Grid */}
               {current.specs && (
-                <div className="grid grid-cols-3 gap-3">
+                <div className="grid grid-cols-3 gap-2">
                   {current.specs.map((item, idx) => (
-                    <div key={idx} className="rounded bg-white/5 p-2.5 border border-white/5">
+                    <div
+                      key={idx}
+                      className={`rounded p-2.5 border transition-all ${
+                        idx === 0
+                          ? 'bg-amber-400/10 border-amber-400/30 col-span-3'
+                          : 'bg-white/5 border-white/5'
+                      }`}
+                    >
                       <p className="font-mono text-[9px] uppercase tracking-wider text-white/50">
                         {item.label}
                       </p>
-                      <p className="mt-1 font-mono text-xs font-bold text-amber-300 truncate">
+                      <p className={`mt-0.5 font-mono font-bold truncate ${
+                        idx === 0 ? 'text-sm text-amber-300' : 'text-xs text-amber-300/80'
+                      }`}>
                         {item.val}
                       </p>
                     </div>

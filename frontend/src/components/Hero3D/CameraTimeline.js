@@ -22,22 +22,22 @@ export function initHeroScrollTimeline({
 }) {
   // Camera trajectory keyframe targets: smooth forward progression through the industrial nave
   const waypoints = [
-    // 0: Entrance - looking down the high-bay nave
-    { pos: new THREE.Vector3(0, 2.2, 19), look: new THREE.Vector3(0, 0.45, 0), scene: 0 },
-    // 1: Warrior 500i Close inspection
-    { pos: new THREE.Vector3(0, 1.2, 8.5), look: new THREE.Vector3(0, 0.45, 0), scene: 0 },
-    // 2: Smooth gliding transition towards Rustler (right side bay)
-    { pos: new THREE.Vector3(4.8, 1.8, -12), look: new THREE.Vector3(7.0, 0.5, -22), scene: 1 },
-    // 3: Rustler EM455i Workstation focus
-    { pos: new THREE.Vector3(8.5, 1.15, -18.5), look: new THREE.Vector3(9.0, 0.4, -26), scene: 1 },
-    // 4: Smooth transition across nave towards Rogue EM210 PRO (left side bay)
-    { pos: new THREE.Vector3(-2.8, 1.7, -38), look: new THREE.Vector3(-6.5, 0.4, -48), scene: 2 },
-    // 5: Rogue EM210 PRO Workshop station inspection
-    { pos: new THREE.Vector3(-7.2, 0.95, -47.0), look: new THREE.Vector3(-8.5, 0.25, -54), scene: 2 },
-    // 6: Camera glides centrally towards the grand EPP exhibition pavilion
-    { pos: new THREE.Vector3(-1.5, 2.6, -72), look: new THREE.Vector3(0, 0.6, -88), scene: 3 },
-    // 7: EPP Showcase front-center cinematic view
-    { pos: new THREE.Vector3(0, 1.4, -79.5), look: new THREE.Vector3(0, 0.6, -88), scene: 3 },
+    // 0: Entrada — cámara alta, mirando hacia abajo como un director de cine
+    { pos: new THREE.Vector3(0, 4.5, 22), look: new THREE.Vector3(0, 0.0, 0), scene: 0 },
+    // 1: Dolly-in al Warrior — baja y se acerca al producto
+    { pos: new THREE.Vector3(0, 0.8, 7.0), look: new THREE.Vector3(0, 1.0, 0), scene: 0 },
+    // 2: Swing lateral hacia Rustler (lado derecho de la nave)
+    { pos: new THREE.Vector3(6.5, 2.2, -10), look: new THREE.Vector3(9.0, 0.5, -26), scene: 1 },
+    // 3: Cierre de Rustler — cámara baja y lateral
+    { pos: new THREE.Vector3(10.5, 0.7, -20), look: new THREE.Vector3(9.0, 0.3, -26), scene: 1 },
+    // 4: Cruce de nave hacia Rogue (lado izquierdo) — cámara eleva levemente
+    { pos: new THREE.Vector3(-3.5, 2.8, -38), look: new THREE.Vector3(-8.5, 0.2, -54), scene: 2 },
+    // 5: Cierre del Rogue — muy cerca, ángulo bajo
+    { pos: new THREE.Vector3(-9.5, 0.6, -48), look: new THREE.Vector3(-8.5, 0.5, -54), scene: 2 },
+    // 6: Zoom out hacia el fondo — revela el backwall EPP por primera vez
+    { pos: new THREE.Vector3(3.0, 3.5, -68), look: new THREE.Vector3(0, 2.0, -88), scene: 3 },
+    // 7: Reveal frontal EPP — cámara centrada y baja
+    { pos: new THREE.Vector3(0, 1.2, -77), look: new THREE.Vector3(0, 1.5, -88), scene: 3 },
   ];
 
   // Animated interpolator proxy
@@ -79,6 +79,16 @@ export function initHeroScrollTimeline({
   const segments = waypoints.length - 1;
   const segDur = 1 / segments;
 
+  const easings = [
+    "power3.out",    // 0→1: Dolly-in dramático hacia Warrior
+    "power1.inOut",  // 1→2: Transición fluida hacia Rustler
+    "power2.in",     // 2→3: Acercamiento acelerado al Rustler
+    "power1.inOut",  // 3→4: Cruce de nave
+    "power2.out",    // 4→5: Llegada suave al Rogue
+    "power1.inOut",  // 5→6: Alejamiento hacia EPP
+    "power3.in",     // 6→7: Reveal final dramático de zona EPP
+  ];
+
   for (let i = 0; i < segments; i++) {
     const nextWp = waypoints[i + 1];
     tl.to(
@@ -90,7 +100,7 @@ export function initHeroScrollTimeline({
         lookX: nextWp.look.x,
         lookY: nextWp.look.y,
         lookZ: nextWp.look.z,
-        ease: "power1.inOut",
+        ease: easings[i] || "power1.inOut",
         duration: segDur,
       },
       i * segDur
