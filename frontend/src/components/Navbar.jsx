@@ -31,10 +31,9 @@ export default function Navbar() {
           data-testid="nav-brand"
           aria-label="MAQSYMA — inicio"
         >
-          <Logo className="h-7 w-7 text-fog" />
-          <span className="font-display text-2xl font-bold uppercase tracking-[0.08em] leading-none pt-0.5">
-            MAQSYMA
-          </span>
+          <div id="navbar-logo-anchor" className="flex items-center">
+            <Logo className="h-8 md:h-9 w-auto" />
+          </div>
           <span className="mono-label hidden md:inline text-[9px] pl-3 border-l border-white/10">
             Equipos de soldadura
           </span>

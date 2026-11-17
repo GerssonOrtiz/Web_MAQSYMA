@@ -1,4 +1,4 @@
-import { Component, useEffect } from "react";
+import { Component, useEffect, useState } from "react";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import Marquee from "./components/Marquee";
@@ -10,6 +10,7 @@ import Applications from "./components/Applications";
 import TechInfo from "./components/TechInfo";
 import Quote from "./components/Quote";
 import Footer from "./components/Footer";
+import LoadingScreen from "./components/LoadingScreen";
 import { initSmoothScroll } from "./lib/scroll";
 
 class ErrorBoundary extends Component {
@@ -35,6 +36,8 @@ class ErrorBoundary extends Component {
 }
 
 export default function App() {
+  const [loadingComplete, setLoadingComplete] = useState(false);
+
   useEffect(() => {
     const destroy = initSmoothScroll();
     return typeof destroy === "function" ? destroy : undefined;
@@ -43,6 +46,7 @@ export default function App() {
   return (
     <ErrorBoundary>
       <div className="grain min-h-screen overflow-x-clip bg-ink font-sans text-fog">
+        <LoadingScreen onLoadingComplete={() => setLoadingComplete(true)} />
         <Navbar />
         <main>
           <Hero />

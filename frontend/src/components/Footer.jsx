@@ -15,8 +15,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-12">
           <div className="lg:col-span-6">
             <div className="flex items-center gap-3">
-              <Logo className="h-7 w-7 text-fog" />
-              <span className="font-display text-2xl font-bold uppercase tracking-[0.08em]">MAQSYMA</span>
+              <Logo className="h-9 w-auto" />
             </div>
             <p className="mt-4 max-w-sm font-mono text-[10px] uppercase leading-relaxed tracking-[0.18em] text-mist">
               Showroom digital de máquinas de soldar, equipos de corte y accesorios para soldadores,
