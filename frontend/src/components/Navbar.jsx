@@ -23,7 +23,7 @@ export default function Navbar() {
   }, []);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-ink/85 backdrop-blur-md">
+    <header className="fixed inset-x-0 top-0 z-50 bg-transparent transition-colors duration-300">
       <nav className="section-head flex h-16 items-center justify-between" aria-label="Principal">
         <button
           onClick={() => window.__lenis ? window.__lenis.scrollTo(0) : window.scrollTo(0, 0)}

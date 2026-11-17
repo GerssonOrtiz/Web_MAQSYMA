@@ -208,7 +208,6 @@ function SpecSheet({ p, index, onClose }) {
             <p className="mt-2 font-mono text-[10px] tabular-nums text-mist">{mqCode(index)}</p>
           </div>
           <button
-            autoFocus
             onClick={onClose}
             aria-label="Cerrar ficha"
             className="border border-white/15 p-2 text-mist transition-colors duration-200 hover:border-accent hover:text-accent"

@@ -1,14 +1,15 @@
 import * as THREE from "three";
 
 /**
- * Creates 2.5D physical product billboards in Three.js world space
- * using official transparent WEBP product photography.
- * 
+ * Creates 2.5D physical product showcases enclosed in illuminated 3D industrial pedestals
+ * and glass-accented holographic frames.
+ *
  * Configures:
+ * - High-luminosity textures with balanced material response (no dull/dark shadows)
+ * - 3D Industrial Framing: beveled metallic chassis, neon perimeter edge, glowing base
  * - Real scale & perspective
- * - Alpha transparency & dual-side handling
  * - Contact shadow geometry under each machine
- * - Subtle independent floating / inspection response
+ * - Independent cursor parallax and subtle tilt
  */
 export function createProductShowcase() {
   const group = new THREE.Group();
@@ -18,32 +19,31 @@ export function createProductShowcase() {
     warrior: {
       group: new THREE.Group(),
       mesh: null,
-      shadow: null,
-      targetPos: new THREE.Vector3(0, 0.4, 0),
+      frameGroup: null,
+      targetPos: new THREE.Vector3(0, 0.5, 0),
     },
     rustler: {
       group: new THREE.Group(),
       mesh: null,
-      shadow: null,
-      targetPos: new THREE.Vector3(9, 0.3, -26),
+      frameGroup: null,
+      targetPos: new THREE.Vector3(9, 0.4, -26),
     },
     rogue: {
       group: new THREE.Group(),
       mesh: null,
-      shadow: null,
-      targetPos: new THREE.Vector3(-8.5, 0.1, -54),
+      frameGroup: null,
+      targetPos: new THREE.Vector3(-8.5, 0.2, -54),
     },
   };
 
-  // Reusable Contact Shadow Geometry & Material
-  const shadowGeo = new THREE.PlaneGeometry(6.4, 3.8);
+  // Reusable Contact Shadow
+  const shadowGeo = new THREE.PlaneGeometry(7.2, 4.2);
   const createContactShadow = () => {
-    // Generate procedural radial gradient shadow texture
     const canvas = document.createElement("canvas");
     canvas.width = 128;
     canvas.height = 128;
     const ctx = canvas.getContext("2d");
-    const gradient = ctx.createRadialGradient(64, 64, 10, 64, 64, 60);
+    const gradient = ctx.createRadialGradient(64, 64, 15, 64, 64, 62);
     gradient.addColorStop(0, "rgba(0, 0, 0, 0.85)");
     gradient.addColorStop(0.5, "rgba(0, 0, 0, 0.45)");
     gradient.addColorStop(1, "rgba(0, 0, 0, 0)");
@@ -54,17 +54,107 @@ export function createProductShowcase() {
     const shadowMat = new THREE.MeshBasicMaterial({
       map: shadowTex,
       transparent: true,
-      opacity: 0.75,
+      opacity: 0.7,
       depthWrite: false,
     });
     const shadowMesh = new THREE.Mesh(shadowGeo, shadowMat);
     shadowMesh.rotation.x = -Math.PI / 2;
-    shadowMesh.position.y = -2.74;
+    shadowMesh.position.y = -2.72;
     return shadowMesh;
   };
 
-  // Helper to build high-end product plane
-  const setupProductMesh = (itemKey, imagePath, width, height, position) => {
+  // Helper to build a 3D industrial enclosure/box around the product
+  const create3DIndustrialBox = (width, height, depth, accentColor = 0x00f0ff) => {
+    const boxGroup = new THREE.Group();
+
+    // 1. Backing panel (Dark matte carbon backplate with subtle glow)
+    const backGeo = new THREE.PlaneGeometry(width * 1.15, height * 1.15);
+    const backMat = new THREE.MeshStandardMaterial({
+      color: 0x0c1015,
+      roughness: 0.8,
+      metalness: 0.5,
+    });
+    const backMesh = new THREE.Mesh(backGeo, backMat);
+    backMesh.position.z = -0.55;
+    boxGroup.add(backMesh);
+
+    // 2. Beveled Metallic Enclosure Frame (Code-built 3D Frame)
+    const frameMat = new THREE.MeshStandardMaterial({
+      color: 0x242d38,
+      roughness: 0.35,
+      metalness: 0.85,
+    });
+
+    const thickness = 0.18;
+    const halfW = (width * 1.15) / 2;
+    const halfH = (height * 1.15) / 2;
+
+    // Top beam
+    const topBeam = new THREE.Mesh(
+      new THREE.BoxGeometry(width * 1.15 + thickness * 2, thickness, depth),
+      frameMat
+    );
+    topBeam.position.set(0, halfH + thickness / 2, 0);
+    boxGroup.add(topBeam);
+
+    // Bottom beam
+    const bottomBeam = new THREE.Mesh(
+      new THREE.BoxGeometry(width * 1.15 + thickness * 2, thickness, depth),
+      frameMat
+    );
+    bottomBeam.position.set(0, -halfH - thickness / 2, 0);
+    boxGroup.add(bottomBeam);
+
+    // Left beam
+    const leftBeam = new THREE.Mesh(
+      new THREE.BoxGeometry(thickness, height * 1.15, depth),
+      frameMat
+    );
+    leftBeam.position.set(-halfW - thickness / 2, 0, 0);
+    boxGroup.add(leftBeam);
+
+    // Right beam
+    const rightBeam = new THREE.Mesh(
+      new THREE.BoxGeometry(thickness, height * 1.15, depth),
+      frameMat
+    );
+    rightBeam.position.set(halfW + thickness / 2, 0, 0);
+    boxGroup.add(rightBeam);
+
+    // 3. Neon Luminous Edge Accents (Cyber-industrial highlight)
+    const neonMat = new THREE.MeshStandardMaterial({
+      color: 0x020a10,
+      emissive: accentColor,
+      emissiveIntensity: 0.9,
+      roughness: 0.1,
+    });
+
+    const neonBarTop = new THREE.Mesh(
+      new THREE.BoxGeometry(width * 0.9, 0.05, 0.05),
+      neonMat
+    );
+    neonBarTop.position.set(0, halfH + 0.02, depth / 2 + 0.02);
+    boxGroup.add(neonBarTop);
+
+    const neonBarBottom = new THREE.Mesh(
+      new THREE.BoxGeometry(width * 0.9, 0.05, 0.05),
+      neonMat
+    );
+    neonBarBottom.position.set(0, -halfH - 0.02, depth / 2 + 0.02);
+    boxGroup.add(neonBarBottom);
+
+    return boxGroup;
+  };
+
+  // Helper to load and mount product
+  const setupProductMesh = (
+    itemKey,
+    imagePath,
+    width,
+    height,
+    position,
+    accentColor
+  ) => {
     textureLoader.load(
       imagePath,
       (texture) => {
@@ -72,14 +162,19 @@ export function createProductShowcase() {
         texture.minFilter = THREE.LinearMipmapLinearFilter;
         texture.generateMipmaps = true;
 
+        // Plane for product with high-fidelity lighting response
         const planeGeo = new THREE.PlaneGeometry(width, height);
         const planeMat = new THREE.MeshStandardMaterial({
           map: texture,
           transparent: true,
-          roughness: 0.35,
-          metalness: 0.15,
+          roughness: 0.15,
+          metalness: 0.05,
           side: THREE.DoubleSide,
-          alphaTest: 0.05,
+          alphaTest: 0.04,
+          // Subtle emissive map self-illumination to keep the machine vivid and clear
+          emissive: 0xffffff,
+          emissiveMap: texture,
+          emissiveIntensity: 0.28,
         });
 
         const mesh = new THREE.Mesh(planeGeo, planeMat);
@@ -88,12 +183,18 @@ export function createProductShowcase() {
         const productGroup = products[itemKey].group;
         productGroup.position.copy(position);
 
+        // Add 3D Frame Enclosure
+        const frame = create3DIndustrialBox(width, height, 0.7, accentColor);
+        productGroup.add(frame);
+
+        // Contact shadow on platform
         const contactShadow = createContactShadow();
         productGroup.add(contactShadow);
+
         productGroup.add(mesh);
 
         products[itemKey].mesh = mesh;
-        products[itemKey].shadow = contactShadow;
+        products[itemKey].frameGroup = frame;
         group.add(productGroup);
       },
       undefined,
@@ -103,50 +204,52 @@ export function createProductShowcase() {
     );
   };
 
-  // 1. Warrior 500i — Industrial flagship (large, imposing)
+  // 1. Warrior 500i
   setupProductMesh(
     "warrior",
     "/assets/hero/products/warrior-500i/front.webp",
     6.6,
     5.6,
-    products.warrior.targetPos
+    products.warrior.targetPos,
+    0x00f0ff // Cyan
   );
 
-  // 2. Rustler EM455i — Heavy-duty workshop power
+  // 2. Rustler EM455i
   setupProductMesh(
     "rustler",
     "/assets/hero/products/rustler-em455i/front.webp",
     5.8,
     5.0,
-    products.rustler.targetPos
+    products.rustler.targetPos,
+    0xffaa00 // Industrial Gold
   );
 
-  // 3. Rogue EM210 PRO — Compact precision
+  // 3. Rogue EM210 PRO
   setupProductMesh(
     "rogue",
     "/assets/hero/products/rogue-em210/front.webp",
     4.8,
     4.2,
-    products.rogue.targetPos
+    products.rogue.targetPos,
+    0x00e5ff // Electric Blue
   );
 
   return {
     group,
     products,
     updateCursorEffect: (normMouseX, normMouseY) => {
-      // Gentle parallax and physical tilt on active items
-      if (products.warrior.mesh) {
-        products.warrior.mesh.rotation.y = normMouseX * 0.12;
-        products.warrior.mesh.rotation.x = -normMouseY * 0.08;
-      }
-      if (products.rustler.mesh) {
-        products.rustler.mesh.rotation.y = normMouseX * 0.12;
-        products.rustler.mesh.rotation.x = -normMouseY * 0.08;
-      }
-      if (products.rogue.mesh) {
-        products.rogue.mesh.rotation.y = normMouseX * 0.12;
-        products.rogue.mesh.rotation.x = -normMouseY * 0.08;
-      }
+      // Coordinated tilt for product & 3D box
+      ["warrior", "rustler", "rogue"].forEach((key) => {
+        const p = products[key];
+        if (p.mesh && p.frameGroup) {
+          const rotY = normMouseX * 0.14;
+          const rotX = -normMouseY * 0.1;
+          p.mesh.rotation.y = rotY;
+          p.mesh.rotation.x = rotX;
+          p.frameGroup.rotation.y = rotY * 0.8;
+          p.frameGroup.rotation.x = rotX * 0.8;
+        }
+      });
     },
     dispose: () => {
       shadowGeo.dispose();
@@ -156,12 +259,6 @@ export function createProductShowcase() {
           if (p.mesh.material) {
             if (p.mesh.material.map) p.mesh.material.map.dispose();
             p.mesh.material.dispose();
-          }
-        }
-        if (p.shadow) {
-          if (p.shadow.material) {
-            if (p.shadow.material.map) p.shadow.material.map.dispose();
-            p.shadow.material.dispose();
           }
         }
       });

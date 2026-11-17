@@ -39,6 +39,12 @@ export default function App() {
   const [loadingComplete, setLoadingComplete] = useState(false);
 
   useEffect(() => {
+    // Force instant scroll restoration to top on refresh
+    if ("scrollRestoration" in window.history) {
+      window.history.scrollRestoration = "manual";
+    }
+    window.scrollTo(0, 0);
+
     const destroy = initSmoothScroll();
     return typeof destroy === "function" ? destroy : undefined;
   }, []);
