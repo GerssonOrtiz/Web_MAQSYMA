@@ -1,492 +1,470 @@
-# HERO MAQSYMA — SCROLL-DRIVEN ANIMATION & INTERACTIVE MOUSE EFFECTS
+# PROMPT MAESTRO — HERO CINEMATOGRÁFICO 3D MAQSYMA
 
-## OBJETIVO PRINCIPAL
+## 1. ROL Y OBJETIVO
 
-Implementa una experiencia visual interactiva y cinematográfica en la sección HERO de MAQSYMA.
+Actúa como director creativo digital, diseñador de experiencias web cinematográficas y desarrollador frontend senior especializado en React, CSS, GSAP, Three.js y animaciones interactivas.
 
-El elemento protagonista es una máquina de soldar. La experiencia debe combinar dos sistemas de animación independientes:
+Tu misión es diseñar e implementar una experiencia cinematográfica para el Hero de MAQSYMA.
 
-**1. SCROLL-DRIVEN ANIMATION**
+MAQSYMA comercializa soluciones integrales de soldadura y atiende a:
+- Grandes empresas e industrias.
+- Empresas mineras y contratistas.
+- Talleres profesionales.
+- Soldadores independientes.
 
-El desplazamiento vertical del visitante controla la evolución visual del Hero, incluyendo profundidad, perspectiva, escala, posición y transiciones entre estados.
+El concepto central es:
 
-**2. INTERACTIVE MOUSE EFFECTS**
+**SOLUCIONES DE SOLDADURA SIN LÍMITES.**
 
-El movimiento del cursor genera una respuesta visual sobre la máquina, mediante inclinación tridimensional, iluminación dinámica, reflejos y desplazamiento parallax de la imagen.
+La experiencia debe transmitir tecnología, potencia, precisión, profesionalismo y variedad de soluciones.
 
-Ambos sistemas deben funcionar simultáneamente sin interferir entre sí.
+No quiero una galería convencional, un carrusel ni una presentación de diapositivas.
 
-El cursor nunca debe modificar el progreso del scroll ni desplazar la cámara principal.
-
-El scroll nunca debe producir movimientos erráticos en la respuesta del cursor.
-
-El resultado debe transmitir tecnología industrial, potencia, precisión y sofisticación.
-
----
-
-# 1. COMPOSICIÓN VISUAL DEL HERO
-
-Construye una escena cinematográfica industrial.
-
-La composición debe incluir:
-
-### Elemento protagonista
-
-Una máquina de soldar de gran tamaño, ubicada como punto focal de la composición.
-
-La máquina debe conservar:
-
-- Geometría original.
-- Logotipo.
-- Modelo.
-- Controles.
-- Pantalla.
-- Conectores.
-- Colores.
-- Detalles físicos.
-
-No deformes ni alteres las características del producto.
-
-### Escenario
-
-Utiliza una composición industrial oscura con:
-
-- Fondo negro o gris grafito.
-- Iluminación blanca o azulada.
-- Reflejos metálicos.
-- Profundidad ambiental.
-- Partículas sutiles.
-- Pequeños detalles de iluminación.
-- Sombras controladas.
-
-La máquina debe destacar claramente respecto al fondo.
-
-### Información comercial
-
-Mantén los elementos informativos del Hero:
-
-- Identidad MAQSYMA.
-- Titular comercial.
-- Descripción.
-- Botones de acción.
-- Información complementaria.
-
-Los textos deben permanecer legibles y estables durante las transformaciones de la escena.
-
-No permitas que las animaciones de la máquina desplacen, deformen o interfieran con los elementos de navegación y conversión.
+Quiero un escenario industrial tridimensional construido mediante código, en el que el usuario pueda ingresar visualmente, recorrerlo y descubrir diferentes equipos mediante el scroll.
 
 ---
 
-# 2. ESTRUCTURA DEL SCROLL Y CÁMARA
+## 2. REGLA FUNDAMENTAL: EL ESCENARIO SE CONSTRUYE MEDIANTE CÓDIGO
 
-La sección debe utilizar dos elementos:
+Esta es una condición obligatoria.
 
-- Un contenedor exterior que determina la distancia total de desplazamiento.
-- Un escenario interior con posición sticky que permanece temporalmente fijo mientras se desarrolla la animación.
+El entorno visual completo debe desarrollarse utilizando las tecnologías del proyecto.
 
-La escena visual debe responder a un único progreso global de scroll.
+**NO utilizar fotografías de talleres como fondo del escenario.**
 
-Comportamiento:
+**NO utilizar vídeos pregrabados como sustituto del entorno tridimensional.**
 
-- Inicio: cuando el Hero entra en la ventana.
-- Activación: comienza la secuencia de transformación.
-- Desarrollo: la cámara virtual evoluciona según el desplazamiento.
-- Final: se completa la animación y se libera el escenario.
-- Sincronización: avanzar o retroceder el scroll actualiza inmediatamente el estado visual.
+**NO utilizar imágenes generadas como fondos estáticos para simular el escenario.**
 
-No utilices animaciones independientes que continúen reproduciéndose cuando el usuario deja de desplazarse.
+El escenario debe ser una composición digital creada mediante código.
 
-No utilices temporizadores para controlar el avance de la cámara.
+Tecnologías preferidas:
 
-No interceptes la rueda del ratón ni los gestos táctiles.
+- React: estructura de componentes y contenido.
+- Three.js / React Three Fiber: escenario tridimensional, geometría, cámara y luces.
+- GSAP ScrollTrigger: recorrido cinematográfico controlado por scroll.
+- CSS: efectos visuales, iluminación complementaria, tipografía y composición.
+- Framer Motion: microinteracciones de interfaz cuando aporte valor.
 
-El desplazamiento debe seguir siendo nativo.
+No es obligatorio utilizar todas las tecnologías si alguna resulta innecesaria.
 
-La posición de la cámara debe depender exclusivamente del progreso del scroll.
+Evitar duplicar responsabilidades entre sistemas de animación.
 
-Si utilizas suavizado, debe ser mínimo y no producir una deriva perceptible después de detener el desplazamiento.
+### Elementos que deben construirse mediante código
 
-Recalcula las dimensiones al cambiar el tamaño de la ventana.
+1. Espacio tridimensional.
+2. Suelo industrial.
+3. Paredes o estructuras técnicas.
+4. Iluminación ambiental.
+5. Focos de iluminación.
+6. Reflejos controlados.
+7. Sombras.
+8. Partículas ambientales sutiles.
+9. Elementos geométricos industriales.
+10. Cámara cinematográfica.
+11. Profundidad espacial.
+12. Transiciones entre escenarios.
 
----
-
-# 3. SECUENCIA DE ANIMACIÓN DEL HERO
-
-Divide el recorrido en cuatro fases.
-
-Los porcentajes corresponden al progreso local de la animación del Hero.
-
-## FASE A — ACTIVACIÓN (0–20%)
-
-La escena comienza con la máquina en una posición visual de presentación.
-
-- La máquina aparece progresivamente.
-- Recupera su contraste y luminosidad.
-- El fondo adquiere profundidad.
-- Se activan gradualmente los elementos ambientales.
-- El titular y la descripción aparecen mediante máscaras de revelado.
-- Los botones aparecen después del contenido principal.
-
-La entrada debe sentirse cinematográfica.
-
-Evita que todos los elementos aparezcan simultáneamente.
-
-## FASE B — APROXIMACIÓN (20–45%)
-
-La cámara virtual comienza a aproximarse a la máquina.
-
-- La escala aparente aumenta progresivamente.
-- La máquina adquiere mayor protagonismo.
-- La perspectiva cambia suavemente.
-- El fondo genera una sensación de profundidad.
-- La iluminación resalta los detalles del equipo.
-- Los elementos ambientales pueden presentar parallax.
-
-La máquina debe sentirse como un objeto tridimensional dentro de un escenario real.
-
-No utilices únicamente un zoom de imagen. Combina escala, perspectiva, posición y profundidad para generar la sensación de movimiento de cámara.
-
-## FASE C — PRESENTACIÓN (45–75%)
-
-La máquina alcanza su posición protagonista.
-
-- Mantiene una escala cómoda de visualización.
-- Los detalles del equipo permanecen nítidos.
-- La iluminación destaca su geometría.
-- El escenario mantiene una profundidad perceptible.
-- Los elementos comerciales permanecen legibles.
-- La respuesta al cursor funciona plenamente.
-
-Reduce la velocidad aparente de transformación.
-
-Esta fase debe permitir que el visitante examine visualmente la máquina.
-
-Si el visitante detiene el scroll, toda la escena debe permanecer estable.
-
-No avances automáticamente a la siguiente fase.
-
-## FASE D — TRANSICIÓN Y SALIDA (75–100%)
-
-La cámara continúa su recorrido.
-
-- La máquina puede desplazarse ligeramente hacia una posición secundaria.
-- El escenario cambia progresivamente su escala y perspectiva.
-- Los elementos ambientales pierden protagonismo.
-- Los elementos de texto pueden completar su transición.
-- El Hero termina su recorrido y libera la posición sticky.
-
-La salida debe integrarse naturalmente con la siguiente sección de la página.
-
-No generes saltos de composición, pantallas negras ni movimientos bruscos.
-
-La transición debe poder recorrerse en ambos sentidos mediante scroll.
+El escenario debe ser visualmente atractivo incluso antes de incorporar las fotografías de los productos.
 
 ---
 
-# 4. EFECTO 3D DEL MOUSE — INCLINACIÓN DE LA MÁQUINA
+## 3. DIRECCIÓN ARTÍSTICA
 
-Implementa un sistema independiente de seguimiento del cursor.
+Desarrollar un espacio industrial premium.
 
-Este efecto debe activarse cuando el puntero se encuentre sobre la zona visual de la máquina.
+### Estética
 
-Calcula la posición del cursor respecto al centro del contenedor de la máquina, no respecto a toda la ventana.
-
-Comportamiento:
-
-- Cursor a la izquierda: inclinación horizontal correspondiente.
-- Cursor a la derecha: inclinación en sentido contrario.
-- Cursor arriba: inclinación vertical.
-- Cursor abajo: inclinación vertical opuesta.
-
-Utiliza una transformación tridimensional mediante `rotateX()` y `rotateY()`.
-
-Parámetros orientativos:
-
-- Rotación horizontal máxima: 4–5 grados.
-- Rotación vertical máxima: 3–4 grados.
-- Transición de respuesta: fluida y progresiva.
-- Retorno a posición neutral: 300–500 ms.
-
-La inclinación debe sentirse como una respuesta física de un objeto tridimensional.
-
-No exageres los movimientos.
-
-La máquina debe conservar su legibilidad y sus proporciones.
-
-Cuando el cursor abandone la zona interactiva:
-
-- La inclinación vuelve a cero.
-- La imagen recupera su posición original.
-- El reflejo desaparece progresivamente.
-- El parallax interior vuelve a su estado inicial.
-
-No utilices el movimiento del cursor para modificar el progreso del scroll.
-
----
-
-# 5. ILUMINACIÓN DINÁMICA Y REFLEJOS
-
-Añade una respuesta de iluminación vinculada al cursor.
-
-El objetivo es generar la sensación de que la máquina tiene una superficie física iluminada por una fuente de luz dinámica.
-
-Implementa:
-
-### Reflejo superficial
-
-- Un reflejo amplio y translúcido.
-- Movimiento sincronizado con el cursor.
-- Intensidad baja.
-- Bordes suaves.
-- Limitado a la superficie visual de la máquina.
-
-### Iluminación ambiental
-
-Puede utilizarse un gradiente radial dinámico que siga parcialmente al cursor.
-
-Debe integrarse con la iluminación original del escenario.
-
-No debe parecer una mancha blanca superpuesta.
-
-### Detalles metálicos
-
-Los reflejos pueden destacar sutilmente:
-
-- Bordes.
+- Fondo negro o gris carbón.
+- Suelo oscuro con reflejos sutiles.
 - Superficies metálicas.
-- Esquinas.
-- Paneles.
-- Elementos de la carcasa.
+- Estructuras geométricas industriales.
+- Iluminación cinematográfica.
+- Contraste elevado.
+- Volumetría ambiental moderada.
+- Focos que revelen progresivamente los productos.
+- Tipografía moderna y contundente.
 
-No alteres el color original del equipo.
+El entorno debe sentirse como una exposición tecnológica industrial de alta gama.
 
-No generes reflejos que oculten logotipos o controles.
+No debe parecer:
+- Un videojuego.
+- Una nave espacial.
+- Un entorno futurista genérico.
+- Una plantilla web convencional.
+- Un showroom de tarjetas comerciales.
+
+Buscar una estética realista, minimalista, industrial y sofisticada.
+
+### Construcción del escenario
+
+Crear geometría mediante Three.js:
+
+- Plano de suelo.
+- Paneles estructurales.
+- Marcos metálicos.
+- Columnas.
+- Estructuras técnicas.
+- Plataformas para presentar productos.
+- Elementos geométricos de profundidad.
+
+No llenar el espacio con objetos decorativos innecesarios.
+
+El escenario debe tener una composición limpia y permitir que los equipos sean los protagonistas.
 
 ---
 
-# 6. PARALLAX INTERIOR
+## 4. LOS PRODUCTOS: ÚNICOS RECURSOS VISUALES EXTERNOS PRINCIPALES
 
-Añade un pequeño desplazamiento independiente de la imagen de la máquina.
+Los productos deben representarse mediante fotografías reales o modelos 3D fieles.
 
-Cuando el cursor se mueve:
+Productos principales:
 
-- La imagen puede desplazarse ligeramente dentro de su contenedor.
-- El desplazamiento debe ser coherente con la inclinación.
-- El movimiento debe mantenerse entre 4 y 8 píxeles aproximadamente.
-- Debe existir un margen de recorte suficiente para evitar espacios vacíos.
+### Producto 1: ESAB Warrior 500i
 
-El contenedor exterior conserva su posición determinada por el scroll.
+Protagonista inicial.
 
-La superficie interior responde al cursor.
+Representa potencia, capacidad y soluciones para aplicaciones industriales.
 
-Esta separación es fundamental para evitar que ambos sistemas de movimiento se interfieran.
+### Producto 2: ESAB Rustler EM455i
+
+Representa tecnología y productividad para talleres profesionales y aplicaciones industriales.
+
+### Producto 3: ESAB Rogue EM210 PRO
+
+Representa soluciones compactas para profesionales independientes y trabajos de menor escala.
+
+### Reglas de representación
+
+- No inventar modelos de máquinas.
+- No sustituir productos por equipos visualmente parecidos.
+- No modificar logotipos ni etiquetas.
+- No deformar fotografías.
+- No alterar proporciones.
+- No inventar características técnicas.
+
+### Presentación 2D
+
+Si existen fotografías PNG o WEBP con fondo transparente:
+
+- Incorporarlas al escenario.
+- Aplicar escala y posición tridimensional.
+- Añadir inclinación sutil.
+- Implementar paralaje.
+- Crear sombras mediante recursos del motor gráfico cuando sea viable.
+- Aplicar iluminación complementaria sin alterar la apariencia real del producto.
+
+### Presentación 3D
+
+Si existen modelos GLB/GLTF fieles:
+
+- Integrarlos en el escenario.
+- Configurar materiales e iluminación.
+- Permitir rotación controlada.
+- Permitir zoom moderado.
+- Añadir puntos informativos cuando corresponda.
+
+La experiencia debe funcionar completamente sin modelos 3D externos.
+
+Si no hay GLB, utilizar fotografías reales como protagonistas.
+
+No crear modelos ficticios mediante geometría genérica para hacerlos pasar por productos reales.
 
 ---
 
-# 7. INDEPENDENCIA DE LOS DOS SISTEMAS
+## 5. EXPERIENCIA CINEMATOGRÁFICA: CUATRO ESCENAS
 
-Implementa una arquitectura que separe claramente:
+Las escenas deben formar parte de un mismo recorrido espacial continuo.
 
-**Sistema A — Scroll**
+No deben parecer cuatro páginas diferentes ni cuatro diapositivas independientes.
 
-Controla:
+### ESCENA 01 — ENTRADA AL ESPACIO INDUSTRIAL
 
-- Posición de la cámara.
-- Profundidad.
+La experiencia comienza en un entorno oscuro.
+
+El usuario se encuentra frente a un espacio industrial tridimensional.
+
+La cámara avanza lentamente hacia el interior.
+
+Se revelan progresivamente:
+- Estructuras metálicas.
+- Suelo.
+- Iluminación ambiental.
+- Plataforma principal.
+- Silueta de la Warrior 500i.
+
+La iluminación debe revelar la máquina progresivamente.
+
+Texto:
+
+SOLUCIONES DE SOLDADURA SIN LÍMITES.
+
+Texto secundario:
+
+Equipamiento, tecnología y suministros para profesionales, talleres e industrias.
+
+Acciones:
+- Explorar catálogo.
+- Solicitar cotización.
+
+La composición debe transmitir una entrada cinematográfica al universo de MAQSYMA.
+
+### ESCENA 02 — POTENCIA Y TECNOLOGÍA
+
+La cámara continúa su movimiento por el espacio.
+
+Se aproxima a la ESAB Warrior 500i.
+
+Realizar una presentación visual del equipo:
+- Vista general.
+- Panel de control.
+- Detalles constructivos.
+- Dimensiones y volumen.
+
+El entorno debe acompañar al producto mediante cambios de iluminación y perspectiva.
+
+Posteriormente, la cámara realiza una transición hacia la ESAB Rustler EM455i.
+
+Evitar cortes bruscos.
+
+La transición debe sentirse como un desplazamiento físico dentro del mismo espacio.
+
+### ESCENA 03 — SOLUCIONES PARA CADA PROFESIONAL
+
+La cámara se desplaza hacia una zona diferente del escenario.
+
+Se presenta la ESAB Rogue EM210 PRO.
+
+La composición cambia de escala para transmitir que MAQSYMA también atiende a profesionales independientes.
+
+El entorno puede utilizar plataformas más compactas y una iluminación diferente.
+
+No cambiar radicalmente la identidad visual.
+
+Si existen modelos GLB reales, permitir inspección interactiva.
+
+Si solamente existen fotografías, implementar presentación 2D con paralaje e iluminación.
+
+### ESCENA 04 — ECOSISTEMA MAQSYMA
+
+La cámara se aleja progresivamente.
+
+El espacio revela una composición más amplia.
+
+Incorporar elementos visuales tridimensionales construidos mediante código para organizar las diferentes categorías.
+
+Representar:
+- Alimentadores de alambre.
+- Corte por plasma.
+- Protección personal.
+- Antorchas.
+- Accesorios.
+- Consumibles.
+
+No es obligatorio representar individualmente todos estos productos con geometría 3D.
+
+Pueden aparecer mediante composiciones visuales, tipografía y fotografías de productos reales cuando estén disponibles.
+
+Mensaje:
+
+TODO LO QUE NECESITAS PARA SOLDAR.
+
+Texto secundario:
+
+Soluciones completas para cada proyecto, desde el trabajo independiente hasta las operaciones industriales.
+
+CTA:
+
+Descubrir soluciones.
+
+Finalizar con una transición natural hacia la siguiente sección de la página.
+
+---
+
+## 6. SISTEMA DE CÁMARA Y MOVIMIENTO
+
+El recorrido debe ser una de las partes más importantes de la experiencia.
+
+### Movimiento controlado por scroll
+
+Utilizar GSAP ScrollTrigger para controlar:
+
+- Posición de cámara.
+- Rotación de cámara.
+- Distancia focal cuando corresponda.
+- Posición de los productos.
 - Escala.
-- Perspectiva.
-- Posición global de la máquina.
-- Progreso de la secuencia.
+- Iluminación.
+- Transiciones.
+- Aparición y desaparición de textos.
 
-**Sistema B — Mouse**
+La cámara debe tener un recorrido diseñado intencionalmente.
 
-Controla:
+No basta con mover objetos de izquierda a derecha.
 
-- Inclinación local.
-- Reflejos.
-- Iluminación dinámica.
-- Parallax interior.
+Debe existir una verdadera sensación de profundidad.
 
-El sistema de scroll debe transformar el contenedor exterior.
+El usuario debe sentir que ingresa en el espacio, se aproxima a las máquinas y posteriormente recorre la exposición.
 
-El sistema de cursor debe transformar una superficie interior independiente.
+### Independencia del movimiento del cursor
 
-No permitas que ambos sistemas sobrescriban la misma propiedad `transform`.
+El cursor debe generar:
+- Inclinación sutil.
+- Paralaje.
+- Variación ligera de iluminación.
+- Reflejos dinámicos.
 
-Puedes utilizar elementos HTML anidados para separar las transformaciones.
+El cursor no debe alterar el progreso de la cámara ni el avance del scroll.
 
-La composición final debe sumar ambos movimientos sin conflictos.
+### Independencia de la interacción 3D
 
----
+Cuando un producto tenga modelo GLB:
+- Arrastre para rotar.
+- Zoom controlado.
+- Botón de restablecimiento.
 
-# 8. TRANSICIONES Y MICROINTERACCIONES
+La manipulación del producto debe ser independiente de la cámara principal.
 
-Utiliza transiciones controladas.
-
-- Aparición de textos mediante máscaras.
-- Desplazamientos verticales pequeños.
-- Cambios progresivos de opacidad.
-- Revelado escalonado de elementos.
-- Iluminación dinámica.
-- Inclinación suave.
-- Retorno progresivo a posición neutral.
-
-Evita:
-
-- Rebotes exagerados.
-- Movimientos bruscos.
-- Parpadeos.
-- Escalados repentinos.
-- Rotaciones excesivas.
-- Animaciones permanentes sin función.
-
-Las transiciones deben sentirse fluidas, precisas y cinematográficas.
+Evitar conflictos entre controles.
 
 ---
 
-# 9. RESPONSIVE Y DISPOSITIVOS TÁCTILES
+## 7. ILUMINACIÓN Y MATERIALES
 
-En escritorio:
+La iluminación debe contribuir a la narrativa.
 
-- Mantén la animación completa de scroll.
-- Activa la interacción del cursor.
-- Conserva la perspectiva tridimensional.
-- Prioriza la calidad visual.
+Implementar:
 
-En tablet:
+- Luz ambiental.
+- Luces direccionales.
+- Focos localizados.
+- Iluminación lateral.
+- Contraluces.
+- Sombras suaves.
+- Materiales metálicos.
+- Reflejos moderados.
 
-- Reduce las rotaciones.
-- Ajusta la profundidad.
-- Evita que el escenario se desborde.
+Evitar superficies excesivamente reflectantes.
 
-En móvil:
+El suelo no debe parecer un espejo.
 
-- Elimina el seguimiento del cursor.
-- No utilices giroscopio.
-- Mantén una composición estable.
-- Reduce la intensidad del recorrido de scroll si resulta necesario.
-- Conserva la legibilidad de los textos y botones.
+La iluminación debe destacar los volúmenes y detalles de las máquinas sin saturar la escena.
 
-No sacrifiques la experiencia móvil por mantener efectos innecesarios.
+No utilizar demasiadas luces dinámicas si perjudican el rendimiento.
 
 ---
 
-# 10. ACCESIBILIDAD Y MOVIMIENTO REDUCIDO
+## 8. ARQUITECTURA DEL PROYECTO
 
-Respeta `prefers-reduced-motion`.
+Implementar una estructura modular.
 
-Cuando esté activado:
+Separar responsabilidades:
 
-- Desactiva la inclinación tridimensional.
-- Elimina el seguimiento del cursor.
-- Elimina los reflejos dinámicos.
-- Reduce o elimina las transformaciones de cámara.
-- Presenta la máquina en una posición estable.
-- Mantén toda la información y las acciones disponibles.
+- Hero principal.
+- Escenario 3D.
+- Cámara.
+- Controlador de scroll.
+- Controlador del cursor.
+- Iluminación.
+- Escenas.
+- Productos.
+- Interacciones.
+- Información contextual.
 
-Ningún contenido esencial debe depender de las animaciones.
+Mantener los componentes reutilizables.
 
----
+No introducir un único componente gigante con toda la lógica.
 
-# 11. IMPLEMENTACIÓN TÉCNICA
-
-Antes de implementar, inspecciona el Hero existente y determina:
-
-- Qué componente contiene la máquina.
-- Cómo está estructurada la composición.
-- Qué framework utiliza el proyecto.
-- Qué sistema de animación está instalado.
-- Qué estilos controlan actualmente las transformaciones.
-- Si existen conflictos con otras animaciones.
-
-Utiliza las tecnologías existentes.
-
-Si el proyecto utiliza GSAP, puedes implementar el comportamiento de scroll con `ScrollTrigger`.
-
-Configura:
-
-- `scrub` para sincronizar el progreso con el scroll.
-- `pin` para mantener temporalmente fija la escena.
-- `start` y `end` para definir el recorrido.
-- `invalidateOnRefresh` para recalcular dimensiones.
-- Limpieza de instancias y eventos al desmontar el componente.
-
-Si el proyecto utiliza otra solución, implementa el mismo comportamiento con las herramientas disponibles.
-
-No instales bibliotecas innecesarias.
-
-### Organización del código
-
-Mantén separados:
-
-1. Controlador del progreso de scroll.
-2. Transformaciones de la cámara.
-3. Sistema de seguimiento del cursor.
-4. Sistema de iluminación.
-5. Gestión de estados interactivos.
-
-Evita modificar propiedades compartidas desde diferentes controladores.
-
-No provoques renderizados innecesarios en cada movimiento del cursor o evento de scroll.
-
-Prioriza la fluidez y el rendimiento.
+Reutilizar las convenciones existentes en el repositorio.
 
 ---
 
-# 12. VALIDACIÓN FINAL
+## 9. RENDIMIENTO
 
-Comprueba cada comportamiento de manera independiente.
+El entorno debe estar optimizado.
 
-### Validación del scroll
+Consideraciones:
 
-- El Hero activa correctamente su recorrido.
-- El escenario permanece fijo durante el tramo establecido.
-- La máquina cambia de escala progresivamente.
-- La perspectiva genera sensación real de profundidad.
-- Detener el scroll detiene la animación.
-- Retroceder el scroll revierte exactamente la secuencia.
-- La salida hacia la siguiente sección es natural.
+- Geometrías reutilizables.
+- Materiales compartidos cuando sea posible.
+- Texturas optimizadas.
+- Modelos GLB comprimidos cuando corresponda.
+- Carga diferida de recursos.
+- Evitar cálculos innecesarios por frame.
+- Evitar renderizados redundantes.
+- Limitar partículas.
+- Reducir efectos costosos en dispositivos móviles.
 
-### Validación del cursor
+Implementar una alternativa visual simplificada para equipos con menor capacidad gráfica.
 
-- La máquina responde al movimiento del puntero.
-- La inclinación utiliza el centro de la máquina como referencia.
-- La iluminación sigue al cursor.
-- El reflejo está limitado a la superficie del equipo.
-- Al abandonar la máquina, vuelve a su posición neutral.
-- El cursor no modifica el progreso de scroll.
+Respetar `prefers-reduced-motion`.
 
-### Validación conjunta
+La experiencia debe funcionar en escritorio y móvil.
 
-- Scroll y cursor funcionan simultáneamente.
-- No existen conflictos entre transformaciones.
-- La máquina no presenta saltos.
-- No aparecen deformaciones.
-- La animación es fluida.
-- No hay interferencias con los botones.
-- La navegación continúa funcionando.
-
-### Validación responsive
-
-- Escritorio.
-- Tablet.
-- Móvil.
-- Movimiento reducido.
+No reducir simplemente la escala de la versión de escritorio: adaptar la composición y el recorrido.
 
 ---
 
-# RESULTADO ESPERADO
+## 10. RESTRICCIONES
 
-El Hero de MAQSYMA debe convertirse en una experiencia industrial interactiva.
+- No utilizar vídeos como fondo del escenario.
+- No utilizar fotografías de talleres como sustituto del entorno 3D.
+- No generar imágenes de ambientes industriales para reemplazar la geometría.
+- No utilizar fondos estáticos para simular profundidad.
+- No implementar un carrusel.
+- No utilizar tarjetas convencionales como escena principal.
+- No modificar innecesariamente otras secciones de la web.
+- No alterar la navegación existente.
+- No inventar productos.
+- No inventar especificaciones técnicas.
+- No sacrificar rendimiento por efectos visuales.
+- No instalar dependencias innecesarias.
 
-El visitante debe percibir una máquina de soldar como un objeto protagonista dentro de un escenario cinematográfico.
+Las fotografías externas deben reservarse principalmente para representar los productos reales.
 
-Al desplazarse, la cámara evoluciona de forma sincronizada con el scroll.
+---
 
-Al mover el cursor, la máquina responde con inclinación, iluminación y reflejos.
+## 11. VALIDACIÓN
 
-Ambos comportamientos deben funcionar simultáneamente, de manera independiente y sin interrupciones.
+Antes de finalizar:
 
-**No te limites a añadir animaciones de entrada. Implementa un sistema real de animación vinculado al scroll y una interacción tridimensional independiente controlada por el cursor.**
+1. Ejecutar el proyecto.
+2. Comprobar que el escenario se genera mediante código.
+3. Verificar que no depende de fotografías o vídeos de talleres.
+4. Comprobar el recorrido completo de cámara.
+5. Verificar las cuatro escenas.
+6. Comprobar la independencia del cursor.
+7. Comprobar los modelos 3D disponibles.
+8. Verificar la carga de productos.
+9. Comprobar adaptación móvil.
+10. Ejecutar el build.
+11. Corregir errores.
 
-Implementa los cambios sobre el Hero existente, conserva su contenido comercial y no modifiques las demás secciones de MAQSYMA.
+No declarar una funcionalidad terminada si solamente está representada visualmente.
+
+---
+
+## 12. RESULTADO FINAL
+
+El visitante debe experimentar la entrada a un espacio industrial tridimensional diseñado para MAQSYMA.
+
+Debe descubrir progresivamente:
+
+1. La potencia de la maquinaria industrial.
+2. La tecnología de los equipos profesionales.
+3. Las soluciones para soldadores independientes.
+4. El ecosistema completo de productos y suministros.
+
+El escenario debe estar construido mediante código.
+
+Los productos deben corresponder a equipos reales.
+
+La cámara debe recorrer el espacio mediante scroll.
+
+El cursor debe aportar una respuesta visual independiente.
+
+El resultado debe sentirse como una experiencia cinematográfica de presentación de producto de una marca industrial internacional.
+
+**Prioriza profundidad real, dirección artística, fidelidad de producto, continuidad espacial y rendimiento.**
+
+Primero analiza el proyecto y las Agent Skills disponibles. Después plantea la arquitectura y finalmente implementa y valida la experiencia.
