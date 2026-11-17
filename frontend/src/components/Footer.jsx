@@ -29,7 +29,7 @@ export default function Footer() {
               {LINKS.map(([label, id]) => (
                 <li key={id}>
                   <button
-                    onClick={scrollToSection(id)}
+                    onClick={() => scrollToSection(id)}
                     className="font-mono text-[11px] uppercase tracking-[0.2em] text-mist transition-colors duration-200 hover:text-accent"
                     data-testid={`footer-link-${id}`}
                   >
