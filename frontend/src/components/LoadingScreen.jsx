@@ -3,35 +3,29 @@ import { motion, AnimatePresence } from "framer-motion";
 
 /**
  * LoadingScreen with cinematic brand animation:
- * 1. Starts prominently centered on the dark industrial backdrop with glow effects and progress indicators.
- * 2. Dynamically calculates the exact coordinates of the navbar logo anchor.
- * 3. Smoothly animates/flies into the navbar corner position.
- * 4. Fades out the loading backdrop, revealing the interactive 3D hero and full UI.
+ * 1. Shows minimalist pulsating neon dots and brand tag (without misleading percentage bar).
+ * 2. Waits for both a minimum presentation time AND hero ready signal (textures preloaded).
+ * 3. Dynamically calculates the exact coordinates of the navbar logo anchor.
+ * 4. Smoothly animates/flies into the navbar corner position.
+ * 5. Fades out the loading backdrop, revealing the interactive 3D hero and full UI.
  */
-export default function LoadingScreen({ onLoadingComplete }) {
+export default function LoadingScreen({ onLoadingComplete, isReady = true }) {
   const [phase, setPhase] = useState("center"); // 'center' | 'fly' | 'done'
   const [targetRect, setTargetRect] = useState(null);
-  const [progress, setProgress] = useState(0);
+  const [minTimeElapsed, setMinTimeElapsed] = useState(false);
 
   useEffect(() => {
-    // Progress counter animation
-    const interval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          return 100;
-        }
-        const step = Math.floor(Math.random() * 18) + 10;
-        return Math.min(100, prev + step);
-      });
-    }, 120);
+    // Elegant minimum duration of 1.4s so the brand animation is appreciated
+    const minTimer = setTimeout(() => {
+      setMinTimeElapsed(true);
+    }, 1400);
 
-    return () => clearInterval(interval);
+    return () => clearTimeout(minTimer);
   }, []);
 
   useEffect(() => {
-    if (progress === 100) {
-      // Find the navbar destination anchor
+    // When both minimum display time elapsed AND hero assets are ready
+    if (minTimeElapsed && isReady && phase === "center") {
       const anchor = document.getElementById("navbar-logo-anchor");
       if (anchor) {
         const rect = anchor.getBoundingClientRect();
@@ -43,14 +37,13 @@ export default function LoadingScreen({ onLoadingComplete }) {
         });
       }
 
-      // Small pause at 100% before transition
       const timer = setTimeout(() => {
         setPhase("fly");
-      }, 350);
+      }, 250);
 
       return () => clearTimeout(timer);
     }
-  }, [progress]);
+  }, [minTimeElapsed, isReady, phase]);
 
   const handleFlyComplete = () => {
     setPhase("done");
@@ -76,28 +69,36 @@ export default function LoadingScreen({ onLoadingComplete }) {
         <div className="pointer-events-none absolute h-96 w-96 rounded-full bg-cyan-500/10 blur-[100px]" />
         <div className="pointer-events-none absolute h-64 w-64 rounded-full bg-amber-500/10 blur-[80px]" />
 
-        {/* Center Progress HUD (fades out as logo flies) */}
+        {/* Minimalist Brand Dots & Tag — No fake progress bar */}
         <motion.div
           animate={{
             opacity: phase === "fly" ? 0 : 1,
             scale: phase === "fly" ? 0.9 : 1,
           }}
           transition={{ duration: 0.3 }}
-          className="absolute flex flex-col items-center space-y-4 pt-44"
+          className="absolute flex flex-col items-center space-y-6 pt-52"
         >
-          {/* Progress bar */}
-          <div className="h-1 w-48 overflow-hidden rounded-full bg-white/10">
-            <motion.div
-              className="h-full bg-gradient-to-r from-amber-400 via-accent to-cyan-400"
-              style={{ width: `${progress}%` }}
-              transition={{ ease: "easeOut" }}
-            />
+          {/* Minimalist pulsing dots */}
+          <div className="flex items-center gap-2">
+            {[0, 1, 2].map((i) => (
+              <motion.div
+                key={i}
+                className="h-1.5 w-1.5 rounded-full bg-cyan-400"
+                animate={{ opacity: [0.3, 1, 0.3], scale: [0.8, 1.25, 0.8] }}
+                transition={{
+                  duration: 1.2,
+                  repeat: Infinity,
+                  delay: i * 0.2,
+                  ease: "easeInOut",
+                }}
+              />
+            ))}
           </div>
 
-          <div className="flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.24em] text-white/60">
-            <span className="text-cyan-400 font-bold">{progress}%</span>
-            <span>INICIALIZANDO MAQSYMA</span>
-          </div>
+          {/* Minimalist brand text */}
+          <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-white/40">
+            MAQSYMA · INDUSTRIAL
+          </span>
         </motion.div>
       </motion.div>
 

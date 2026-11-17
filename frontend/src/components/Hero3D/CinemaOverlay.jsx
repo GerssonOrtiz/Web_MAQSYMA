@@ -95,6 +95,17 @@ export default function CinemaOverlay({ activeScene = 0, progress = 0 }) {
 
   return (
     <div className="pointer-events-none absolute inset-0 z-20 flex flex-col justify-between p-6 sm:p-10 md:p-14">
+      {/* Dynamic Scan Line Effect on Scene Change */}
+      <AnimatePresence>
+        <motion.div
+          key={`scan-${activeScene}`}
+          initial={{ scaleY: 0, opacity: 0.6 }}
+          animate={{ scaleY: [0, 1, 1, 0], opacity: [0, 0.4, 0.4, 0] }}
+          transition={{ duration: 0.45, times: [0, 0.2, 0.8, 1] }}
+          className="pointer-events-none absolute inset-x-0 top-1/2 h-px bg-cyan-400 shadow-[0_0_20px_#00f0ff] z-30"
+        />
+      </AnimatePresence>
+
       {/* Top Bar Indicators */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">

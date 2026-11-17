@@ -37,6 +37,7 @@ class ErrorBoundary extends Component {
 
 export default function App() {
   const [loadingComplete, setLoadingComplete] = useState(false);
+  const [heroReady, setHeroReady] = useState(false);
 
   useEffect(() => {
     // Force instant scroll restoration to top on refresh
@@ -52,10 +53,13 @@ export default function App() {
   return (
     <ErrorBoundary>
       <div className="grain min-h-screen overflow-x-clip bg-ink font-sans text-fog">
-        <LoadingScreen onLoadingComplete={() => setLoadingComplete(true)} />
+        <LoadingScreen
+          isReady={heroReady}
+          onLoadingComplete={() => setLoadingComplete(true)}
+        />
         <Navbar />
         <main>
-          <Hero />
+          <Hero onReady={() => setHeroReady(true)} />
           <Marquee />
           <Manifesto />
           <Categories />

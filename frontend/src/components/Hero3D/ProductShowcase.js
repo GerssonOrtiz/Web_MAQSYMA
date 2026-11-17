@@ -8,7 +8,7 @@ import * as THREE from "three";
  * 3. ESAB Rogue EM210 PRO
  * 4. Zona Equipos de Protección Personal (EPP)
  */
-export function createProductShowcase() {
+export function createProductShowcase(textureMap = {}) {
   const group = new THREE.Group();
   const textureLoader = new THREE.TextureLoader();
 
@@ -149,6 +149,61 @@ export function createProductShowcase() {
     return boxGroup;
   };
 
+  // Helper to attach product mesh using preloaded or fallback loaded texture
+  const applyTextureToProduct = (itemKey, texture, width, height, position, accentColor) => {
+    texture.colorSpace = THREE.SRGBColorSpace;
+    texture.minFilter = THREE.LinearMipmapLinearFilter;
+    texture.generateMipmaps = true;
+
+    const planeGeo = new THREE.PlaneGeometry(width, height);
+    const planeMat = new THREE.MeshStandardMaterial({
+      map: texture,
+      transparent: true,
+      roughness: 0.15,
+      metalness: 0.05,
+      side: THREE.DoubleSide,
+      alphaTest: 0.08,
+      emissive: 0xffffff,
+      emissiveMap: texture,
+      emissiveIntensity: 0.60,
+    });
+
+    const mesh = new THREE.Mesh(planeGeo, planeMat);
+    mesh.castShadow = true;
+
+    const productGroup = products[itemKey].group;
+    productGroup.position.copy(position);
+
+    // Contact reflection plane
+    const reflGeo = new THREE.PlaneGeometry(width * 0.85, height * 0.35);
+    const reflMat = new THREE.MeshBasicMaterial({
+      map: texture,
+      transparent: true,
+      opacity: 0.15,
+      side: THREE.DoubleSide,
+      depthWrite: false,
+    });
+    const reflMesh = new THREE.Mesh(reflGeo, reflMat);
+    reflMesh.rotation.x = Math.PI / 2;
+    reflMesh.scale.y = -1;
+    reflMesh.position.y = -height / 2 - 0.08;
+    productGroup.add(reflMesh);
+
+    // Add 3D Frame Enclosure
+    const frame = create3DIndustrialBox(width, height, 0.7, accentColor);
+    productGroup.add(frame);
+
+    // Contact shadow on platform
+    const contactShadow = createContactShadow();
+    productGroup.add(contactShadow);
+
+    productGroup.add(mesh);
+
+    products[itemKey].mesh = mesh;
+    products[itemKey].frameGroup = frame;
+    group.add(productGroup);
+  };
+
   // Helper to load and mount product
   const setupProductMesh = (
     itemKey,
@@ -158,60 +213,15 @@ export function createProductShowcase() {
     position,
     accentColor
   ) => {
+    if (textureMap && textureMap[imagePath]) {
+      applyTextureToProduct(itemKey, textureMap[imagePath], width, height, position, accentColor);
+      return;
+    }
+
     textureLoader.load(
       imagePath,
       (texture) => {
-        texture.colorSpace = THREE.SRGBColorSpace;
-        texture.minFilter = THREE.LinearMipmapLinearFilter;
-        texture.generateMipmaps = true;
-
-        const planeGeo = new THREE.PlaneGeometry(width, height);
-        const planeMat = new THREE.MeshStandardMaterial({
-          map: texture,
-          transparent: true,
-          roughness: 0.15,
-          metalness: 0.05,
-          side: THREE.DoubleSide,
-          alphaTest: 0.08,
-          emissive: 0xffffff,
-          emissiveMap: texture,
-          emissiveIntensity: 0.60,
-        });
-
-        const mesh = new THREE.Mesh(planeGeo, planeMat);
-        mesh.castShadow = true;
-
-        const productGroup = products[itemKey].group;
-        productGroup.position.copy(position);
-
-        // Contact reflection plane
-        const reflGeo = new THREE.PlaneGeometry(width * 0.85, height * 0.35);
-        const reflMat = new THREE.MeshBasicMaterial({
-          map: texture,
-          transparent: true,
-          opacity: 0.15,
-          side: THREE.DoubleSide,
-          depthWrite: false,
-        });
-        const reflMesh = new THREE.Mesh(reflGeo, reflMat);
-        reflMesh.rotation.x = Math.PI / 2;
-        reflMesh.scale.y = -1;
-        reflMesh.position.y = -height / 2 - 0.08;
-        productGroup.add(reflMesh);
-
-        // Add 3D Frame Enclosure
-        const frame = create3DIndustrialBox(width, height, 0.7, accentColor);
-        productGroup.add(frame);
-
-        // Contact shadow on platform
-        const contactShadow = createContactShadow();
-        productGroup.add(contactShadow);
-
-        productGroup.add(mesh);
-
-        products[itemKey].mesh = mesh;
-        products[itemKey].frameGroup = frame;
-        group.add(productGroup);
+        applyTextureToProduct(itemKey, texture, width, height, position, accentColor);
       },
       undefined,
       (err) => {
@@ -253,8 +263,8 @@ export function createProductShowcase() {
   // 4. Zona EPP (Seguridad Industrial para Soldador)
   setupProductMesh(
     "epp",
-    "/assets/hero/products/epp-zone/team.webp",
-    9.0,   // era 7.5 — más ancho para formato landscape
+    "/assets/hero/products/epp-zone/front.webp",
+    9.0,   // ancho para formato landscape
     6.0,
     products.epp.targetPos,
     0xffb703 // Safety Amber

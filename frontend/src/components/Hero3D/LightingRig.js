@@ -115,6 +115,13 @@ export function createLightingRig() {
 
   return {
     group,
+    updateActiveScene: (sceneIdx) => {
+      // Focus spotlight intensity on active scene, attenuate non-active
+      spotWarrior.intensity = sceneIdx === 0 ? 9.0 : 2.0;
+      spotRustler.intensity = sceneIdx === 1 ? 8.8 : 2.0;
+      spotRogue.intensity   = sceneIdx === 2 ? 8.5 : 2.0;
+      spotEPP.intensity     = sceneIdx === 3 ? 9.5 : 2.0;
+    },
     updateCursorLight: (normMouseX, normMouseY, currentCameraZ) => {
       cursorLight.position.x = normMouseX * 12;
       cursorLight.position.y = normMouseY * 6 + 1;

@@ -270,17 +270,67 @@ export function createIndustrialStage() {
     return colGroup;
   };
 
-  // Modular column bays along both sides of the nave
+  // Modular column bays along both sides of the nave - OPTIMIZED WITH INSTANCED MESH
   const colZPositions = [16, 0, -18, -36, -54, -72, -90, -108, -126];
-  colZPositions.forEach((z) => {
-    const colL = createHEBColumn(22);
-    colL.position.set(-18.5, 7.8, z);
-    group.add(colL);
+  const totalCols = colZPositions.length * 2; // 18 columns total
+  const colHeight = 22;
 
-    const colR = createHEBColumn(22);
-    colR.position.set(18.5, 7.8, z);
-    group.add(colR);
+  const webGeo = new THREE.BoxGeometry(0.14, colHeight, 0.7);
+  const webInstanced = new THREE.InstancedMesh(webGeo, structuralSteelMat, totalCols);
+
+  const flangeGeo = new THREE.BoxGeometry(0.7, colHeight, 0.14);
+  const flangeInstanced = new THREE.InstancedMesh(flangeGeo, structuralSteelMat, totalCols * 2);
+
+  const basePlateGeo = new THREE.BoxGeometry(1.2, 0.25, 1.2);
+  const basePlateInstanced = new THREE.InstancedMesh(basePlateGeo, darkSteelMat, totalCols);
+
+  const topPlateGeo = new THREE.BoxGeometry(1.1, 0.2, 1.0);
+  const topPlateInstanced = new THREE.InstancedMesh(topPlateGeo, darkSteelMat, totalCols);
+
+  const colDummy = new THREE.Object3D();
+  let colIdx = 0;
+
+  [-18.5, 18.5].forEach((wx) => {
+    colZPositions.forEach((z) => {
+      // 1. Web
+      colDummy.position.set(wx, 7.8, z);
+      colDummy.rotation.set(0, 0, 0);
+      colDummy.scale.set(1, 1, 1);
+      colDummy.updateMatrix();
+      webInstanced.setMatrixAt(colIdx, colDummy.matrix);
+
+      // 2. Flanges (Z - 0.35 and Z + 0.35)
+      colDummy.position.set(wx, 7.8, z - 0.35);
+      colDummy.updateMatrix();
+      flangeInstanced.setMatrixAt(colIdx * 2, colDummy.matrix);
+
+      colDummy.position.set(wx, 7.8, z + 0.35);
+      colDummy.updateMatrix();
+      flangeInstanced.setMatrixAt(colIdx * 2 + 1, colDummy.matrix);
+
+      // 3. Base plate
+      colDummy.position.set(wx, 7.8 - colHeight / 2 + 0.12, z);
+      colDummy.updateMatrix();
+      basePlateInstanced.setMatrixAt(colIdx, colDummy.matrix);
+
+      // 4. Top plate
+      colDummy.position.set(wx, 7.8 + colHeight / 2 - 0.1, z);
+      colDummy.updateMatrix();
+      topPlateInstanced.setMatrixAt(colIdx, colDummy.matrix);
+
+      colIdx++;
+    });
   });
+
+  webInstanced.instanceMatrix.needsUpdate = true;
+  flangeInstanced.instanceMatrix.needsUpdate = true;
+  basePlateInstanced.instanceMatrix.needsUpdate = true;
+  topPlateInstanced.instanceMatrix.needsUpdate = true;
+
+  group.add(webInstanced);
+  group.add(flangeInstanced);
+  group.add(basePlateInstanced);
+  group.add(topPlateInstanced);
 
   // ==========================================
   // 4. OVERHEAD ROOF TRUSSES (Cerchas en Celosía Metálica)
@@ -322,12 +372,15 @@ export function createIndustrialStage() {
     group.add(truss);
   });
 
-  // Longitudinal Roof Purlins (Correas de techo longitudinales)
+  // Longitudinal Roof Purlins (Correas de techo longitudinales segmentadas a 40u para Frustum Culling)
+  const purlinGeo = new THREE.BoxGeometry(0.25, 0.25, 40);
   [-16, -10, -4, 0, 4, 10, 16].forEach((x) => {
-    const purlin = new THREE.Mesh(new THREE.BoxGeometry(0.25, 0.25, 160), darkSteelMat);
     const yOffset = 16.5 + (2.8 * (1 - Math.abs(x) / 18.5));
-    purlin.position.set(x, yOffset, -55);
-    group.add(purlin);
+    for (let seg = 0; seg < 4; seg++) {
+      const purlin = new THREE.Mesh(purlinGeo, darkSteelMat);
+      purlin.position.set(x, yOffset, -115 + seg * 40 + 20);
+      group.add(purlin);
+    }
   });
 
   // Roof insulated sandwich panels with skylight openings
@@ -393,54 +446,55 @@ export function createIndustrialStage() {
   group.add(hoist2);
 
   // ==========================================
-  // 6. PANELED INDUSTRIAL WALLS
+  // 6. PANELED INDUSTRIAL WALLS - OPTIMIZED WITH INSTANCED MESH (880 -> 2 draw calls)
   // ==========================================
-  /**
-   * Creates a corrugated/paneled industrial wall by stacking BoxGeometry panels.
-   * @param {number} side  -1 for left wall (facing +X), +1 for right wall (facing -X)
-   */
-  const createCorrugatedWall = (side) => {
-    const wallGroup = new THREE.Group();
-    const wallWidth = 160;   // Z extent
-    const wallHeight = 24;   // Y extent
-    const panelW = 3.0;      // per-panel Z size
-    const panelH = 3.5;      // per-panel Y size
+  const createInstancedWalls = () => {
+    const panelW = 3.0, panelH = 3.5;
+    const cols = Math.ceil(160 / panelW); // 54
+    const rows = Math.ceil(24 / panelH);  // 7
+    const count = cols * rows;            // 378 panels per wall = 756 total
 
-    const cols = Math.ceil(wallWidth / panelW);
-    const rows = Math.ceil(wallHeight / panelH);
+    const wallMat = new THREE.MeshStandardMaterial({
+      roughness: 0.72,
+      metalness: 0.45,
+    });
 
-    for (let col = 0; col < cols; col++) {
-      for (let row = 0; row < rows; row++) {
-        const idx = col + row;
-        const color = idx % 2 === 0 ? 0x0f1318 : 0x11161c;
-        const depth = idx % 2 === 0 ? 0.08 : 0.12;
+    const panelGeo = new THREE.BoxGeometry(0.10, panelH - 0.04, panelW - 0.04);
+    const instancedWall = new THREE.InstancedMesh(panelGeo, wallMat, count * 2);
+    instancedWall.castShadow = false;
+    instancedWall.receiveShadow = false;
 
-        const mat = new THREE.MeshStandardMaterial({
-          color,
-          roughness: 0.72,
-          metalness: 0.45,
-        });
+    const dummy = new THREE.Object3D();
+    const colorA = new THREE.Color(0x0f1318);
+    const colorB = new THREE.Color(0x11161c);
+    let idx = 0;
 
-        const geo = new THREE.BoxGeometry(depth, panelH - 0.04, panelW - 0.04);
-        const mesh = new THREE.Mesh(geo, mat);
+    [-19, 19].forEach((wx) => {
+      for (let col = 0; col < cols; col++) {
+        for (let row = 0; row < rows; row++) {
+          const pz = -160 / 2 + col * panelW + panelW / 2;
+          const py = -24 / 2 + row * panelH + panelH / 2;
+          const offsetX = (col + row) % 2 === 0 ? 0 : 0.03;
 
-        // Position relative to group origin
-        const pz = -wallWidth / 2 + col * panelW + panelW / 2;
-        const py = -wallHeight / 2 + row * panelH + panelH / 2;
-        mesh.position.set(0, py, pz);
-        wallGroup.add(mesh);
+          dummy.position.set(wx + (wx < 0 ? -offsetX : offsetX), py + 8.8, pz - 55);
+          dummy.rotation.set(0, 0, 0);
+          dummy.scale.set(1, 1, 1);
+          dummy.updateMatrix();
+          instancedWall.setMatrixAt(idx, dummy.matrix);
+
+          const c = (col + row) % 2 === 0 ? colorA : colorB;
+          instancedWall.setColorAt(idx, c);
+          idx++;
+        }
       }
-    }
-    return wallGroup;
+    });
+
+    instancedWall.instanceMatrix.needsUpdate = true;
+    if (instancedWall.instanceColor) instancedWall.instanceColor.needsUpdate = true;
+    return instancedWall;
   };
 
-  const leftWall = createCorrugatedWall(-1);
-  leftWall.position.set(-19, 8.8, -55);
-  group.add(leftWall);
-
-  const rightWall = createCorrugatedWall(1);
-  rightWall.position.set(19, 8.8, -55);
-  group.add(rightWall);
+  group.add(createInstancedWalls());
 
   // High Industrial Clerestory Windows (Ventanales superiores de fábrica)
   for (let z = 10; z >= -120; z -= 18) {
@@ -746,40 +800,52 @@ export function createIndustrialStage() {
   group.add(eppTotem);
 
   // ==========================================
-  // 9. HEAVY STORAGE RACKS WITH STRUCTURE
+  // 9. HEAVY STORAGE RACKS WITH STRUCTURE - OPTIMIZED WITH INSTANCED MESH
   // ==========================================
-  /**
-   * Creates an industrial rack with 4 corner posts and 3 horizontal shelf beams.
-   * @param {number} rz   World Z position of rack center
-   * @param {number} side  -1 = left wall side (X ≈ -16.8), +1 = right wall side (X ≈ 16.8)
-   */
-  const createIndustrialRack = (rz, side) => {
-    const rackGroup = new THREE.Group();
-    const wx = side < 0 ? -16.8 : 16.8;
-
-    // 4 corner vertical posts: ±1.2 X local, ±4.0 Z local
-    [[-1.2, -4.0], [-1.2, 4.0], [1.2, -4.0], [1.2, 4.0]].forEach(([px, pz]) => {
-      const post = new THREE.Mesh(new THREE.BoxGeometry(0.12, 8.5, 0.12), darkSteelMat);
-      post.position.set(px, 0, pz);
-      rackGroup.add(post);
-    });
-
-    // 3 horizontal shelf beams
-    [-1.2, 1.6, 4.2].forEach((ry) => {
-      const beam = new THREE.Mesh(new THREE.BoxGeometry(2.5, 0.12, 8.6), safetyOrangeMat);
-      beam.position.set(0, ry, 0);
-      rackGroup.add(beam);
-    });
-
-    rackGroup.position.set(wx, 1.1, rz);
-    return rackGroup;
-  };
-
   const rackZ = [8, -12, -32, -50, -70, -100];
-  rackZ.forEach((rz) => {
-    group.add(createIndustrialRack(rz, -1));
-    group.add(createIndustrialRack(rz, +1));
+  const rackSides = [-1, 1];
+  const totalRacks = rackZ.length * rackSides.length; // 12 racks
+  const totalPosts = totalRacks * 4; // 48 posts
+  const totalBeams = totalRacks * 3; // 36 beams
+
+  const rackPostGeo = new THREE.BoxGeometry(0.12, 8.5, 0.12);
+  const rackPostInstanced = new THREE.InstancedMesh(rackPostGeo, darkSteelMat, totalPosts);
+
+  const rackBeamGeo = new THREE.BoxGeometry(2.5, 0.12, 8.6);
+  const rackBeamInstanced = new THREE.InstancedMesh(rackBeamGeo, safetyOrangeMat, totalBeams);
+
+  const rackDummy = new THREE.Object3D();
+  let postIdx = 0;
+  let beamIdx = 0;
+
+  rackSides.forEach((side) => {
+    const wx = side < 0 ? -16.8 : 16.8;
+    rackZ.forEach((rz) => {
+      // 4 corner vertical posts
+      [[-1.2, -4.0], [-1.2, 4.0], [1.2, -4.0], [1.2, 4.0]].forEach(([px, pz]) => {
+        rackDummy.position.set(wx + px, 1.1, rz + pz);
+        rackDummy.rotation.set(0, 0, 0);
+        rackDummy.scale.set(1, 1, 1);
+        rackDummy.updateMatrix();
+        rackPostInstanced.setMatrixAt(postIdx++, rackDummy.matrix);
+      });
+
+      // 3 horizontal shelf beams
+      [-1.2, 1.6, 4.2].forEach((ry) => {
+        rackDummy.position.set(wx, 1.1 + ry, rz);
+        rackDummy.rotation.set(0, 0, 0);
+        rackDummy.scale.set(1, 1, 1);
+        rackDummy.updateMatrix();
+        rackBeamInstanced.setMatrixAt(beamIdx++, rackDummy.matrix);
+      });
+    });
   });
+
+  rackPostInstanced.instanceMatrix.needsUpdate = true;
+  rackBeamInstanced.instanceMatrix.needsUpdate = true;
+
+  group.add(rackPostInstanced);
+  group.add(rackBeamInstanced);
 
   // ==========================================
   // 10. PHYSICAL WELDING SPARKS SYSTEM
@@ -869,6 +935,14 @@ export function createIndustrialStage() {
       maqsymaRedMat.dispose();
       sparkGeo.dispose();
       sparkMat.dispose();
+      // Dispose instanced geometries
+      webGeo.dispose();
+      flangeGeo.dispose();
+      basePlateGeo.dispose();
+      topPlateGeo.dispose();
+      purlinGeo.dispose();
+      rackPostGeo.dispose();
+      rackBeamGeo.dispose();
       // Dispose ring geometries and their materials
       ringGeometries.forEach((g) => g.dispose());
       // Dispose totem canvas textures
