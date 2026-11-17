@@ -59,7 +59,7 @@ export function initHeroScrollTimeline({
       trigger: scrollContainer,
       start: "top top",
       end: "bottom bottom",
-      scrub: 1.2,
+      scrub: 1.8, // Ultra suave: absorbe tirones de rueda de mouse y touch
       onUpdate: (self) => {
         const p = self.progress;
         if (onProgressUpdate) onProgressUpdate(p);
@@ -79,16 +79,6 @@ export function initHeroScrollTimeline({
   const segments = waypoints.length - 1;
   const segDur = 1 / segments;
 
-  const easings = [
-    "power3.out",    // 0→1: Dolly-in dramático hacia Warrior
-    "power1.inOut",  // 1→2: Transición fluida hacia Rustler
-    "power2.in",     // 2→3: Acercamiento acelerado al Rustler
-    "power1.inOut",  // 3→4: Cruce de nave
-    "power2.out",    // 4→5: Llegada suave al Rogue
-    "power1.inOut",  // 5→6: Alejamiento hacia EPP
-    "power3.in",     // 6→7: Reveal final dramático de zona EPP
-  ];
-
   for (let i = 0; i < segments; i++) {
     const nextWp = waypoints[i + 1];
     tl.to(
@@ -100,7 +90,7 @@ export function initHeroScrollTimeline({
         lookX: nextWp.look.x,
         lookY: nextWp.look.y,
         lookZ: nextWp.look.z,
-        ease: easings[i] || "power1.inOut",
+        ease: "power1.inOut", // Trayectoria continua y suave sin saltos ni aceleraciones bruscas
         duration: segDur,
       },
       i * segDur

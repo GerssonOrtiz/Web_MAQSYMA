@@ -7,6 +7,8 @@ const SCENE_CONTENT = [
   {
     id: "scene-1",
     tag: "PUNTO 01 · POTENCIA Y TRABAJO PESADO",
+    heroImage: "/assets/hero/products/warrior-500i/front.webp",
+    imageBadge: "ESAB WARRIOR 500i",
     title: "SOLUCIONES DE SOLDADURA",
     highlight: "DE GRADO INDUSTRIAL.",
     description:
@@ -24,6 +26,8 @@ const SCENE_CONTENT = [
   {
     id: "scene-2",
     tag: "PUNTO 02 · PRODUCTIVIDAD Y VERSATILIDAD",
+    heroImage: "/assets/hero/products/rustler-em455i/front.webp",
+    imageBadge: "ESAB RUSTLER EM455i",
     title: "TECNOLOGÍA SINÉRGICA",
     highlight: "PARA FABRICACIÓN CONTINUA.",
     description:
@@ -41,6 +45,8 @@ const SCENE_CONTENT = [
   {
     id: "scene-3",
     tag: "PUNTO 03 · MOVILIDAD Y PRECISIÓN PROFESIONAL",
+    heroImage: "/assets/hero/products/rogue-em210/front.webp",
+    imageBadge: "ESAB ROGUE EM210 PRO",
     title: "MÁXIMA VERSATILIDAD",
     highlight: "PARA TALLERES Y CONTRATISTAS.",
     description:
@@ -59,6 +65,7 @@ const SCENE_CONTENT = [
     id: "scene-4",
     tag: "PUNTO 04 · PROTECCIÓN Y SEGURIDAD INTEGRAL",
     heroImage: "/assets/hero/products/epp-zone/team.webp",
+    imageBadge: "PROTECCIÓN EN ACCIÓN",
     title: "EQUIPOS DE PROTECCIÓN",
     highlight: "PARA EL SOLDADOR PROFESIONAL.",
     description:
@@ -226,18 +233,19 @@ export default function CinemaOverlay({ activeScene = 0, progress = 0 }) {
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.5 }}
-                  className="relative overflow-hidden rounded border border-amber-400/30 mb-2"
+                  className="relative overflow-hidden rounded-md border border-cyan-400/30 bg-gradient-to-b from-white/5 to-black/80 mb-2 p-1.5"
                   style={{ aspectRatio: '16/9' }}
                 >
                   <img
                     src={current.heroImage}
-                    alt="Equipo EPP"
-                    className="w-full h-full object-contain object-center bg-black/40"
+                    alt={current.productName}
+                    className="w-full h-full object-contain object-center drop-shadow-[0_4px_16px_rgba(0,0,0,0.8)]"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-                  <div className="absolute bottom-1.5 left-2">
-                    <span className="font-mono text-[8px] uppercase tracking-widest text-amber-400">
-                      PROTECCIÓN EN ACCIÓN
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
+                  <div className="absolute bottom-2 left-2.5 flex items-center gap-1.5">
+                    <span className="h-1.5 w-1.5 rounded-full bg-cyan-400 animate-pulse" />
+                    <span className="font-mono text-[8px] font-bold uppercase tracking-widest text-cyan-300">
+                      {current.imageBadge || "EQUIPO DESTACADO"}
                     </span>
                   </div>
                 </motion.div>

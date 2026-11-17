@@ -1,299 +1,189 @@
 import * as THREE from "three";
 
 /**
- * Creates 2.5D physical product showcases enclosed in illuminated 3D industrial pedestals
- * and glass-accented frames for the 4 key points:
- * 1. ESAB Warrior 500i CC/CV
- * 2. ESAB Rustler EM455i
- * 3. ESAB Rogue EM210 PRO
- * 4. Zona Equipos de Protección Personal (EPP)
+ * Creates futuristic technological energy pedestals, industrial robotic armatures,
+ * holographic data rings and dynamic welding arc flashes at each showcase waypoint.
+ *
+ * This provides the visual 3D soul of the industrial nave while the physical products
+ * are crisply and responsiveness presented in the 2D Glass HUD Cards.
  */
-export function createProductShowcase(textureMap = {}) {
+export function createProductShowcase() {
   const group = new THREE.Group();
-  const textureLoader = new THREE.TextureLoader();
 
-  const products = {
+  const stations = {
     warrior: {
       group: new THREE.Group(),
-      mesh: null,
-      frameGroup: null,
-      targetPos: new THREE.Vector3(0, 0.45, 0),
+      pos: new THREE.Vector3(0, 0.45, 0),
+      accent: 0x00f0ff, // Cyan
+      name: "WARRIOR CORE",
     },
     rustler: {
       group: new THREE.Group(),
-      mesh: null,
-      frameGroup: null,
-      targetPos: new THREE.Vector3(9.0, 0.35, -26),
+      pos: new THREE.Vector3(9.0, 0.35, -26),
+      accent: 0xffaa00, // Amber / Industrial Gold
+      name: "RUSTLER STATION",
     },
     rogue: {
       group: new THREE.Group(),
-      mesh: null,
-      frameGroup: null,
-      targetPos: new THREE.Vector3(-8.5, 0.15, -54),
+      pos: new THREE.Vector3(-8.5, 0.15, -54),
+      accent: 0x00e5ff, // Electric Blue
+      name: "ROGUE CELL",
     },
     epp: {
       group: new THREE.Group(),
-      mesh: null,
-      frameGroup: null,
-      targetPos: new THREE.Vector3(0, 0.6, -88),
+      pos: new THREE.Vector3(0, 0.6, -88),
+      accent: 0xffb703, // Safety Amber / Red
+      name: "SAFETY ARENA",
     },
   };
 
-  // Reusable Contact Shadow
-  const shadowGeo = new THREE.PlaneGeometry(8.0, 5.0);
-  const createContactShadow = () => {
-    const canvas = document.createElement("canvas");
-    canvas.width = 128;
-    canvas.height = 128;
-    const ctx = canvas.getContext("2d");
-    const gradient = ctx.createRadialGradient(64, 64, 15, 64, 64, 62);
-    gradient.addColorStop(0, "rgba(0, 0, 0, 0.9)");
-    gradient.addColorStop(0.55, "rgba(0, 0, 0, 0.5)");
-    gradient.addColorStop(1, "rgba(0, 0, 0, 0)");
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, 128, 128);
+  // Shared Core Materials & Geometries
+  const darkCoreMat = new THREE.MeshStandardMaterial({
+    color: 0x12171f,
+    roughness: 0.3,
+    metalness: 0.85,
+  });
 
-    const shadowTex = new THREE.CanvasTexture(canvas);
-    const shadowMat = new THREE.MeshBasicMaterial({
-      map: shadowTex,
+  const chromeMat = new THREE.MeshStandardMaterial({
+    color: 0x4a5568,
+    roughness: 0.2,
+    metalness: 0.9,
+  });
+
+  // Track dynamic animated meshes
+  const animatedElements = [];
+
+  // Helper to build a 3D Cyber Industrial Hologram Core at each waypoint
+  const createCoreStation = (key, config) => {
+    const stationGroup = stations[key].group;
+    stationGroup.position.copy(config.pos);
+
+    const glowColor = config.accent;
+    const glowMat = new THREE.MeshStandardMaterial({
+      color: 0x020810,
+      emissive: glowColor,
+      emissiveIntensity: 2.2,
+      roughness: 0.2,
+    });
+
+    const holoLineMat = new THREE.MeshBasicMaterial({
+      color: glowColor,
+      wireframe: true,
       transparent: true,
-      opacity: 0.75,
-      depthWrite: false,
-    });
-    const shadowMesh = new THREE.Mesh(shadowGeo, shadowMat);
-    shadowMesh.rotation.x = -Math.PI / 2;
-    shadowMesh.position.y = -2.48;
-    return shadowMesh;
-  };
-
-  // Helper to build a 3D industrial enclosure/box around the product
-  const create3DIndustrialBox = (width, height, depth, accentColor = 0x00f0ff) => {
-    const boxGroup = new THREE.Group();
-
-    // 1. Backing panel (Dark matte carbon backplate with subtle glow)
-    const backGeo = new THREE.PlaneGeometry(width * 1.12, height * 1.12);
-    const backMat = new THREE.MeshStandardMaterial({
-      color: 0x0b1016,
-      roughness: 0.8,
-      metalness: 0.6,
-    });
-    const backMesh = new THREE.Mesh(backGeo, backMat);
-    backMesh.position.z = -0.55;
-    boxGroup.add(backMesh);
-
-    // 2. Beveled Metallic Enclosure Frame (Code-built 3D Frame)
-    const frameMat = new THREE.MeshStandardMaterial({
-      color: 0x242d38,
-      roughness: 0.35,
-      metalness: 0.85,
+      opacity: 0.45,
     });
 
-    const thickness = 0.16;
-    const halfW = (width * 1.12) / 2;
-    const halfH = (height * 1.12) / 2;
+    // 1. Heavy Octagonal Industrial Base Turntable
+    const baseGeo = new THREE.CylinderGeometry(3.6, 4.0, 0.6, 8);
+    const baseMesh = new THREE.Mesh(baseGeo, darkCoreMat);
+    baseMesh.position.y = -2.2;
+    stationGroup.add(baseMesh);
 
-    // Top beam
-    const topBeam = new THREE.Mesh(
-      new THREE.BoxGeometry(width * 1.12 + thickness * 2, thickness, depth),
-      frameMat
-    );
-    topBeam.position.set(0, halfH + thickness / 2, 0);
-    boxGroup.add(topBeam);
+    const baseRingGeo = new THREE.TorusGeometry(3.8, 0.08, 12, 32);
+    const baseRing = new THREE.Mesh(baseRingGeo, glowMat);
+    baseRing.rotation.x = Math.PI / 2;
+    baseRing.position.y = -1.9;
+    stationGroup.add(baseRing);
 
-    // Bottom beam
-    const bottomBeam = new THREE.Mesh(
-      new THREE.BoxGeometry(width * 1.12 + thickness * 2, thickness, depth),
-      frameMat
-    );
-    bottomBeam.position.set(0, -halfH - thickness / 2, 0);
-    boxGroup.add(bottomBeam);
+    // 2. Heavy Articulated Robotic Welding Torches / Pillars
+    for (let i = 0; i < 4; i++) {
+      const angle = (i * Math.PI) / 2 + Math.PI / 4;
+      const rx = Math.cos(angle) * 3.1;
+      const rz = Math.sin(angle) * 3.1;
 
-    // Left beam
-    const leftBeam = new THREE.Mesh(
-      new THREE.BoxGeometry(thickness, height * 1.12, depth),
-      frameMat
-    );
-    leftBeam.position.set(-halfW - thickness / 2, 0, 0);
-    boxGroup.add(leftBeam);
+      const pylonGeo = new THREE.BoxGeometry(0.35, 3.2, 0.35);
+      const pylon = new THREE.Mesh(pylonGeo, chromeMat);
+      pylon.position.set(rx, -0.4, rz);
+      stationGroup.add(pylon);
 
-    // Right beam
-    const rightBeam = new THREE.Mesh(
-      new THREE.BoxGeometry(thickness, height * 1.12, depth),
-      frameMat
-    );
-    rightBeam.position.set(halfW + thickness / 2, 0, 0);
-    boxGroup.add(rightBeam);
-
-    // 3. Neon Luminous Edge Accents (Cyber-industrial highlight)
-    const neonMat = new THREE.MeshStandardMaterial({
-      color: 0x020a10,
-      emissive: accentColor,
-      emissiveIntensity: 1.0,
-      roughness: 0.1,
-    });
-
-    const neonBarTop = new THREE.Mesh(
-      new THREE.BoxGeometry(width * 0.95, 0.05, 0.05),
-      neonMat
-    );
-    neonBarTop.position.set(0, halfH + 0.02, depth / 2 + 0.02);
-    boxGroup.add(neonBarTop);
-
-    const neonBarBottom = new THREE.Mesh(
-      new THREE.BoxGeometry(width * 0.95, 0.05, 0.05),
-      neonMat
-    );
-    neonBarBottom.position.set(0, -halfH - 0.02, depth / 2 + 0.02);
-    boxGroup.add(neonBarBottom);
-
-    return boxGroup;
-  };
-
-  // Helper to attach product mesh using preloaded or fallback loaded texture
-  const applyTextureToProduct = (itemKey, texture, width, height, position, accentColor) => {
-    texture.colorSpace = THREE.SRGBColorSpace;
-    texture.minFilter = THREE.LinearMipmapLinearFilter;
-    texture.generateMipmaps = true;
-
-    const planeGeo = new THREE.PlaneGeometry(width, height);
-    const planeMat = new THREE.MeshStandardMaterial({
-      map: texture,
-      transparent: true,
-      roughness: 0.15,
-      metalness: 0.05,
-      side: THREE.DoubleSide,
-      alphaTest: 0.08,
-      emissive: 0xffffff,
-      emissiveMap: texture,
-      emissiveIntensity: 0.60,
-    });
-
-    const mesh = new THREE.Mesh(planeGeo, planeMat);
-    mesh.castShadow = true;
-
-    const productGroup = products[itemKey].group;
-    productGroup.position.copy(position);
-
-    // Contact reflection plane
-    const reflGeo = new THREE.PlaneGeometry(width * 0.85, height * 0.35);
-    const reflMat = new THREE.MeshBasicMaterial({
-      map: texture,
-      transparent: true,
-      opacity: 0.15,
-      side: THREE.DoubleSide,
-      depthWrite: false,
-    });
-    const reflMesh = new THREE.Mesh(reflGeo, reflMat);
-    reflMesh.rotation.x = Math.PI / 2;
-    reflMesh.scale.y = -1;
-    reflMesh.position.y = -height / 2 - 0.08;
-    productGroup.add(reflMesh);
-
-    // Add 3D Frame Enclosure
-    const frame = create3DIndustrialBox(width, height, 0.7, accentColor);
-    productGroup.add(frame);
-
-    // Contact shadow on platform
-    const contactShadow = createContactShadow();
-    productGroup.add(contactShadow);
-
-    productGroup.add(mesh);
-
-    products[itemKey].mesh = mesh;
-    products[itemKey].frameGroup = frame;
-    group.add(productGroup);
-  };
-
-  // Helper to load and mount product
-  const setupProductMesh = (
-    itemKey,
-    imagePath,
-    width,
-    height,
-    position,
-    accentColor
-  ) => {
-    if (textureMap && textureMap[imagePath]) {
-      applyTextureToProduct(itemKey, textureMap[imagePath], width, height, position, accentColor);
-      return;
+      // Pylon neon beacon
+      const beaconGeo = new THREE.SphereGeometry(0.12, 12, 12);
+      const beacon = new THREE.Mesh(beaconGeo, glowMat);
+      beacon.position.set(rx, 1.25, rz);
+      stationGroup.add(beacon);
     }
 
-    textureLoader.load(
-      imagePath,
-      (texture) => {
-        applyTextureToProduct(itemKey, texture, width, height, position, accentColor);
-      },
-      undefined,
-      (err) => {
-        console.warn(`Error loading product texture ${imagePath}`, err);
-      }
-    );
+    // 3. Central Levitating Holographic Arc Core (Octahedron + Wireframe cage)
+    const innerGeo = new THREE.OctahedronGeometry(1.6, 0);
+    const innerCore = new THREE.Mesh(innerGeo, glowMat);
+    innerCore.position.y = 0.6;
+    stationGroup.add(innerCore);
+
+    const outerCageGeo = new THREE.IcosahedronGeometry(2.4, 1);
+    const outerCage = new THREE.Mesh(outerCageGeo, holoLineMat);
+    outerCage.position.y = 0.6;
+    stationGroup.add(outerCage);
+
+    // 4. Horizontal Holographic Concentric Data Rings
+    const ring1Geo = new THREE.RingGeometry(2.0, 2.08, 36);
+    const ring1 = new THREE.Mesh(ring1Geo, holoLineMat);
+    ring1.rotation.x = Math.PI / 2;
+    ring1.position.y = 0.6;
+    stationGroup.add(ring1);
+
+    const ring2Geo = new THREE.RingGeometry(2.7, 2.76, 36);
+    const ring2 = new THREE.Mesh(ring2Geo, holoLineMat);
+    ring2.rotation.x = Math.PI / 2;
+    ring2.position.y = 0.6;
+    stationGroup.add(ring2);
+
+    // 5. Vertical Welding Light Flash (Point Light)
+    const arcLight = new THREE.PointLight(glowColor, 4.0, 16);
+    arcLight.position.set(0, 0.6, 0);
+    stationGroup.add(arcLight);
+
+    animatedElements.push({
+      innerCore,
+      outerCage,
+      ring1,
+      ring2,
+      arcLight,
+      baseRotSpeed: key === "warrior" ? 0.015 : key === "rustler" ? 0.02 : 0.018,
+      stationGroup,
+    });
+
+    group.add(stationGroup);
   };
 
-  // 1. Warrior 500i
-  setupProductMesh(
-    "warrior",
-    "/assets/hero/products/warrior-500i/front.webp",
-    6.6,
-    5.6,
-    products.warrior.targetPos,
-    0x00f0ff // Cyan
-  );
-
-  // 2. Rustler EM455i
-  setupProductMesh(
-    "rustler",
-    "/assets/hero/products/rustler-em455i/front.webp",
-    5.8,
-    5.0,
-    products.rustler.targetPos,
-    0xffaa00 // Industrial Gold
-  );
-
-  // 3. Rogue EM210 PRO
-  setupProductMesh(
-    "rogue",
-    "/assets/hero/products/rogue-em210/front.webp",
-    4.8,
-    4.2,
-    products.rogue.targetPos,
-    0x00e5ff // Electric Blue
-  );
-
-  // 4. Zona EPP (Seguridad Industrial para Soldador)
-  setupProductMesh(
-    "epp",
-    "/assets/hero/products/epp-zone/front.webp",
-    9.0,   // ancho para formato landscape
-    6.0,
-    products.epp.targetPos,
-    0xffb703 // Safety Amber
-  );
+  Object.entries(stations).forEach(([key, config]) => {
+    createCoreStation(key, config);
+  });
 
   return {
     group,
-    products,
+    stations,
     updateCursorEffect: (normMouseX, normMouseY) => {
-      ["warrior", "rustler", "rogue", "epp"].forEach((key) => {
-        const p = products[key];
-        if (p.mesh && p.frameGroup) {
-          const rotY = normMouseX * 0.22;  // era 0.14
-          const rotX = -normMouseY * 0.16; // era 0.10
-          p.mesh.rotation.y = rotY;
-          p.mesh.rotation.x = rotX;
-          p.frameGroup.rotation.y = rotY * 0.8;
-          p.frameGroup.rotation.x = rotX * 0.8;
-        }
+      animatedElements.forEach((el, idx) => {
+        // Continuous smooth rotation of holographic core
+        el.innerCore.rotation.y += el.baseRotSpeed;
+        el.innerCore.rotation.x += el.baseRotSpeed * 0.5;
+
+        el.outerCage.rotation.y -= el.baseRotSpeed * 0.8;
+        el.outerCage.rotation.z += el.baseRotSpeed * 0.4;
+
+        el.ring1.rotation.z += el.baseRotSpeed * 1.2;
+        el.ring2.rotation.z -= el.baseRotSpeed * 0.7;
+
+        // Subtle interactive response to cursor
+        const targetHover = (normMouseY * 0.25);
+        el.innerCore.position.y = 0.6 + Math.sin(Date.now() * 0.003 + idx) * 0.15 + targetHover;
+        el.outerCage.position.y = el.innerCore.position.y;
+        el.ring1.position.y = el.innerCore.position.y;
+        el.ring2.position.y = el.innerCore.position.y;
+
+        // Dynamic arc intensity pulse
+        el.arcLight.intensity = 3.5 + Math.sin(Date.now() * 0.008 + idx * 2) * 1.2;
       });
     },
     dispose: () => {
-      shadowGeo.dispose();
-      Object.values(products).forEach((p) => {
-        if (p.mesh) {
-          if (p.mesh.geometry) p.mesh.geometry.dispose();
-          if (p.mesh.material) {
-            if (p.mesh.material.map) p.mesh.material.map.dispose();
-            p.mesh.material.dispose();
+      darkCoreMat.dispose();
+      chromeMat.dispose();
+      group.traverse((child) => {
+        if (child.isMesh) {
+          if (child.geometry) child.geometry.dispose();
+          if (child.material) {
+            if (Array.isArray(child.material)) child.material.forEach((m) => m.dispose());
+            else child.material.dispose();
           }
         }
       });

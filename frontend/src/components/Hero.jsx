@@ -11,6 +11,7 @@ const PRODUCT_IMAGES = [
   "/assets/hero/products/warrior-500i/front.webp",
   "/assets/hero/products/rustler-em455i/front.webp",
   "/assets/hero/products/rogue-em210/front.webp",
+  "/assets/hero/products/epp-zone/team.webp",
   "/assets/hero/products/epp-zone/front.webp",
 ];
 
