@@ -2,14 +2,11 @@ import * as THREE from "three";
 
 /**
  * Creates 2.5D physical product showcases enclosed in illuminated 3D industrial pedestals
- * and glass-accented holographic frames.
- *
- * Configures:
- * - High-luminosity textures with balanced material response (no dull/dark shadows)
- * - 3D Industrial Framing: beveled metallic chassis, neon perimeter edge, glowing base
- * - Real scale & perspective
- * - Contact shadow geometry under each machine
- * - Independent cursor parallax and subtle tilt
+ * and glass-accented frames for the 4 key points:
+ * 1. ESAB Warrior 500i CC/CV
+ * 2. ESAB Rustler EM455i
+ * 3. ESAB Rogue EM210 PRO
+ * 4. Zona Equipos de Protección Personal (EPP)
  */
 export function createProductShowcase() {
   const group = new THREE.Group();
@@ -20,32 +17,38 @@ export function createProductShowcase() {
       group: new THREE.Group(),
       mesh: null,
       frameGroup: null,
-      targetPos: new THREE.Vector3(0, 0.5, 0),
+      targetPos: new THREE.Vector3(0, 0.45, 0),
     },
     rustler: {
       group: new THREE.Group(),
       mesh: null,
       frameGroup: null,
-      targetPos: new THREE.Vector3(9, 0.4, -26),
+      targetPos: new THREE.Vector3(9.0, 0.35, -26),
     },
     rogue: {
       group: new THREE.Group(),
       mesh: null,
       frameGroup: null,
-      targetPos: new THREE.Vector3(-8.5, 0.2, -54),
+      targetPos: new THREE.Vector3(-8.5, 0.15, -54),
+    },
+    epp: {
+      group: new THREE.Group(),
+      mesh: null,
+      frameGroup: null,
+      targetPos: new THREE.Vector3(0, 0.6, -88),
     },
   };
 
   // Reusable Contact Shadow
-  const shadowGeo = new THREE.PlaneGeometry(7.2, 4.2);
+  const shadowGeo = new THREE.PlaneGeometry(8.0, 5.0);
   const createContactShadow = () => {
     const canvas = document.createElement("canvas");
     canvas.width = 128;
     canvas.height = 128;
     const ctx = canvas.getContext("2d");
     const gradient = ctx.createRadialGradient(64, 64, 15, 64, 64, 62);
-    gradient.addColorStop(0, "rgba(0, 0, 0, 0.85)");
-    gradient.addColorStop(0.5, "rgba(0, 0, 0, 0.45)");
+    gradient.addColorStop(0, "rgba(0, 0, 0, 0.9)");
+    gradient.addColorStop(0.55, "rgba(0, 0, 0, 0.5)");
     gradient.addColorStop(1, "rgba(0, 0, 0, 0)");
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, 128, 128);
@@ -54,12 +57,12 @@ export function createProductShowcase() {
     const shadowMat = new THREE.MeshBasicMaterial({
       map: shadowTex,
       transparent: true,
-      opacity: 0.7,
+      opacity: 0.75,
       depthWrite: false,
     });
     const shadowMesh = new THREE.Mesh(shadowGeo, shadowMat);
     shadowMesh.rotation.x = -Math.PI / 2;
-    shadowMesh.position.y = -2.72;
+    shadowMesh.position.y = -2.48;
     return shadowMesh;
   };
 
@@ -68,11 +71,11 @@ export function createProductShowcase() {
     const boxGroup = new THREE.Group();
 
     // 1. Backing panel (Dark matte carbon backplate with subtle glow)
-    const backGeo = new THREE.PlaneGeometry(width * 1.15, height * 1.15);
+    const backGeo = new THREE.PlaneGeometry(width * 1.12, height * 1.12);
     const backMat = new THREE.MeshStandardMaterial({
-      color: 0x0c1015,
+      color: 0x0b1016,
       roughness: 0.8,
-      metalness: 0.5,
+      metalness: 0.6,
     });
     const backMesh = new THREE.Mesh(backGeo, backMat);
     backMesh.position.z = -0.55;
@@ -85,13 +88,13 @@ export function createProductShowcase() {
       metalness: 0.85,
     });
 
-    const thickness = 0.18;
-    const halfW = (width * 1.15) / 2;
-    const halfH = (height * 1.15) / 2;
+    const thickness = 0.16;
+    const halfW = (width * 1.12) / 2;
+    const halfH = (height * 1.12) / 2;
 
     // Top beam
     const topBeam = new THREE.Mesh(
-      new THREE.BoxGeometry(width * 1.15 + thickness * 2, thickness, depth),
+      new THREE.BoxGeometry(width * 1.12 + thickness * 2, thickness, depth),
       frameMat
     );
     topBeam.position.set(0, halfH + thickness / 2, 0);
@@ -99,7 +102,7 @@ export function createProductShowcase() {
 
     // Bottom beam
     const bottomBeam = new THREE.Mesh(
-      new THREE.BoxGeometry(width * 1.15 + thickness * 2, thickness, depth),
+      new THREE.BoxGeometry(width * 1.12 + thickness * 2, thickness, depth),
       frameMat
     );
     bottomBeam.position.set(0, -halfH - thickness / 2, 0);
@@ -107,7 +110,7 @@ export function createProductShowcase() {
 
     // Left beam
     const leftBeam = new THREE.Mesh(
-      new THREE.BoxGeometry(thickness, height * 1.15, depth),
+      new THREE.BoxGeometry(thickness, height * 1.12, depth),
       frameMat
     );
     leftBeam.position.set(-halfW - thickness / 2, 0, 0);
@@ -115,7 +118,7 @@ export function createProductShowcase() {
 
     // Right beam
     const rightBeam = new THREE.Mesh(
-      new THREE.BoxGeometry(thickness, height * 1.15, depth),
+      new THREE.BoxGeometry(thickness, height * 1.12, depth),
       frameMat
     );
     rightBeam.position.set(halfW + thickness / 2, 0, 0);
@@ -125,19 +128,19 @@ export function createProductShowcase() {
     const neonMat = new THREE.MeshStandardMaterial({
       color: 0x020a10,
       emissive: accentColor,
-      emissiveIntensity: 0.9,
+      emissiveIntensity: 1.0,
       roughness: 0.1,
     });
 
     const neonBarTop = new THREE.Mesh(
-      new THREE.BoxGeometry(width * 0.9, 0.05, 0.05),
+      new THREE.BoxGeometry(width * 0.95, 0.05, 0.05),
       neonMat
     );
     neonBarTop.position.set(0, halfH + 0.02, depth / 2 + 0.02);
     boxGroup.add(neonBarTop);
 
     const neonBarBottom = new THREE.Mesh(
-      new THREE.BoxGeometry(width * 0.9, 0.05, 0.05),
+      new THREE.BoxGeometry(width * 0.95, 0.05, 0.05),
       neonMat
     );
     neonBarBottom.position.set(0, -halfH - 0.02, depth / 2 + 0.02);
@@ -162,7 +165,6 @@ export function createProductShowcase() {
         texture.minFilter = THREE.LinearMipmapLinearFilter;
         texture.generateMipmaps = true;
 
-        // Plane for product with high-fidelity lighting response
         const planeGeo = new THREE.PlaneGeometry(width, height);
         const planeMat = new THREE.MeshStandardMaterial({
           map: texture,
@@ -171,10 +173,9 @@ export function createProductShowcase() {
           metalness: 0.05,
           side: THREE.DoubleSide,
           alphaTest: 0.04,
-          // Subtle emissive map self-illumination to keep the machine vivid and clear
           emissive: 0xffffff,
           emissiveMap: texture,
-          emissiveIntensity: 0.28,
+          emissiveIntensity: 0.32,
         });
 
         const mesh = new THREE.Mesh(planeGeo, planeMat);
@@ -234,12 +235,21 @@ export function createProductShowcase() {
     0x00e5ff // Electric Blue
   );
 
+  // 4. Zona EPP (Seguridad Industrial para Soldador)
+  setupProductMesh(
+    "epp",
+    "/assets/hero/products/epp-zone/front.webp",
+    7.5,
+    6.0,
+    products.epp.targetPos,
+    0xffb703 // Safety Amber
+  );
+
   return {
     group,
     products,
     updateCursorEffect: (normMouseX, normMouseY) => {
-      // Coordinated tilt for product & 3D box
-      ["warrior", "rustler", "rogue"].forEach((key) => {
+      ["warrior", "rustler", "rogue", "epp"].forEach((key) => {
         const p = products[key];
         if (p.mesh && p.frameGroup) {
           const rotY = normMouseX * 0.14;

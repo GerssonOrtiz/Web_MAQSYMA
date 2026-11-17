@@ -1,470 +1,325 @@
-# PROMPT MAESTRO — HERO CINEMATOGRÁFICO 3D MAQSYMA
+# RECONSTRUCCIÓN DEL SHOWROOM INDUSTRIAL 3D — MAQSYMA
 
-## 1. ROL Y OBJETIVO
+## ROL
 
-Actúa como director creativo digital, diseñador de experiencias web cinematográficas y desarrollador frontend senior especializado en React, CSS, GSAP, Three.js y animaciones interactivas.
+Actúa como un arquitecto especializado en arquitectura industrial, artista 3D de entornos realistas y desarrollador senior de experiencias WebGL interactivas.
 
-Tu misión es diseñar e implementar una experiencia cinematográfica para el Hero de MAQSYMA.
+Tu tarea es reconstruir completamente el entorno 3D del Hero de MAQSYMA. El escenario actual es demasiado básico: solamente tiene paredes y barras verticales. No quiero una mejora superficial de esa estructura. Quiero una propuesta arquitectónica completamente nueva, con calidad visual profesional.
 
-MAQSYMA comercializa soluciones integrales de soldadura y atiende a:
-- Grandes empresas e industrias.
-- Empresas mineras y contratistas.
-- Talleres profesionales.
-- Soldadores independientes.
+## 1. OBJETIVO GENERAL
 
-El concepto central es:
+Construir un showroom industrial 3D de alta calidad para MAQSYMA, una empresa dedicada a la comercialización de máquinas de soldadura, equipos industriales, accesorios y equipos de protección personal.
 
-**SOLUCIONES DE SOLDADURA SIN LÍMITES.**
+La experiencia debe sentirse como una visita cinematográfica a unas instalaciones industriales modernas y profesionales.
 
-La experiencia debe transmitir tecnología, potencia, precisión, profesionalismo y variedad de soluciones.
+La cámara realizará un recorrido continuo en primera persona, avanzando desde la entrada hacia el interior del showroom y descubriendo progresivamente cuatro puntos de interés:
 
-No quiero una galería convencional, un carrusel ni una presentación de diapositivas.
+1. ESAB Warrior 500i CC/CV.
+2. ESAB Rustler EM455i.
+3. ESAB Rogue EM210 PRO.
+4. Zona de equipos de protección personal (EPP).
 
-Quiero un escenario industrial tridimensional construido mediante código, en el que el usuario pueda ingresar visualmente, recorrerlo y descubrir diferentes equipos mediante el scroll.
+El objetivo comercial es presentar soluciones para industrias, empresas, talleres profesionales y soldadores independientes.
 
----
+**IMPORTANTE:** los cuatro puntos son los protagonistas de la navegación. La arquitectura debe diseñarse alrededor de ellos, permitiendo que cada uno tenga presencia visual, espacio suficiente y una transición cinematográfica.
 
-## 2. REGLA FUNDAMENTAL: EL ESCENARIO SE CONSTRUYE MEDIANTE CÓDIGO
+## 2. CONCEPTO ARQUITECTÓNICO
 
-Esta es una condición obligatoria.
+Diseña un showroom industrial premium que combine:
 
-El entorno visual completo debe desarrollarse utilizando las tecnologías del proyecto.
+- Nave industrial contemporánea.
+- Centro de exposición de maquinaria.
+- Taller técnico profesional.
+- Espacio de demostración de soldadura.
+- Área de exhibición de seguridad industrial.
 
-**NO utilizar fotografías de talleres como fondo del escenario.**
+No construyas cuatro habitaciones independientes. Diseña un único espacio arquitectónico conectado, con cambios de composición, iluminación, altura, materiales y elementos arquitectónicos que permitan diferenciar cada zona.
 
-**NO utilizar vídeos pregrabados como sustituto del entorno tridimensional.**
+El visitante debe sentir que está recorriendo una instalación real.
 
-**NO utilizar imágenes generadas como fondos estáticos para simular el escenario.**
+## 3. DISTRIBUCIÓN DE LOS CUATRO PUNTOS
 
-El escenario debe ser una composición digital creada mediante código.
+### PUNTO 01 — ESAB WARRIOR 500i CC/CV
 
-Tecnologías preferidas:
+<escape>Concepto:</escape> potencia industrial y capacidad de trabajo pesado.
 
-- React: estructura de componentes y contenido.
-- Three.js / React Three Fiber: escenario tridimensional, geometría, cámara y luces.
-- GSAP ScrollTrigger: recorrido cinematográfico controlado por scroll.
-- CSS: efectos visuales, iluminación complementaria, tipografía y composición.
-- Framer Motion: microinteracciones de interfaz cuando aporte valor.
+Debe ser el primer gran protagonista después de la entrada.
 
-No es obligatorio utilizar todas las tecnologías si alguna resulta innecesaria.
+Diseña una zona de exhibición amplia, con:
 
-Evitar duplicar responsabilidades entre sistemas de animación.
+- Plataforma industrial o pedestal técnico.
+- Estructura metálica de exposición.
+- Iluminación focal cinematográfica.
+- Elementos de taller industrial al fondo.
+- Cableado y conexiones organizadas.
+- Espacio visual despejado alrededor del equipo.
 
-### Elementos que deben construirse mediante código
+La arquitectura debe transmitir robustez, potencia y capacidad industrial.
 
-1. Espacio tridimensional.
-2. Suelo industrial.
-3. Paredes o estructuras técnicas.
-4. Iluminación ambiental.
-5. Focos de iluminación.
-6. Reflejos controlados.
-7. Sombras.
-8. Partículas ambientales sutiles.
-9. Elementos geométricos industriales.
-10. Cámara cinematográfica.
-11. Profundidad espacial.
-12. Transiciones entre escenarios.
+### PUNTO 02 — ESAB RUSTLER EM455i
 
-El escenario debe ser visualmente atractivo incluso antes de incorporar las fotografías de los productos.
+<escape>Concepto:</escape> productividad, tecnología y versatilidad profesional.
 
----
+Debe aparecer después del primer equipo mediante una transición espacial natural.
 
-## 3. DIRECCIÓN ARTÍSTICA
+Diseña una zona con:
 
-Desarrollar un espacio industrial premium.
+- Mesa de trabajo industrial.
+- Elementos de fabricación metálica.
+- Estructuras de acero.
+- Herramientas y accesorios organizados.
+- Iluminación técnica combinada con iluminación ambiental.
 
-### Estética
+Debe sentirse como una zona de trabajo profesional, no como una vitrina comercial genérica.
 
-- Fondo negro o gris carbón.
-- Suelo oscuro con reflejos sutiles.
-- Superficies metálicas.
-- Estructuras geométricas industriales.
-- Iluminación cinematográfica.
-- Contraste elevado.
-- Volumetría ambiental moderada.
-- Focos que revelen progresivamente los productos.
-- Tipografía moderna y contundente.
+### PUNTO 03 — ESAB ROGUE EM210 PRO
 
-El entorno debe sentirse como una exposición tecnológica industrial de alta gama.
+<escape>Concepto:</escape> versatilidad, movilidad y soldadura profesional compacta.
 
-No debe parecer:
-- Un videojuego.
-- Una nave espacial.
-- Un entorno futurista genérico.
-- Una plantilla web convencional.
-- Un showroom de tarjetas comerciales.
+Esta zona debe tener una escala algo más cercana y accesible, sin perder el lenguaje industrial premium.
 
-Buscar una estética realista, minimalista, industrial y sofisticada.
+Incorpora:
 
-### Construcción del escenario
+- Banco de trabajo.
+- Carro de herramientas.
+- Estanterías con consumibles.
+- Pequeñas estructuras metálicas.
+- Iluminación focal sobre el equipo.
 
-Crear geometría mediante Three.js:
+Debe transmitir que MAQSYMA también ofrece soluciones para talleres y profesionales independientes.
 
-- Plano de suelo.
-- Paneles estructurales.
-- Marcos metálicos.
-- Columnas.
-- Estructuras técnicas.
-- Plataformas para presentar productos.
-- Elementos geométricos de profundidad.
+### PUNTO 04 — EQUIPOS DE PROTECCIÓN PERSONAL (EPP)
 
-No llenar el espacio con objetos decorativos innecesarios.
+<escape>Concepto:</escape> seguridad, protección y soluciones integrales para el soldador.
 
-El escenario debe tener una composición limpia y permitir que los equipos sean los protagonistas.
+No debe parecer una simple estantería de almacén.
 
----
+Diseña una zona de exhibición de seguridad industrial que integre visualmente:
 
-## 4. LOS PRODUCTOS: ÚNICOS RECURSOS VISUALES EXTERNOS PRINCIPALES
+- Máscaras de soldadura.
+- Guantes de soldador.
+- Chaquetas y mandiles de protección.
+- Lentes de seguridad.
+- Cascos.
+- Protección respiratoria.
+- Calzado de seguridad.
+- Otros accesorios de protección.
 
-Los productos deben representarse mediante fotografías reales o modelos 3D fieles.
+Utiliza paneles de exhibición, maniquíes industriales, estanterías profesionales y vitrinas técnicas. Los productos deben tener una presentación ordenada y reconocible.
 
-Productos principales:
+Esta zona debe comunicar que MAQSYMA no solamente comercializa máquinas, sino soluciones completas para el trabajo seguro.
 
-### Producto 1: ESAB Warrior 500i
+## 4. ARQUITECTURA DEL ENTORNO
 
-Protagonista inicial.
+El escenario debe tener profundidad, escala y riqueza arquitectónica.
 
-Representa potencia, capacidad y soluciones para aplicaciones industriales.
+Incorpora de forma coherente:
 
-### Producto 2: ESAB Rustler EM455i
+- Nave industrial de gran altura.
+- Columnas estructurales de acero.
+- Vigas principales y secundarias.
+- Cerchas metálicas.
+- Techo industrial con paneles.
+- Luminarias suspendidas.
+- Ventanales industriales.
+- Pasarelas superiores y mezzanines.
+- Portones industriales.
+- Puertas de acceso técnico.
+- Suelo de hormigón pulido.
+- Juntas de dilatación.
+- Señalización de circulación y seguridad.
+- Estanterías industriales con materiales.
+- Mesas de trabajo y gabinetes.
+- Carros de herramientas.
+- Equipos auxiliares y elementos de mantenimiento.
+- Conductos, canalizaciones y bandejas portacables.
 
-Representa tecnología y productividad para talleres profesionales y aplicaciones industriales.
+No es necesario incluir todos los elementos en cada zona. Distribúyelos con criterio arquitectónico y evita la saturación.
 
-### Producto 3: ESAB Rogue EM210 PRO
+## 5. COMPOSICIÓN Y PROFUNDIDAD
 
-Representa soluciones compactas para profesionales independientes y trabajos de menor escala.
+La cámara debe recorrer un espacio tridimensional real, no un decorado plano.
 
-### Reglas de representación
+Construye una composición que incluya:
 
-- No inventar modelos de máquinas.
-- No sustituir productos por equipos visualmente parecidos.
-- No modificar logotipos ni etiquetas.
-- No deformar fotografías.
-- No alterar proporciones.
-- No inventar características técnicas.
+- Elementos cercanos que pasen junto a la cámara.
+- Estructuras intermedias que generen profundidad.
+- Maquinaria y arquitectura al fondo.
+- Diferentes planos de iluminación.
+- Cambios de altura y amplitud.
+- Líneas arquitectónicas que conduzcan visualmente hacia el siguiente punto.
 
-### Presentación 2D
+El recorrido debe tener una dirección clara, pero no necesariamente un pasillo recto. Puedes utilizar ligeras curvas, aperturas laterales y cambios de perspectiva para enriquecer la experiencia.
 
-Si existen fotografías PNG o WEBP con fondo transparente:
+Los cuatro puntos de interés deben poder identificarse claramente desde la aproximación de la cámara.
 
-- Incorporarlas al escenario.
-- Aplicar escala y posición tridimensional.
-- Añadir inclinación sutil.
-- Implementar paralaje.
-- Crear sombras mediante recursos del motor gráfico cuando sea viable.
-- Aplicar iluminación complementaria sin alterar la apariencia real del producto.
+## 6. TRANSICIONES ENTRE LOS CUATRO PUNTOS
 
-### Presentación 3D
+Cada zona debe tener una identidad visual propia, manteniendo la continuidad arquitectónica.
 
-Si existen modelos GLB/GLTF fieles:
+Diseña las transiciones para que:
 
-- Integrarlos en el escenario.
-- Configurar materiales e iluminación.
-- Permitir rotación controlada.
-- Permitir zoom moderado.
-- Añadir puntos informativos cuando corresponda.
+1. El visitante entre a la nave y descubra la Warrior 500i.
+2. La cámara avance y revele la zona de la Rustler EM455i.
+3. El recorrido continúe hacia la Rogue EM210 PRO.
+4. Finalmente, el espacio se abra hacia la zona de EPP.
 
-La experiencia debe funcionar completamente sin modelos 3D externos.
+Evita que la cámara atraviese paredes, objetos, estructuras o maquinaria.
 
-Si no hay GLB, utilizar fotografías reales como protagonistas.
+Cada transición debe aprovechar elementos arquitectónicos reales: columnas, estructuras metálicas, cambios de iluminación, paneles, plataformas o aperturas espaciales.
 
-No crear modelos ficticios mediante geometría genérica para hacerlos pasar por productos reales.
+## 7. CALIDAD VISUAL
 
----
+La estética debe ser industrial premium, realista, cinematográfica y profesional.
 
-## 5. EXPERIENCIA CINEMATOGRÁFICA: CUATRO ESCENAS
+Utiliza:
 
-Las escenas deben formar parte de un mismo recorrido espacial continuo.
-
-No deben parecer cuatro páginas diferentes ni cuatro diapositivas independientes.
-
-### ESCENA 01 — ENTRADA AL ESPACIO INDUSTRIAL
-
-La experiencia comienza en un entorno oscuro.
-
-El usuario se encuentra frente a un espacio industrial tridimensional.
-
-La cámara avanza lentamente hacia el interior.
-
-Se revelan progresivamente:
-- Estructuras metálicas.
-- Suelo.
+- Materiales PBR.
+- Texturas de acero, aluminio, hormigón, pintura industrial y vidrio.
+- Mapas normales y roughness.
 - Iluminación ambiental.
-- Plataforma principal.
-- Silueta de la Warrior 500i.
+- Luces focales y luces de acento.
+- Sombras realistas.
+- Reflejos controlados.
+- Oclusión ambiental cuando sea viable.
+- Variación de materiales y superficies.
 
-La iluminación debe revelar la máquina progresivamente.
+Paleta cromática:
 
-Texto:
+- Negro.
+- Gris grafito.
+- Acero.
+- Gris hormigón.
+- Rojo corporativo MAQSYMA.
+- Amarillo de seguridad.
 
-SOLUCIONES DE SOLDADURA SIN LÍMITES.
+Evita:
 
-Texto secundario:
+- Paredes vacías.
+- Barras verticales repetidas como decoración.
+- Geometría primitiva sin detalles.
+- Espacios excesivamente minimalistas.
+- Iluminación plana.
+- Materiales uniformes.
+- Objetos flotantes o sin función.
+- Exceso de elementos decorativos sin propósito.
+- Apariencia de videojuego de baja calidad.
 
-Equipamiento, tecnología y suministros para profesionales, talleres e industrias.
+Cada objeto debe tener una justificación arquitectónica, industrial o comercial.
 
-Acciones:
-- Explorar catálogo.
-- Solicitar cotización.
+## 8. REPRESENTACIÓN DE LOS PRODUCTOS
 
-La composición debe transmitir una entrada cinematográfica al universo de MAQSYMA.
+Los tres equipos ESAB y los EPP son los protagonistas comerciales.
 
-### ESCENA 02 — POTENCIA Y TECNOLOGÍA
+Utiliza las fotografías reales de los productos disponibles en el proyecto. Respeta su geometría visual, colores, proporciones, logotipos y detalles.
 
-La cámara continúa su movimiento por el espacio.
+No inventes modelos de máquinas que puedan confundirse con los productos reales.
 
-Se aproxima a la ESAB Warrior 500i.
+Si existen modelos GLB/GLTF, utilízalos para representación 3D.
 
-Realizar una presentación visual del equipo:
-- Vista general.
-- Panel de control.
-- Detalles constructivos.
-- Dimensiones y volumen.
+Si solamente existen fotografías PNG/WebP, intégralas en el entorno mediante planos 2D bien orientados, con sombras, iluminación y composición 3D. No simules una rotación tridimensional completa que las imágenes no permiten.
 
-El entorno debe acompañar al producto mediante cambios de iluminación y perspectiva.
+No reemplaces las fotografías reales de los productos por cubos, cilindros o modelos genéricos.
 
-Posteriormente, la cámara realiza una transición hacia la ESAB Rustler EM455i.
+## 9. TECNOLOGÍA
 
-Evitar cortes bruscos.
+Utiliza la arquitectura tecnológica existente del proyecto y, cuando corresponda:
 
-La transición debe sentirse como un desplazamiento físico dentro del mismo espacio.
+- React Three Fiber.
+- Three.js.
+- GSAP y ScrollTrigger para controlar el recorrido.
+- Framer Motion para microinteracciones de interfaz.
+- CSS para overlays, textos y elementos HTML.
 
-### ESCENA 03 — SOLUCIONES PARA CADA PROFESIONAL
+No introduzcas dependencias innecesarias ni reconstruyas funcionalidades que ya funcionan.
 
-La cámara se desplaza hacia una zona diferente del escenario.
+La arquitectura 3D debe estar organizada en componentes reutilizables. Separa:
 
-Se presenta la ESAB Rogue EM210 PRO.
-
-La composición cambia de escala para transmitir que MAQSYMA también atiende a profesionales independientes.
-
-El entorno puede utilizar plataformas más compactas y una iluminación diferente.
-
-No cambiar radicalmente la identidad visual.
-
-Si existen modelos GLB reales, permitir inspección interactiva.
-
-Si solamente existen fotografías, implementar presentación 2D con paralaje e iluminación.
-
-### ESCENA 04 — ECOSISTEMA MAQSYMA
-
-La cámara se aleja progresivamente.
-
-El espacio revela una composición más amplia.
-
-Incorporar elementos visuales tridimensionales construidos mediante código para organizar las diferentes categorías.
-
-Representar:
-- Alimentadores de alambre.
-- Corte por plasma.
-- Protección personal.
-- Antorchas.
-- Accesorios.
-- Consumibles.
-
-No es obligatorio representar individualmente todos estos productos con geometría 3D.
-
-Pueden aparecer mediante composiciones visuales, tipografía y fotografías de productos reales cuando estén disponibles.
-
-Mensaje:
-
-TODO LO QUE NECESITAS PARA SOLDAR.
-
-Texto secundario:
-
-Soluciones completas para cada proyecto, desde el trabajo independiente hasta las operaciones industriales.
-
-CTA:
-
-Descubrir soluciones.
-
-Finalizar con una transición natural hacia la siguiente sección de la página.
-
----
-
-## 6. SISTEMA DE CÁMARA Y MOVIMIENTO
-
-El recorrido debe ser una de las partes más importantes de la experiencia.
-
-### Movimiento controlado por scroll
-
-Utilizar GSAP ScrollTrigger para controlar:
-
-- Posición de cámara.
-- Rotación de cámara.
-- Distancia focal cuando corresponda.
-- Posición de los productos.
-- Escala.
+- Estructura arquitectónica.
 - Iluminación.
-- Transiciones.
-- Aparición y desaparición de textos.
-
-La cámara debe tener un recorrido diseñado intencionalmente.
-
-No basta con mover objetos de izquierda a derecha.
-
-Debe existir una verdadera sensación de profundidad.
-
-El usuario debe sentir que ingresa en el espacio, se aproxima a las máquinas y posteriormente recorre la exposición.
-
-### Independencia del movimiento del cursor
-
-El cursor debe generar:
-- Inclinación sutil.
-- Paralaje.
-- Variación ligera de iluminación.
-- Reflejos dinámicos.
-
-El cursor no debe alterar el progreso de la cámara ni el avance del scroll.
-
-### Independencia de la interacción 3D
-
-Cuando un producto tenga modelo GLB:
-- Arrastre para rotar.
-- Zoom controlado.
-- Botón de restablecimiento.
-
-La manipulación del producto debe ser independiente de la cámara principal.
-
-Evitar conflictos entre controles.
-
----
-
-## 7. ILUMINACIÓN Y MATERIALES
-
-La iluminación debe contribuir a la narrativa.
-
-Implementar:
-
-- Luz ambiental.
-- Luces direccionales.
-- Focos localizados.
-- Iluminación lateral.
-- Contraluces.
-- Sombras suaves.
-- Materiales metálicos.
-- Reflejos moderados.
-
-Evitar superficies excesivamente reflectantes.
-
-El suelo no debe parecer un espejo.
-
-La iluminación debe destacar los volúmenes y detalles de las máquinas sin saturar la escena.
-
-No utilizar demasiadas luces dinámicas si perjudican el rendimiento.
-
----
-
-## 8. ARQUITECTURA DEL PROYECTO
-
-Implementar una estructura modular.
-
-Separar responsabilidades:
-
-- Hero principal.
-- Escenario 3D.
-- Cámara.
-- Controlador de scroll.
-- Controlador del cursor.
-- Iluminación.
-- Escenas.
+- Materiales.
+- Elementos industriales.
+- Zonas de exhibición.
 - Productos.
-- Interacciones.
-- Información contextual.
+- Cámara y recorrido.
+- Interfaz y overlays.
 
-Mantener los componentes reutilizables.
+## 10. CÁMARA Y NAVEGACIÓN
 
-No introducir un único componente gigante con toda la lógica.
+La cámara debe avanzar desde la entrada hacia el interior del showroom.
 
-Reutilizar las convenciones existentes en el repositorio.
+El recorrido debe ser continuo, cinematográfico y controlado por la navegación existente del proyecto.
 
----
+Debe existir una sensación real de desplazamiento:
 
-## 9. RENDIMIENTO
+- Los elementos cercanos pasan junto a la cámara.
+- Los objetos lejanos se aproximan progresivamente.
+- La arquitectura cambia de perspectiva.
+- Los cuatro puntos de interés aparecen en el momento adecuado.
+- Las transiciones se sienten naturales.
 
-El entorno debe estar optimizado.
+No construyas una animación que simplemente mueva la cámara frente a cuatro paredes.
 
-Consideraciones:
+La interacción del cursor, si existe, debe ser independiente del progreso del recorrido. No debe modificar accidentalmente la posición principal de la cámara.
+
+Respeta la estructura actual de navegación y los controles ya implementados.
+
+## 11. RENDIMIENTO
+
+El entorno debe funcionar correctamente en navegadores modernos.
+
+Optimiza:
 
 - Geometrías reutilizables.
-- Materiales compartidos cuando sea posible.
-- Texturas optimizadas.
-- Modelos GLB comprimidos cuando corresponda.
-- Carga diferida de recursos.
-- Evitar cálculos innecesarios por frame.
-- Evitar renderizados redundantes.
-- Limitar partículas.
-- Reducir efectos costosos en dispositivos móviles.
+- Instancias de objetos repetidos.
+- Texturas y resolución.
+- Cantidad de luces y sombras.
+- Complejidad de materiales.
+- Carga progresiva de recursos.
+- Nivel de detalle cuando sea necesario.
 
-Implementar una alternativa visual simplificada para equipos con menor capacidad gráfica.
+Considera una versión adaptada para dispositivos móviles, reduciendo elementos y efectos costosos sin perder la identidad visual.
 
-Respetar `prefers-reduced-motion`.
+Respeta `prefers-reduced-motion` y proporciona una alternativa visual adecuada cuando sea necesario.
 
-La experiencia debe funcionar en escritorio y móvil.
+## 12. PROCESO DE DESARROLLO
 
-No reducir simplemente la escala de la versión de escritorio: adaptar la composición y el recorrido.
+Antes de modificar el proyecto:
 
----
+1. Analiza la estructura actual y localiza los componentes responsables del escenario, cámara y navegación.
+2. Identifica las causas de la baja calidad visual.
+3. Revisa las imágenes y modelos reales de los productos disponibles.
+4. Define una nueva distribución arquitectónica para los cuatro puntos de interés.
+5. Establece el recorrido de cámara y las transiciones.
 
-## 10. RESTRICCIONES
+Después:
 
-- No utilizar vídeos como fondo del escenario.
-- No utilizar fotografías de talleres como sustituto del entorno 3D.
-- No generar imágenes de ambientes industriales para reemplazar la geometría.
-- No utilizar fondos estáticos para simular profundidad.
-- No implementar un carrusel.
-- No utilizar tarjetas convencionales como escena principal.
-- No modificar innecesariamente otras secciones de la web.
-- No alterar la navegación existente.
-- No inventar productos.
-- No inventar especificaciones técnicas.
-- No sacrificar rendimiento por efectos visuales.
-- No instalar dependencias innecesarias.
+6. Construye la arquitectura completa del entorno.
+7. Implementa los materiales y la iluminación.
+8. Integra los tres equipos y la zona de EPP.
+9. Implementa el recorrido de cámara.
+10. Optimiza el rendimiento.
+11. Comprueba la experiencia desde la entrada y durante todo el recorrido.
 
-Las fotografías externas deben reservarse principalmente para representar los productos reales.
+No te limites a entregar un plan, una descripción o un prototipo de geometría básica. Implementa el escenario en el proyecto.
 
----
+## 13. EVALUACIÓN FINAL
 
-## 11. VALIDACIÓN
+Antes de finalizar, revisa visualmente:
 
-Antes de finalizar:
+- La perspectiva desde la entrada.
+- La aproximación a cada uno de los tres equipos.
+- La zona de EPP.
+- Las transiciones entre puntos.
+- La profundidad y escala de la nave.
+- La iluminación y los materiales.
+- La ausencia de colisiones de cámara.
+- El rendimiento general.
 
-1. Ejecutar el proyecto.
-2. Comprobar que el escenario se genera mediante código.
-3. Verificar que no depende de fotografías o vídeos de talleres.
-4. Comprobar el recorrido completo de cámara.
-5. Verificar las cuatro escenas.
-6. Comprobar la independencia del cursor.
-7. Comprobar los modelos 3D disponibles.
-8. Verificar la carga de productos.
-9. Comprobar adaptación móvil.
-10. Ejecutar el build.
-11. Corregir errores.
+Si el resultado todavía parece una habitación construida con cubos y cilindros, no está terminado. Replantea la composición hasta conseguir un entorno industrial convincente.
 
-No declarar una funcionalidad terminada si solamente está representada visualmente.
+## CRITERIO DE ACEPTACIÓN
 
----
+El resultado debe parecer un showroom industrial profesional diseñado por un artista 3D, con arquitectura coherente, iluminación cinematográfica, materiales realistas y cuatro puntos comerciales claramente reconocibles.
 
-## 12. RESULTADO FINAL
-
-El visitante debe experimentar la entrada a un espacio industrial tridimensional diseñado para MAQSYMA.
-
-Debe descubrir progresivamente:
-
-1. La potencia de la maquinaria industrial.
-2. La tecnología de los equipos profesionales.
-3. Las soluciones para soldadores independientes.
-4. El ecosistema completo de productos y suministros.
-
-El escenario debe estar construido mediante código.
-
-Los productos deben corresponder a equipos reales.
-
-La cámara debe recorrer el espacio mediante scroll.
-
-El cursor debe aportar una respuesta visual independiente.
-
-El resultado debe sentirse como una experiencia cinematográfica de presentación de producto de una marca industrial internacional.
-
-**Prioriza profundidad real, dirección artística, fidelidad de producto, continuidad espacial y rendimiento.**
-
-Primero analiza el proyecto y las Agent Skills disponibles. Después plantea la arquitectura y finalmente implementa y valida la experiencia.
+**La prioridad no es construir un escenario enorme, sino un espacio visualmente rico, creíble, bien compuesto y diseñado específicamente para presentar los tres equipos ESAB y los EPP de MAQSYMA.**

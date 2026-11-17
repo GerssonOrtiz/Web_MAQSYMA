@@ -1,77 +1,76 @@
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronRight, ArrowUpRight, Zap, ShieldCheck, Flame, Layers } from "lucide-react";
+import { ChevronRight, ArrowUpRight, ShieldCheck, Flame, Cpu, Wrench } from "lucide-react";
 import { WA_DEFAULT, scrollToSection } from "../../lib/scroll";
 
 const SCENE_CONTENT = [
   {
     id: "scene-1",
-    tag: "MAQSYMA · DIVISIÓN INDUSTRIAL",
+    tag: "PUNTO 01 · POTENCIA Y TRABAJO PESADO",
     title: "SOLUCIONES DE SOLDADURA",
-    highlight: "SIN LÍMITES.",
+    highlight: "DE GRADO INDUSTRIAL.",
     description:
-      "Equipamiento de alta gama, ingeniería de procesos y suministros para grandes industrias, talleres de alta precisión y profesionales independientes.",
-    productName: "ESAB WARRIOR™ 500i",
+      "Plataforma de alta potencia para minería, astilleros y calderería pesada. Máximo rendimiento de arco bajo las condiciones operativas más extremas.",
+    productName: "ESAB WARRIOR™ 500i CC/CV",
     productCategory: "MULTIPROCESO INDUSTRIAL PESADO",
     specs: [
       { label: "Corriente Max.", val: "500 A @ 60%" },
-      { label: "Tecnología", val: "Inverter TrueArc" },
-      { label: "Norma", val: "IP23 Grado Minero" },
+      { label: "Tecnología", val: "Inverter TrueArc™" },
+      { label: "Protección", val: "IP23 Grado Minero" },
     ],
-    primaryCta: { label: "Explorar catálogo", action: "catalog" },
-    secondaryCta: { label: "Solicitar cotización", action: "quote" },
+    primaryCta: { label: "Cotizar Warrior 500i", action: "quote-warrior" },
+    secondaryCta: { label: "Ver máquinas pesadas", action: "catalog" },
   },
   {
     id: "scene-2",
-    tag: "POTENCIA Y PRODUCTIVIDAD CONTINUA",
-    title: "TECNOLOGÍA INDUSTRIAL",
-    highlight: "Y TALLERES AVANZADOS.",
+    tag: "PUNTO 02 · PRODUCTIVIDAD Y VERSATILIDAD",
+    title: "TECNOLOGÍA SINÉRGICA",
+    highlight: "PARA FABRICACIÓN CONTINUA.",
     description:
-      "Transición fluida de potencia: desde el estándar multiproceso de la Warrior 500i hasta el control sinérgico de alambre continuo de la Rustler EM455i.",
+      "Control de arco inteligente para talleres de estructuras metálicas y manufactura exigente. Alimentación suave de alambre con reducción total de salpicaduras.",
     productName: "ESAB RUSTLER™ EM455i",
     productCategory: "MIG / MAG SINÉRGICO DE ALTO RENDIMIENTO",
     specs: [
       { label: "Ciclo de Trabajo", val: "450 A @ 60%" },
-      { label: "Panel Digital", val: "Ajuste Sinérgico Inteligente" },
-      { label: "Alimentador", val: "4 Rodillos de Precisión" },
+      { label: "Panel Digital", val: "Ajuste Sinérgico QuickSet" },
+      { label: "Alimentador", val: "4 Rodillos de Alta Precisión" },
     ],
     primaryCta: { label: "Cotizar Rustler EM455i", action: "quote-rustler" },
     secondaryCta: { label: "Ver especificaciones", action: "specs" },
   },
   {
     id: "scene-3",
-    tag: "PORTABILIDAD Y PRECISIÓN PROFESIONAL",
-    title: "SOLUCIONES PARA CADA",
-    highlight: "ESCALA DE PROYECTO.",
+    tag: "PUNTO 03 · MOVILIDAD Y PRECISIÓN PROFESIONAL",
+    title: "MÁXIMA VERSATILIDAD",
+    highlight: "PARA TALLERES Y CONTRATISTAS.",
     description:
-      "Rendimiento profesional en formato compacto. La Rogue EM210 PRO ofrece la máxima confiabilidad para talleres mecánicos, contratistas y soldadores independientes.",
+      "Potencia profesional en formato portátil ultra-robusto. Ideal para mantenimiento en planta, talleres mecánicos y soldadores independientes con conexión 120V/230V.",
     productName: "ESAB ROGUE™ EM210 PRO",
     productCategory: "COMPACTO MULTIPROCESO MONOFÁSICO",
     specs: [
       { label: "Salida", val: "210 A @ 30%" },
-      { label: "Peso", val: "13.5 kg Ultra-resistente" },
-      { label: "Voltaje", val: "120V / 230V Dual" },
+      { label: "Peso", val: "13.5 kg Carcasa Robusta" },
+      { label: "Voltaje", val: "120V / 230V Dual Auto" },
     ],
     primaryCta: { label: "Cotizar Rogue EM210", action: "quote-rogue" },
-    secondaryCta: { label: "Explorar equipos ligeros", action: "catalog" },
+    secondaryCta: { label: "Ver catálogo liviano", action: "catalog" },
   },
   {
     id: "scene-4",
-    tag: "ECOSISTEMA INTEGRAL MAQSYMA",
-    title: "TODO LO QUE NECESITAS",
-    highlight: "PARA SOLDAR Y CORTAR.",
+    tag: "PUNTO 04 · PROTECCIÓN Y SEGURIDAD INTEGRAL",
+    title: "EQUIPOS DE PROTECCIÓN",
+    highlight: "PARA EL SOLDADOR PROFESIONAL.",
     description:
-      "Soluciones integrales de extremo a extremo: consumibles certificados, antorchas de alto caudal, sistemas de corte por plasma y equipo de protección para soldadores.",
-    productName: "CATÁLOGO TÉCNICO COMPLETO",
-    productCategory: "CONSUMIBLES · ACCESORIOS · PLASMA · EPP",
-    categories: [
-      { name: "Alimentadores de Alambre", icon: Zap },
-      { name: "Corte por Plasma", icon: Flame },
-      { name: "Protección y Caretas EPP", icon: ShieldCheck },
-      { name: "Antorchas y Consumibles", icon: Layers },
+      "Soluciones integrales para trabajo seguro: caretas electrónicas fotosensibles de alta definición óptica, guantes reforzados de carnaza/kevlar, mandiles y protección respiratoria.",
+    productName: "ZONA SEGURIDAD INDUSTRIAL & EPP",
+    productCategory: "CARETAS FOTOSENSIBLES · GUANTES · INDUMENTARIA · CASCOS",
+    specs: [
+      { label: "Caretas Ópticas", val: "Clase 1/1/1/1 TrueColor" },
+      { label: "Guantes Cuero", val: "Kevlar Alta Temperatura" },
+      { label: "Normativa", val: "ANSI Z87.1 / EN 175" },
     ],
-    primaryCta: { label: "Descubrir soluciones", action: "catalog" },
-    secondaryCta: { label: "Hablar con un asesor técnico", action: "quote" },
+    primaryCta: { label: "Cotizar línea de EPP", action: "quote-epp" },
+    secondaryCta: { label: "Consultar asesor técnico", action: "quote" },
   },
 ];
 
@@ -92,7 +91,7 @@ export default function CinemaOverlay({ activeScene = 0, progress = 0 }) {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="h-2 w-2 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_8px_#00f0ff]" />
-          <span className="font-mono text-xs tracking-widest text-white/70 uppercase">
+          <span className="font-mono text-xs tracking-widest text-white/80 uppercase">
             {current.tag}
           </span>
         </div>
@@ -126,7 +125,7 @@ export default function CinemaOverlay({ activeScene = 0, progress = 0 }) {
               transition={{ duration: 0.45, ease: "easeOut" }}
               className="space-y-4"
             >
-              <div className="inline-block rounded border border-white/10 bg-black/40 px-2.5 py-1 backdrop-blur-md">
+              <div className="inline-block rounded border border-white/10 bg-black/50 px-2.5 py-1 backdrop-blur-md">
                 <span className="font-mono text-[11px] font-semibold tracking-wider text-amber-400">
                   {current.productCategory}
                 </span>
@@ -167,7 +166,7 @@ export default function CinemaOverlay({ activeScene = 0, progress = 0 }) {
           </AnimatePresence>
         </div>
 
-        {/* Right Column: Spec HUD or Category Tiles */}
+        {/* Right Column: Spec HUD Card */}
         <div className="lg:col-span-5 pointer-events-auto">
           <AnimatePresence mode="wait">
             <motion.div
@@ -176,22 +175,22 @@ export default function CinemaOverlay({ activeScene = 0, progress = 0 }) {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
               transition={{ duration: 0.45, ease: "easeOut" }}
-              className="rounded-lg border border-white/10 bg-black/60 p-5 backdrop-blur-md shadow-2xl space-y-3"
+              className="rounded-lg border border-white/10 bg-black/65 p-5 backdrop-blur-md shadow-2xl space-y-3"
             >
               <div className="flex items-center justify-between border-b border-white/10 pb-2.5">
                 <span className="font-mono text-xs font-bold text-white tracking-wider">
                   {current.productName}
                 </span>
                 <span className="font-mono text-[10px] text-cyan-400 uppercase tracking-widest">
-                  HUD RECON V4.2
+                  FICHA TÉCNICA
                 </span>
               </div>
 
-              {/* Normal Scene Specs */}
+              {/* Scene Specs Grid */}
               {current.specs && (
                 <div className="grid grid-cols-3 gap-3">
                   {current.specs.map((item, idx) => (
-                    <div key={idx} className="rounded bg-white/5 p-2 border border-white/5">
+                    <div key={idx} className="rounded bg-white/5 p-2.5 border border-white/5">
                       <p className="font-mono text-[9px] uppercase tracking-wider text-white/50">
                         {item.label}
                       </p>
@@ -200,26 +199,6 @@ export default function CinemaOverlay({ activeScene = 0, progress = 0 }) {
                       </p>
                     </div>
                   ))}
-                </div>
-              )}
-
-              {/* Scene 4: Categories Grid */}
-              {current.categories && (
-                <div className="grid grid-cols-2 gap-2">
-                  {current.categories.map((cat, idx) => {
-                    const Icon = cat.icon;
-                    return (
-                      <div
-                        key={idx}
-                        className="flex items-center gap-2 rounded bg-white/5 p-2 border border-white/5 transition-colors hover:border-cyan-500/40"
-                      >
-                        <Icon className="h-4 w-4 text-cyan-400 shrink-0" />
-                        <span className="font-mono text-[11px] text-white/90 truncate">
-                          {cat.name}
-                        </span>
-                      </div>
-                    );
-                  })}
                 </div>
               )}
             </motion.div>
