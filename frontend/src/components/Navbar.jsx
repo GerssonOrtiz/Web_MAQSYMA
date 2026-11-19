@@ -5,7 +5,8 @@ import Logo from "./Logo";
 import { scrollToSection } from "../lib/scroll";
 
 const LINKS = [
-  { id: "maquinas", label: "Máquinas" },
+  { id: "maquinas", label: "Destacados" },
+  { id: "tienda", label: "Catálogo" },
   { id: "categorias", label: "Categorías" },
   { id: "aplicaciones", label: "Aplicaciones" },
   { id: "contacto", label: "Contacto" },

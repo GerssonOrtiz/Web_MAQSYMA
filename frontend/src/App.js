@@ -5,6 +5,7 @@ import Marquee from "./components/Marquee";
 import Manifesto from "./components/Manifesto";
 import Categories from "./components/Categories";
 import FeaturedMachines from "./components/FeaturedMachines";
+import CatalogStore from "./components/CatalogStore";
 import Selector from "./components/Selector";
 import Applications from "./components/Applications";
 import TechInfo from "./components/TechInfo";
@@ -64,6 +65,7 @@ export default function App() {
           <Manifesto />
           <Categories />
           <FeaturedMachines />
+          <CatalogStore />
           <Selector />
           <Applications />
           <TechInfo />

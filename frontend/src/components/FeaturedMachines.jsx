@@ -13,6 +13,7 @@ import {
 import { X } from "lucide-react";
 import { waLink } from "../lib/scroll";
 import { supabase } from "../lib/supabase";
+import { ESAB_PRODUCTS } from "../data/esabProducts";
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
@@ -22,76 +23,8 @@ const X_PATTERN = [0, 7, -6, 5, -5, 6, -4, 4];
 const spec = (p, key) => p[key]?.trim() || "SEGÚN MODELO";
 const mqCode = (i) => `MQ—${String(i + 1).padStart(3, "0")}`;
 
-const FALLBACK_PRODUCTS = [
-  {
-    id: "1",
-    brand: "ESAB",
-    model: "WARRIOR 500i",
-    category: "MMA",
-    process: "MMA / TIG",
-    main_image: "https://static.prod-images.emergentagent.com/jobs/0367909c-413c-4cc9-aff8-b7b2180f8e4b/images/f42f788aa23b25155a6e843d3b5d79bba0dc6721df8e4e93d9259061ac54e938.jpeg",
-    description: "Equipo profesional de ejemplo (dato conceptual del briefing). Registro preparado para ser reemplazado por el producto real.",
-    amperage: "500 A",
-    voltage: "380 V",
-    power_supply: "TRIFÁSICA 380 V",
-    duty_cycle: "",
-    applications: ["INDUSTRIAL"],
-    features: ["Registro de ejemplo — carga aquí las características reales"],
-    sku: "EJEMPLO-500I",
-    sort_order: 0,
-  },
-  {
-    id: "2",
-    brand: "EJEMPLO",
-    model: "INVERTER MIG 250",
-    category: "MIG / MAG",
-    process: "MIG / MAG",
-    main_image: "https://static.prod-images.emergentagent.com/jobs/0367909c-413c-4cc9-aff8-b7b2180f8e4b/images/9d58211ac3517cb43e551f11609bedce3aaeabb5483e6fc6b6bad4eacbe2442b.jpeg",
-    description: "Producto de ejemplo para demostrar la estructura del catálogo. Reemplaza marca, modelo, especificaciones e imágenes.",
-    amperage: "250 A",
-    voltage: "220 V",
-    power_supply: "MONOFÁSICA 220 V",
-    duty_cycle: "",
-    applications: ["TALLER", "FABRICACIÓN"],
-    features: ["Registro de ejemplo — carga aquí las características reales"],
-    sku: "EJEMPLO-MIG250",
-    sort_order: 1,
-  },
-  {
-    id: "3",
-    brand: "EJEMPLO",
-    model: "TIG AC/DC 200",
-    category: "TIG",
-    process: "TIG",
-    main_image: "https://static.prod-images.emergentagent.com/jobs/0367909c-413c-4cc9-aff8-b7b2180f8e4b/images/71b9e7b9a5586122d8b27f6800ef79bbeba6bd11ee91d599f33d0f0946731756.jpeg",
-    description: "Producto de ejemplo para el proceso TIG. La ficha real se carga desde la colección de productos.",
-    amperage: "200 A",
-    voltage: "220 V",
-    power_supply: "MONOFÁSICA 220 V",
-    duty_cycle: "",
-    applications: ["INOX", "ALUMINIO"],
-    features: ["Registro de ejemplo — carga aquí las características reales"],
-    sku: "EJEMPLO-TIG200",
-    sort_order: 2,
-  },
-  {
-    id: "4",
-    brand: "EJEMPLO",
-    model: "CORTE PLASMA 60",
-    category: "CORTE PLASMA",
-    process: "PLASMA",
-    main_image: "https://static.prod-images.emergentagent.com/jobs/0367909c-413c-4cc9-aff8-b7b2180f8e4b/images/35ff09b017256acde509405867c323a6154292ce431c889f7f0481c6c0be1f8d.jpeg",
-    description: "Producto de ejemplo para equipos de corte plasma. Sustitúyelo por el equipo real.",
-    amperage: "60 A",
-    voltage: "220 V",
-    power_supply: "MONOFÁSICA 220 V",
-    duty_cycle: "",
-    applications: ["CORTE DE CHAPA"],
-    features: ["Registro de ejemplo — carga aquí las características reales"],
-    sku: "EJEMPLO-PLASMA60",
-    sort_order: 3,
-  },
-];
+// Usar los productos destacados del catálogo oficial de ESAB como lista principal de la experiencia 3D/túnel
+const FALLBACK_PRODUCTS = ESAB_PRODUCTS.filter((p) => p.featured);
 
 function useProducts() {
   const [products, setProducts] = useState(null);
