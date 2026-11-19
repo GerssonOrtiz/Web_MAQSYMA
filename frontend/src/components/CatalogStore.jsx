@@ -120,12 +120,12 @@ export default function CatalogStore() {
               >
                 {/* Imagen del equipo */}
                 <div>
-                  <div className="relative aspect-[4/3] w-full overflow-hidden bg-ink/60 border-b border-white/5 p-4 flex items-center justify-center">
+                  <div className="relative aspect-[4/3] w-full overflow-hidden bg-coal/90 border-b border-white/10 p-5 flex items-center justify-center">
                     <img
                       src={p.main_image}
                       alt={`Equipo ${p.brand} ${p.model}`}
                       loading="lazy"
-                      className="max-h-full max-w-full object-contain transition-transform duration-500 group-hover:scale-105"
+                      className="max-h-full max-w-full object-contain filter drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)] transition-transform duration-500 group-hover:scale-110"
                     />
                     {/* Badge de Categoría */}
                     <span className="absolute left-3 top-3 border border-white/15 bg-ink/80 px-2 py-0.5 font-mono text-[9px] uppercase tracking-wider text-accent backdrop-blur-sm">
@@ -244,11 +244,11 @@ function ProductDetailModal({ product: p, onClose }) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Imagen y badges */}
           <div className="flex flex-col">
-            <div className="relative aspect-square w-full bg-ink/70 border border-white/10 p-6 flex items-center justify-center">
+            <div className="relative aspect-square w-full bg-coal/90 border border-white/10 p-6 flex items-center justify-center">
               <img
                 src={p.main_image}
                 alt={p.model}
-                className="max-h-full max-w-full object-contain"
+                className="max-h-full max-w-full object-contain filter drop-shadow-[0_8px_20px_rgba(0,0,0,0.8)]"
               />
               <span className="absolute top-3 left-3 px-2 py-0.5 bg-accent text-ink font-mono text-[9px] font-bold uppercase tracking-wider">
                 {p.category}
