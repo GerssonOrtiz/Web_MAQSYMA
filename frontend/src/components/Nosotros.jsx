@@ -1,5 +1,14 @@
 import { useState } from "react";
-import { ArrowUpRight, Check, MessageSquare, ShieldCheck, Wrench, Layers } from "lucide-react";
+import { Link } from "react-router-dom";
+import {
+  ArrowLeft,
+  ArrowUpRight,
+  Check,
+  MessageSquare,
+  ShieldCheck,
+  Wrench,
+  Layers,
+} from "lucide-react";
 import { scrollToSection, waLink } from "../lib/scroll";
 
 const VALUE_PILLARS = [
@@ -78,47 +87,69 @@ export default function Nosotros() {
       id="nosotros"
       data-testid="nosotros-section"
       aria-label="Sobre MAQSYMA"
-      className="border-t border-white/10 bg-ink py-20 lg:py-28"
+      className="relative min-h-screen overflow-hidden bg-[#0E1117] bg-grid pb-24 pt-28 sm:pb-32 sm:pt-32"
     >
-      <div className="section-head">
+      {/* Iluminación ambiental sutil para evitar fondo negro plano */}
+      <div className="pointer-events-none absolute left-1/2 top-0 h-[28rem] w-full max-w-7xl -translate-x-1/2 bg-[radial-gradient(ellipse_at_top,rgba(255,183,3,0.09),transparent_70%)]" />
+
+      <div className="section-head relative z-10">
+        <div className="mb-6">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 font-mono text-[11px] font-medium uppercase tracking-[0.2em] text-[#CBD5E1] transition-colors hover:text-accent"
+          >
+            <ArrowLeft className="h-3.5 w-3.5" /> Volver al inicio
+          </Link>
+        </div>
+
         {/* Cabecera editorial + Mensaje central */}
-        <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:items-end">
+        <div className="grid grid-cols-1 gap-8 border-b border-white/15 pb-10 lg:grid-cols-12 lg:items-end">
           <div className="lg:col-span-7">
-            <h2 className="font-display text-4xl font-extrabold uppercase leading-[0.94] tracking-tight sm:text-5xl lg:text-6xl">
+            <h1 className="font-display text-4xl font-black uppercase leading-[0.94] tracking-tight text-fog sm:text-5xl lg:text-6xl">
               Hacemos que tu operación{" "}
               <span className="text-accent">nunca se detenga.</span>
-            </h2>
+            </h1>
           </div>
 
           <div className="lg:col-span-5">
-            <p className="text-sm leading-relaxed text-mist sm:text-base">
-              En el sector industrial, un minuto de parada técnica no es solo tiempo perdido: es
-              producción detenida y proyectos que se retrasan. En{" "}
-              <span className="font-semibold text-fog">MAQSYMA</span> vamos más allá de la venta
-              o alquiler: actuamos como tu respaldo operativo en soldadura y corte con soporte
-              técnico, operativo y logístico.
+            <p className="text-base leading-relaxed text-[#E2E8F0] sm:text-[17px]">
+              En el sector industrial,{" "}
+              <strong className="font-bold text-fog">
+                un minuto de parada técnica no es solo tiempo perdido
+              </strong>
+              : es producción detenida y proyectos que se retrasan. En{" "}
+              <strong className="font-bold text-accent">MAQSYMA</strong> vamos más allá de la
+              venta o alquiler: actuamos como tu{" "}
+              <strong className="font-semibold text-fog">
+                respaldo operativo en soldadura y corte
+              </strong>{" "}
+              con soporte técnico, operativo y logístico.
             </p>
           </div>
         </div>
 
         {/* Bloque Quiénes somos + Misión & Visión */}
-        <div className="mt-14 grid grid-cols-1 border border-white/10 bg-coal/40 lg:grid-cols-12">
-          <div className="border-b border-white/10 p-6 sm:p-8 lg:col-span-4 lg:border-b-0 lg:border-r">
-            <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-accent">
+        <div className="mt-12 grid grid-cols-1 border border-white/15 bg-[#151922] shadow-[0_16px_40px_rgba(0,0,0,0.35)] lg:grid-cols-12">
+          <div className="border-b border-white/15 p-7 sm:p-9 lg:col-span-4 lg:border-b-0 lg:border-r">
+            <p className="font-mono text-xs font-bold uppercase tracking-[0.2em] text-accent">
               Identidad operativa
             </p>
-            <h3 className="mt-3 font-display text-2xl font-bold uppercase tracking-tight text-fog sm:text-3xl">
+            <h2 className="mt-3 font-display text-3xl font-extrabold uppercase leading-tight tracking-tight text-fog">
               Respaldo real en campo y planta
-            </h3>
-            <p className="mt-3 text-sm leading-relaxed text-mist">
-              Combinamos equipos de soldadura y corte de alta confiabilidad con asesoría directa para
-              determinar qué solución técnica y comercial conviene a tu proyecto.
+            </h2>
+            <p className="mt-4 text-base leading-relaxed text-[#D1D5DB]">
+              Combinamos{" "}
+              <strong className="font-semibold text-fog">
+                equipos de soldadura y corte de alta confiabilidad
+              </strong>{" "}
+              con asesoría directa para definir qué solución técnica y comercial conviene a tu
+              proyecto.
             </p>
             <div className="mt-6 flex flex-wrap gap-2">
               {SECTORS.map((sector) => (
                 <span
                   key={sector}
-                  className="border border-white/10 bg-ink/70 px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.16em] text-mist"
+                  className="border border-white/15 bg-[#0E1117] px-2.5 py-1 font-mono text-[10px] font-medium uppercase tracking-[0.14em] text-[#E2E8F0]"
                 >
                   {sector}
                 </span>
@@ -126,19 +157,21 @@ export default function Nosotros() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 divide-y divide-white/10 sm:grid-cols-2 sm:divide-x sm:divide-y-0 lg:col-span-8">
-            <div className="flex flex-col justify-between p-6 sm:p-8">
+          <div className="grid grid-cols-1 divide-y divide-white/15 sm:grid-cols-2 sm:divide-x sm:divide-y-0 lg:col-span-8">
+            <div className="flex flex-col justify-between p-7 sm:p-9">
               <div>
-                <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-accent">
+                <p className="font-mono text-xs font-bold uppercase tracking-[0.2em] text-accent">
                   Misión
                 </p>
-                <p className="mt-4 text-base font-medium leading-relaxed text-fog sm:text-lg">
-                  Impulsar la productividad de nuestros clientes con equipos de soldadura y corte en
-                  la modalidad de venta y alquiler, con disponibilidad inmediata, máxima eficiencia
-                  y confiabilidad operativa.
+                <p className="mt-4 text-lg font-semibold leading-relaxed text-fog sm:text-xl">
+                  Impulsar la{" "}
+                  <span className="font-bold text-accent">productividad de nuestros clientes</span>{" "}
+                  con equipos de soldadura y corte en modalidad de{" "}
+                  <strong className="font-bold text-fog">venta y alquiler</strong>, con
+                  disponibilidad inmediata, máxima eficiencia y confiabilidad operativa.
                 </p>
               </div>
-              <div className="mt-6 flex flex-wrap gap-x-4 gap-y-1.5 border-t border-white/10 pt-4 font-mono text-[10px] uppercase tracking-[0.16em] text-mist">
+              <div className="mt-7 flex flex-wrap gap-x-4 gap-y-1.5 border-t border-white/10 pt-4 font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-[#CBD5E1]">
                 <span>Productividad</span>
                 <span className="text-accent">/</span>
                 <span>Disponibilidad inmediata</span>
@@ -147,18 +180,19 @@ export default function Nosotros() {
               </div>
             </div>
 
-            <div className="flex flex-col justify-between p-6 sm:p-8">
+            <div className="flex flex-col justify-between p-7 sm:p-9">
               <div>
-                <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-accent">
+                <p className="font-mono text-xs font-bold uppercase tracking-[0.2em] text-accent">
                   Visión
                 </p>
-                <p className="mt-4 text-base font-medium leading-relaxed text-fog sm:text-lg">
-                  Ser el socio estratégico líder en equipos de soldadura y corte industrial,
-                  reconocidos por impulsar los proyectos de nuestros clientes hacia su máximo nivel
-                  de productividad y rentabilidad.
+                <p className="mt-4 text-lg font-semibold leading-relaxed text-fog sm:text-xl">
+                  Ser el{" "}
+                  <span className="font-bold text-accent">socio estratégico líder</span> en equipos
+                  de soldadura y corte industrial, reconocidos por impulsar los proyectos de nuestros
+                  clientes hacia su máximo nivel de productividad y rentabilidad.
                 </p>
               </div>
-              <div className="mt-6 flex flex-wrap gap-x-4 gap-y-1.5 border-t border-white/10 pt-4 font-mono text-[10px] uppercase tracking-[0.16em] text-mist">
+              <div className="mt-7 flex flex-wrap gap-x-4 gap-y-1.5 border-t border-white/10 pt-4 font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-[#CBD5E1]">
                 <span>Socio estratégico</span>
                 <span className="text-accent">/</span>
                 <span>Aliado de proyectos</span>
@@ -170,43 +204,43 @@ export default function Nosotros() {
         </div>
 
         {/* ¿Por qué elegir MAQSYMA? */}
-        <div className="mt-14">
-          <div className="flex flex-wrap items-baseline justify-between gap-4 border-b border-white/10 pb-4">
-            <h3 className="font-display text-2xl font-bold uppercase tracking-tight text-fog sm:text-3xl">
+        <div className="mt-16">
+          <div className="flex flex-wrap items-baseline justify-between gap-4 border-b border-white/15 pb-4">
+            <h2 className="font-display text-3xl font-extrabold uppercase tracking-tight text-fog sm:text-4xl">
               ¿Por qué elegir <span className="text-accent">MAQSYMA</span>?
-            </h3>
-            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-mist">
+            </h2>
+            <p className="font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-[#CBD5E1]">
               Equipos + Modalidad flexible + Soporte + Continuidad operativa
             </p>
           </div>
 
-          <div className="grid grid-cols-1 divide-y divide-white/10 border-x border-b border-white/10 md:grid-cols-3 md:divide-x md:divide-y-0">
+          <div className="grid grid-cols-1 divide-y divide-white/15 border-x border-b border-white/15 bg-[#131720] md:grid-cols-3 md:divide-x md:divide-y-0">
             {VALUE_PILLARS.map(({ id, icon: Icon, title, summary, tags }) => (
               <div
                 key={id}
-                className="flex flex-col justify-between bg-coal/20 p-6 transition-colors duration-200 hover:bg-coal/50 sm:p-7"
+                className="flex flex-col justify-between p-7 transition-colors duration-200 hover:bg-[#191E2A] sm:p-8"
                 data-testid={`nosotros-pillar-${id}`}
               >
                 <div>
                   <div className="flex items-center justify-between">
-                    <Icon className="h-5 w-5 text-accent" aria-hidden="true" />
-                    <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-mist">
+                    <Icon className="h-6 w-6 text-accent" aria-hidden="true" />
+                    <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-[#CBD5E1]">
                       Respaldo MAQSYMA
                     </span>
                   </div>
-                  <h4 className="mt-5 font-display text-2xl font-bold uppercase tracking-tight text-fog">
+                  <h3 className="mt-5 font-display text-2xl font-extrabold uppercase tracking-tight text-fog sm:text-[26px]">
                     {title}
-                  </h4>
-                  <p className="mt-2.5 text-sm leading-relaxed text-mist">{summary}</p>
+                  </h3>
+                  <p className="mt-3 text-[15px] leading-relaxed text-[#D1D5DB]">{summary}</p>
                 </div>
 
-                <ul className="mt-6 space-y-1.5 border-t border-white/10 pt-4">
+                <ul className="mt-6 space-y-2 border-t border-white/10 pt-4">
                   {tags.map((tag) => (
                     <li
                       key={tag}
-                      className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.16em] text-fog/85"
+                      className="flex items-center gap-2 font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-fog"
                     >
-                      <Check className="h-3 w-3 shrink-0 text-accent" aria-hidden="true" />
+                      <Check className="h-3.5 w-3.5 shrink-0 text-accent" aria-hidden="true" />
                       <span>{tag}</span>
                     </li>
                   ))}
@@ -220,12 +254,14 @@ export default function Nosotros() {
         <div className="mt-16">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
-              <h3 className="font-display text-2xl font-bold uppercase tracking-tight text-fog sm:text-3xl">
+              <h2 className="font-display text-3xl font-extrabold uppercase tracking-tight text-fog sm:text-4xl">
                 Cómo trabaja <span className="text-accent">MAQSYMA</span>
-              </h3>
-              <p className="mt-2 max-w-2xl text-sm text-mist">
-                Un flujo pensado para que recibas el equipo correcto, bajo la modalidad más
-                conveniente y con soporte continuo durante toda tu operación.
+              </h2>
+              <p className="mt-2.5 max-w-2xl text-base text-[#D1D5DB]">
+                Un flujo pensado para que recibas el{" "}
+                <strong className="font-semibold text-fog">equipo correcto</strong>, bajo la{" "}
+                <strong className="font-semibold text-fog">modalidad más conveniente</strong> y con
+                soporte continuo durante toda tu operación.
               </p>
             </div>
           </div>
@@ -239,32 +275,32 @@ export default function Nosotros() {
                   type="button"
                   onClick={() => setActiveStep(idx)}
                   data-testid={`nosotros-step-${idx}`}
-                  className={`flex flex-col justify-between border p-5 text-left transition-colors duration-200 sm:p-6 ${
+                  className={`flex flex-col justify-between border p-6 text-left transition-all duration-200 ${
                     isActive
-                      ? "border-accent bg-coal/80"
-                      : "border-white/10 bg-coal/25 hover:border-white/25 hover:bg-coal/45"
+                      ? "border-accent bg-[#181D27] shadow-[0_8px_24px_rgba(0,0,0,0.35)]"
+                      : "border-white/15 bg-[#131720] hover:border-white/30 hover:bg-[#171C26]"
                   }`}
                 >
                   <div>
                     <div className="flex items-center justify-between">
                       <span
-                        className={`font-mono text-xs font-semibold tracking-[0.2em] ${
-                          isActive ? "text-accent" : "text-mist"
+                        className={`font-mono text-xs font-bold tracking-[0.2em] ${
+                          isActive ? "text-accent" : "text-[#CBD5E1]"
                         }`}
                       >
                         PASO {item.step}
                       </span>
                       <span
-                        className={`h-1.5 w-1.5 ${isActive ? "bg-accent" : "bg-white/20"}`}
+                        className={`h-2 w-2 ${isActive ? "bg-accent" : "bg-white/25"}`}
                       />
                     </div>
-                    <h4 className="mt-4 font-display text-2xl font-bold uppercase leading-tight tracking-tight text-fog">
+                    <h3 className="mt-4 font-display text-2xl font-extrabold uppercase leading-tight tracking-tight text-fog">
                       {item.title}
-                    </h4>
-                    <p className="mt-3 text-sm leading-relaxed text-mist">{item.detail}</p>
+                    </h3>
+                    <p className="mt-3 text-[15px] leading-relaxed text-[#D1D5DB]">{item.detail}</p>
                   </div>
 
-                  <p className="mt-5 border-t border-white/10 pt-3 font-mono text-[10px] uppercase tracking-[0.18em] text-accent">
+                  <p className="mt-5 border-t border-white/10 pt-3 font-mono text-[11px] font-bold uppercase tracking-[0.16em] text-accent">
                     {item.deliverable}
                   </p>
                 </button>
@@ -274,14 +310,15 @@ export default function Nosotros() {
         </div>
 
         {/* CTA comercial */}
-        <div className="mt-14 flex flex-col justify-between gap-6 border border-white/15 bg-coal/60 p-6 sm:p-8 lg:flex-row lg:items-center">
+        <div className="mt-14 flex flex-col justify-between gap-6 border border-white/15 bg-[#151922] p-7 shadow-[0_12px_32px_rgba(0,0,0,0.35)] sm:p-9 lg:flex-row lg:items-center">
           <div>
-            <h3 className="font-display text-3xl font-extrabold uppercase leading-none tracking-tight text-fog sm:text-4xl">
+            <h2 className="font-display text-3xl font-black uppercase leading-none tracking-tight text-fog sm:text-4xl">
               ¿Necesitas comprar o alquilar un equipo?
-            </h3>
-            <p className="mt-2.5 max-w-xl text-sm text-mist">
-              Te ayudamos a elegir entre venta, alquiler o renting corporativo según tu proceso,
-              amperaje y plazo de obra.
+            </h2>
+            <p className="mt-3 max-w-xl text-base text-[#D1D5DB]">
+              Te ayudamos a elegir entre{" "}
+              <strong className="font-semibold text-fog">venta, alquiler o renting corporativo</strong>{" "}
+              según tu proceso, amperaje y plazo de obra.
             </p>
           </div>
 

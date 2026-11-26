@@ -65,11 +65,23 @@ function HomePage({ onHeroReady }) {
       <Marquee />
       <TrustBar />
       <Manifesto />
-      <Nosotros />
       <Categories />
       <FeaturedMachines />
       <Applications />
       <TechInfo />
+      <Quote />
+    </main>
+  );
+}
+
+function NosotrosPage({ onReady }) {
+  useEffect(() => {
+    onReady();
+  }, [onReady]);
+
+  return (
+    <main>
+      <Nosotros />
       <Quote />
     </main>
   );
@@ -116,6 +128,10 @@ export default function App() {
             <Route
               path="/"
               element={<HomePage onHeroReady={() => setHeroReady(true)} />}
+            />
+            <Route
+              path="/nosotros"
+              element={<NosotrosPage onReady={() => setHeroReady(true)} />}
             />
             <Route
               path="/catalogo"
