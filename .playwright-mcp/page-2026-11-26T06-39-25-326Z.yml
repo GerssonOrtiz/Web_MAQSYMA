@@ -1,0 +1,453 @@
+- generic [ref=e3]:
+  - generic:
+    - img "MAQSYMA Industrial"
+  - banner [ref=e5]:
+    - navigation "Principal" [ref=e6]:
+      - button "MAQSYMA — inicio" [ref=e7] [cursor=pointer]:
+        - img "MAQSYMA" [ref=e9]
+        - generic [ref=e10]: Equipos de soldadura
+      - generic [ref=e11]:
+        - button "Nosotros" [ref=e12] [cursor=pointer]
+        - button "Destacados" [ref=e13] [cursor=pointer]
+        - button "Catálogo" [ref=e14] [cursor=pointer]
+        - button "Categorías" [ref=e15] [cursor=pointer]
+        - button "Aplicaciones" [ref=e16] [cursor=pointer]
+        - button "Contacto" [ref=e17] [cursor=pointer]
+        - generic [ref=e18]: Atención comercial disponible
+  - main [ref=e23]:
+    - region "Showroom cinemático de equipos ESAB" [ref=e24]:
+      - generic [ref=e25]:
+        - tablist "Actos del showroom" [ref=e28]:
+          - tab "00 INICIO" [selected] [ref=e29] [cursor=pointer]:
+            - generic [ref=e31]: "00"
+            - generic [ref=e32]: INICIO
+          - tab "01 ESTACIÓN 01" [ref=e33] [cursor=pointer]:
+            - generic [ref=e35]: "01"
+            - generic [ref=e36]: ESTACIÓN 01
+          - tab "02 ESTACIÓN 02" [ref=e37] [cursor=pointer]:
+            - generic [ref=e39]: "02"
+            - generic [ref=e40]: ESTACIÓN 02
+          - tab "03 ESTACIÓN 03" [ref=e41] [cursor=pointer]:
+            - generic [ref=e43]: "03"
+            - generic [ref=e44]: ESTACIÓN 03
+          - tab "04 ESTACIÓN 04" [ref=e45] [cursor=pointer]:
+            - generic [ref=e47]: "04"
+            - generic [ref=e48]: ESTACIÓN 04
+        - generic [ref=e50]:
+          - paragraph [ref=e53]: Distribuidor Autorizado ESAB en Perú
+          - heading "Potencia para soldar sin límites." [level=1] [ref=e54]: Potencia parasoldar sin límites.
+          - paragraph [ref=e55]: Equipos MIG, TIG, MMA y Multiproceso con garantía oficial, stock inmediato y asesoría técnica directa para soldadores, talleres e industria.
+          - generic [ref=e56]:
+            - generic [ref=e57]: ✓ Garantía oficial ESAB
+            - generic [ref=e58]: ✓ Stock inmediato
+            - generic [ref=e59]: ✓ Envío a nivel nacional
+        - generic [aria-hidden] [ref=e60]:
+          - generic [ref=e61]: INICIO
+          - generic [ref=e64]: ESTACIÓN 01
+          - generic [ref=e67]: ESTACIÓN 02
+          - generic [ref=e70]: ESTACIÓN 03
+          - generic [ref=e73]: ESTACIÓN 04
+        - generic [aria-hidden] [ref=e76]:
+          - generic [ref=e77]: "00"
+          - generic [ref=e79]: "04"
+        - generic [ref=e87]: Desliza para explorar
+    - generic [ref=e91]:
+      - list [ref=e92]:
+        - listitem [ref=e93]:
+          - generic [ref=e94]: MMA
+          - generic [ref=e95]: +
+        - listitem [ref=e96]:
+          - generic [ref=e97]: MIG / MAG
+          - generic [ref=e98]: +
+        - listitem [ref=e99]:
+          - generic [ref=e100]: TIG
+          - generic [ref=e101]: +
+        - listitem [ref=e102]:
+          - generic [ref=e103]: CORTE PLASMA
+          - generic [ref=e104]: +
+        - listitem [ref=e105]:
+          - generic [ref=e106]: MULTIPROCESO
+          - generic [ref=e107]: +
+        - listitem [ref=e108]:
+          - generic [ref=e109]: ACCESORIOS
+          - generic [ref=e110]: +
+        - listitem [ref=e111]:
+          - generic [ref=e112]: EQUIPOS DE SOLDADURA
+          - generic [ref=e113]: +
+        - listitem [ref=e114]:
+          - generic [ref=e115]: EQUIPOS DE CORTE
+          - generic [ref=e116]: +
+      - list [aria-hidden] [ref=e117]:
+        - listitem [ref=e118]:
+          - generic [ref=e119]: MMA
+          - generic [ref=e120]: +
+        - listitem [ref=e121]:
+          - generic [ref=e122]: MIG / MAG
+          - generic [ref=e123]: +
+        - listitem [ref=e124]:
+          - generic [ref=e125]: TIG
+          - generic [ref=e126]: +
+        - listitem [ref=e127]:
+          - generic [ref=e128]: CORTE PLASMA
+          - generic [ref=e129]: +
+        - listitem [ref=e130]:
+          - generic [ref=e131]: MULTIPROCESO
+          - generic [ref=e132]: +
+        - listitem [ref=e133]:
+          - generic [ref=e134]: ACCESORIOS
+          - generic [ref=e135]: +
+        - listitem [ref=e136]:
+          - generic [ref=e137]: EQUIPOS DE SOLDADURA
+          - generic [ref=e138]: +
+        - listitem [ref=e139]:
+          - generic [ref=e140]: EQUIPOS DE CORTE
+          - generic [ref=e141]: +
+    - region "Respaldo y garantía" [ref=e142]:
+      - generic [ref=e144]:
+        - generic [ref=e145]: Garantía oficial ESAB
+        - generic [ref=e150]: Servicio técnico autorizado
+        - generic [ref=e154]: Stock disponible
+        - generic [ref=e161]: Envío a nivel nacional
+        - generic [ref=e168]: Asesoría técnica directa
+    - region "Manifiesto de marca" [ref=e172]:
+      - generic [ref=e174]:
+        - paragraph [ref=e175]:
+          - generic [ref=e176]: "01"
+          - text: Manifiesto
+        - paragraph [ref=e178]:
+          - generic [ref=e179]: La
+          - generic [ref=e180]: soldadura
+          - generic [ref=e181]: "no"
+          - generic [ref=e182]: admite
+          - generic [ref=e183]: errores.
+          - generic [ref=e184]: Cada
+          - generic [ref=e185]: unión
+          - generic [ref=e186]: exige
+          - generic [ref=e187]: potencia,
+          - generic [ref=e188]: precisión
+          - generic [ref=e189]: "y"
+          - generic [ref=e190]: confiabilidad.
+          - generic [ref=e191]: En
+          - generic [ref=e192]: MAQSYMA
+          - generic [ref=e193]: seleccionamos
+          - generic [ref=e194]: tecnología
+          - generic [ref=e195]: diseñada
+          - generic [ref=e196]: para
+          - generic [ref=e197]: responder
+          - generic [ref=e198]: cuando
+          - generic [ref=e199]: el
+          - generic [ref=e200]: trabajo
+          - generic [ref=e201]: realmente
+          - generic [ref=e202]: importa.
+        - generic [ref=e203]:
+          - generic [ref=e204]: 000%
+          - list [ref=e207]:
+            - listitem [ref=e208]:
+              - generic [ref=e210]: Tecnología
+            - listitem [ref=e211]:
+              - generic [ref=e213]: Precisión
+            - listitem [ref=e214]:
+              - generic [ref=e216]: Rendimiento
+            - listitem [ref=e217]:
+              - generic [ref=e219]: Confiabilidad
+    - region "Categorías y selector de procesos" [ref=e220]:
+      - generic [ref=e221]:
+        - generic [ref=e222]:
+          - heading "Explora por proceso" [level=2] [ref=e223]
+          - button "Ver todo el catálogo ( 74 )" [ref=e224] [cursor=pointer]
+        - generic [ref=e228]:
+          - generic [ref=e229]:
+            - button "01 MMA 11 equipos" [pressed] [ref=e231] [cursor=pointer]:
+              - generic [ref=e232]: "01"
+              - generic [ref=e233]: MMA
+              - generic [ref=e234]: 11 equipos
+            - button "02 MIG / MAG 10 equipos" [ref=e240] [cursor=pointer]:
+              - generic [ref=e241]: "02"
+              - generic [ref=e242]: MIG / MAG
+              - generic [ref=e243]: 10 equipos
+            - button "03 TIG 4 equipos" [ref=e249] [cursor=pointer]:
+              - generic [ref=e250]: "03"
+              - generic [ref=e251]: TIG
+              - generic [ref=e252]: 4 equipos
+            - button "04 Multiproceso 9 equipos" [ref=e258] [cursor=pointer]:
+              - generic [ref=e259]: "04"
+              - generic [ref=e260]: Multiproceso
+              - generic [ref=e261]: 9 equipos
+            - button "05 Soldadura Láser 1 equipo" [ref=e267] [cursor=pointer]:
+              - generic [ref=e268]: "05"
+              - generic [ref=e269]: Soldadura Láser
+              - generic [ref=e270]: 1 equipo
+            - button "06 Alimentadores 6 equipos" [ref=e276] [cursor=pointer]:
+              - generic [ref=e277]: "06"
+              - generic [ref=e278]: Alimentadores
+              - generic [ref=e279]: 6 equipos
+          - generic [ref=e285]:
+            - generic [ref=e286]:
+              - img "Categoría MMA" [ref=e287]
+              - generic [ref=e288]: 01 / 06
+            - generic [ref=e289]:
+              - paragraph [ref=e290]: "Electrodo revestido: equipos robustos y simples para obra, estructura y mantenimiento en campo."
+              - paragraph [ref=e291]: Obra · Estructura · Mantenimiento
+              - generic [ref=e292]:
+                - paragraph [ref=e293]: Equipos disponibles ( 11 )
+                - list [ref=e294]:
+                  - listitem [ref=e295]:
+                    - generic [ref=e296]: Bantam 3.2
+                    - generic [ref=e297]: 160 A
+                  - listitem [ref=e298]:
+                    - generic [ref=e299]: Handy Arc 162i
+                    - generic [ref=e300]: 160 A
+                  - listitem [ref=e301]:
+                    - generic [ref=e302]: Rogue ES 201iP PRO
+                    - generic [ref=e303]: 200 A
+              - button "Ver equipos MMA en catálogo" [ref=e304] [cursor=pointer]
+    - region "Máquinas seleccionadas" [ref=e308]:
+      - generic [ref=e309]:
+        - generic [ref=e310]:
+          - generic [ref=e311]:
+            - heading "Máquinas seleccionadas" [level=2] [ref=e312]
+            - paragraph [ref=e313]: Cuatro equipos protagonistas de nuestro showroom listos para entrega inmediata.
+          - button "Ver los 74 equipos" [ref=e314] [cursor=pointer]
+        - generic [ref=e318]:
+          - article [ref=e319]:
+            - generic [ref=e320]:
+              - generic [ref=e321]:
+                - img "Máquina de soldar ESAB Rogue EM 210"
+                - generic [ref=e322]: MIG / MAG
+              - generic [ref=e323]:
+                - generic [ref=e324]:
+                  - generic [ref=e325]:
+                    - generic [ref=e326]: ESAB
+                    - generic [ref=e327]: MQ—001
+                  - heading "Rogue EM 210" [level=3] [ref=e328]
+                  - paragraph [ref=e329]: Soldadora MIG/MAG y MMA portátil monofásica de 210 A (15.3 kg) para materiales de hasta 6 mm.
+                  - generic [ref=e330]:
+                    - generic [ref=e331]:
+                      - generic [ref=e332]: Amperaje
+                      - text: 210 A
+                    - generic [ref=e333]:
+                      - generic [ref=e334]: Ciclo
+                      - generic [ref=e335]: Profesional (IP23S)
+                - generic [ref=e336]:
+                  - button "Ficha técnica" [ref=e337] [cursor=pointer]
+                  - link "Cotizar" [ref=e338] [cursor=pointer]:
+                    - /url: https://wa.me/51957082739?text=Hola%20MAQSYMA%2C%20quiero%20cotizar%20ESAB%20Rogue%20EM%20210%20(ESAB-ROGUEEM210).
+          - article [ref=e342]:
+            - generic [ref=e343]:
+              - generic [ref=e344]:
+                - img "Máquina de soldar ESAB Aristo 500iX"
+                - generic [ref=e345]: MULTIPROCESO
+              - generic [ref=e346]:
+                - generic [ref=e347]:
+                  - generic [ref=e348]:
+                    - generic [ref=e349]: ESAB
+                    - generic [ref=e350]: MQ—002
+                  - heading "Aristo 500iX" [level=3] [ref=e351]
+                  - paragraph [ref=e352]: Fuente de soldadura multiproceso industrial de 500 A con pulso para fabricación pesada.
+                  - generic [ref=e353]:
+                    - generic [ref=e354]:
+                      - generic [ref=e355]: Amperaje
+                      - text: 500 A
+                    - generic [ref=e356]:
+                      - generic [ref=e357]: Ciclo
+                      - generic [ref=e358]: 500 A al 60%
+                - generic [ref=e359]:
+                  - button "Ficha técnica" [ref=e360] [cursor=pointer]
+                  - link "Cotizar" [ref=e361] [cursor=pointer]:
+                    - /url: https://wa.me/51957082739?text=Hola%20MAQSYMA%2C%20quiero%20cotizar%20ESAB%20Aristo%20500iX%20(ESAB-ARISTO500IX).
+          - article [ref=e365]:
+            - generic [ref=e366]:
+              - generic [ref=e367]:
+                - img "Máquina de soldar ESAB ARC 601i"
+                - generic [ref=e368]: MMA
+              - generic [ref=e369]:
+                - generic [ref=e370]:
+                  - generic [ref=e371]:
+                    - generic [ref=e372]: ESAB
+                    - generic [ref=e373]: MQ—003
+                  - heading "ARC 601i" [level=3] [ref=e374]
+                  - paragraph [ref=e375]: Fuente industrial de 600 A para soldadura por electrodo revestido (SMAW) y repelado por arco de carbono (ARCAIR).
+                  - generic [ref=e376]:
+                    - generic [ref=e377]:
+                      - generic [ref=e378]: Amperaje
+                      - text: 600 A
+                    - generic [ref=e379]:
+                      - generic [ref=e380]: Ciclo
+                      - generic [ref=e381]: Industrial pesado
+                - generic [ref=e382]:
+                  - button "Ficha técnica" [ref=e383] [cursor=pointer]
+                  - link "Cotizar" [ref=e384] [cursor=pointer]:
+                    - /url: https://wa.me/51957082739?text=Hola%20MAQSYMA%2C%20quiero%20cotizar%20ESAB%20ARC%20601i%20(ESAB-ARC601I).
+          - article [ref=e388]:
+            - generic [ref=e389]:
+              - generic [ref=e390]:
+                - img "Máquina de soldar ESAB Ruffian EMP 270G EDW"
+                - generic [ref=e391]: MOTOSOLDADORAS
+              - generic [ref=e392]:
+                - generic [ref=e393]:
+                  - generic [ref=e394]:
+                    - generic [ref=e395]: ESAB
+                    - generic [ref=e396]: MQ—004
+                  - heading "Ruffian EMP 270G EDW" [level=3] [ref=e397]
+                  - paragraph [ref=e398]: Motosoldadora multiproceso de 270 A accionada por motor de combustión con generador auxiliar integrado.
+                  - generic [ref=e399]:
+                    - generic [ref=e400]:
+                      - generic [ref=e401]: Amperaje
+                      - text: 270 A
+                    - generic [ref=e402]:
+                      - generic [ref=e403]: Ciclo
+                      - generic [ref=e404]: 270 A al 100%
+                - generic [ref=e405]:
+                  - button "Ficha técnica" [ref=e406] [cursor=pointer]
+                  - link "Cotizar" [ref=e407] [cursor=pointer]:
+                    - /url: https://wa.me/51957082739?text=Hola%20MAQSYMA%2C%20quiero%20cotizar%20ESAB%20Ruffian%20EMP%20270G%20EDW%20(ESAB-RUFFIANEMP270).
+    - region "Aplicaciones industriales" [ref=e411]:
+      - generic [ref=e412]:
+        - generic [ref=e413]:
+          - generic [ref=e414]:
+            - heading "Aplicaciones por sector" [level=2] [ref=e415]
+            - paragraph [ref=e416]: Elige tu rubro de trabajo para ver los equipos ESAB recomendados según proceso y amperaje.
+          - button "Explorar todos los rubros" [ref=e417] [cursor=pointer]
+        - generic [ref=e421]:
+          - button [ref=e422] [cursor=pointer]:
+            - generic [ref=e423]:
+              - 'img "Aplicación de equipos de soldadura: Estructuras metálicas" [ref=e424]'
+              - generic [ref=e430]:
+                - paragraph [ref=e431]: MMA / MIG · 300–500 A
+                - heading "Estructuras metálicas" [level=3] [ref=e432]
+          - button [ref=e433] [cursor=pointer]:
+            - generic [ref=e434]:
+              - 'img "Aplicación de equipos de soldadura: Fabricación industrial" [ref=e435]'
+              - generic [ref=e441]:
+                - paragraph [ref=e442]: MIG / Multiproceso · 400–500 A
+                - heading "Fabricación industrial" [level=3] [ref=e443]
+          - button [ref=e444] [cursor=pointer]:
+            - generic [ref=e445]:
+              - 'img "Aplicación de equipos de soldadura: Mantenimiento y campo" [ref=e446]'
+              - generic [ref=e452]:
+                - paragraph [ref=e453]: MMA Inverter · Portátil
+                - heading "Mantenimiento y campo" [level=3] [ref=e454]
+          - button [ref=e455] [cursor=pointer]:
+            - generic [ref=e456]:
+              - 'img "Aplicación de equipos de soldadura: Inoxidable y aluminio" [ref=e457]'
+              - generic [ref=e463]:
+                - paragraph [ref=e464]: TIG AC/DC · Alta precisión
+                - heading "Inoxidable y aluminio" [level=3] [ref=e465]
+          - button [ref=e466] [cursor=pointer]:
+            - generic [ref=e467]:
+              - 'img "Aplicación de equipos de soldadura: Minería y calderería" [ref=e468]'
+              - generic [ref=e474]:
+                - paragraph [ref=e475]: Trabajo pesado · Alto ciclo
+                - heading "Minería y calderería" [level=3] [ref=e476]
+          - button [ref=e477] [cursor=pointer]:
+            - generic [ref=e478]:
+              - 'img "Aplicación de equipos de soldadura: Talleres profesionales" [ref=e479]'
+              - generic [ref=e485]:
+                - paragraph [ref=e486]: Multiproceso · 200–350 A
+                - heading "Talleres profesionales" [level=3] [ref=e487]
+    - region "Información técnica" [ref=e488]:
+      - generic [ref=e489]:
+        - paragraph [ref=e490]:
+          - generic [ref=e491]: "06"
+          - text: Especificaciones
+        - generic [ref=e493]:
+          - heading "Datos que deciden la compra" [level=2] [ref=e494]
+          - paragraph [ref=e495]: "Cada equipo publica su ficha técnica real: corriente, alimentación, ciclo de trabajo, tecnología y grado de protección."
+        - generic [ref=e496]:
+          - generic [ref=e497]:
+            - paragraph [ref=e498]: Output
+            - generic [ref=e499]: 000A
+            - paragraph [ref=e501]: Corriente de soldadura
+          - generic [ref=e502]:
+            - paragraph [ref=e503]: Input
+            - generic [ref=e504]: 000V
+            - paragraph [ref=e506]: Alimentación trifásica
+          - generic [ref=e507]:
+            - paragraph [ref=e508]: Duty cycle
+            - generic [ref=e509]: 000%
+            - paragraph [ref=e513]: Ciclo de trabajo
+          - generic [ref=e514]:
+            - paragraph [ref=e515]: Potencia
+            - generic [ref=e516]: "[kW]"
+            - paragraph [ref=e517]: Según ficha del equipo
+          - generic [ref=e518]:
+            - paragraph [ref=e519]: Tecnología
+            - generic [ref=e520]: INVERTER
+            - paragraph [ref=e521]: Electrónica de conmutación
+          - generic [ref=e522]:
+            - paragraph [ref=e523]: Protección
+            - generic [ref=e524]: "[IP]"
+            - paragraph [ref=e525]: Grado según modelo
+        - paragraph [ref=e526]: "* Valores de ejemplo visual — cada equipo muestra aquí sus especificaciones reales desde su ficha de producto."
+    - region "Cotización y contacto" [ref=e527]:
+      - generic [ref=e528]:
+        - paragraph [ref=e529]:
+          - generic [ref=e530]: "07"
+          - text: Cotización
+        - heading "ENCONTREMOS LA MÁQUINA ADECUADA PARA TU TRABAJO." [level=2] [ref=e534]
+        - paragraph [ref=e535]: "Indícanos el proceso, el material y tu nivel de producción: te orientamos para elegir el equipo correcto y recibir una cotización directa, sin compromiso."
+        - generic [ref=e536]:
+          - link "Solicitar cotización" [ref=e537] [cursor=pointer]:
+            - /url: https://wa.me/51957082739?text=Hola%20MAQSYMA%2C%20quiero%20solicitar%20una%20cotizaci%C3%B3n%20para%20un%20equipo%20de%20soldadura.
+            - text: Solicitar cotización
+            - generic [aria-hidden] [ref=e538]: →
+          - link "Contactar por WhatsApp" [ref=e539] [cursor=pointer]:
+            - /url: https://wa.me/51957082739?text=Hola%20MAQSYMA%2C%20quiero%20cotizar%20un%20equipo%20de%20soldadura.
+        - generic [ref=e540]:
+          - generic [ref=e541]:
+            - term [ref=e542]: Correo
+            - definition [ref=e543]:
+              - link "ventas@maqsyma.com" [ref=e544] [cursor=pointer]:
+                - /url: mailto:ventas@maqsyma.com
+          - generic [ref=e545]:
+            - term [ref=e546]: WhatsApp
+            - definition [ref=e547]:
+              - link "+51 957 082 739" [ref=e548] [cursor=pointer]:
+                - /url: https://wa.me/51957082739?text=Hola%20MAQSYMA%2C%20quiero%20cotizar%20un%20equipo%20de%20soldadura.
+          - generic [ref=e549]:
+            - term [ref=e550]: Teléfono
+            - definition [ref=e551]:
+              - link "957 082 739" [ref=e552] [cursor=pointer]:
+                - /url: tel:+51957082739
+          - generic [ref=e553]:
+            - term [ref=e554]: Ubicación
+            - definition [ref=e555]: Av. Venezuela 866
+  - contentinfo [ref=e556]:
+    - generic [ref=e557]:
+      - generic [ref=e558]:
+        - generic [ref=e559]:
+          - img "MAQSYMA" [ref=e561]
+          - paragraph [ref=e562]: Showroom digital de máquinas de soldar, equipos de corte y accesorios para soldadores, talleres e industria.
+        - navigation "Pie de página" [ref=e563]:
+          - paragraph [ref=e564]: Navegación
+          - list [ref=e565]:
+            - listitem [ref=e566]:
+              - button "Catálogo completo" [ref=e567] [cursor=pointer]
+            - listitem [ref=e568]:
+              - button "Nosotros" [ref=e569] [cursor=pointer]
+            - listitem [ref=e570]:
+              - button "Destacados" [ref=e571] [cursor=pointer]
+            - listitem [ref=e572]:
+              - button "Categorías" [ref=e573] [cursor=pointer]
+            - listitem [ref=e574]:
+              - button "Aplicaciones" [ref=e575] [cursor=pointer]
+            - listitem [ref=e576]:
+              - button "Contacto" [ref=e577] [cursor=pointer]
+        - generic [ref=e578]:
+          - paragraph [ref=e579]: Contacto directo
+          - list [ref=e580]:
+            - listitem [ref=e581]:
+              - link "WhatsApp +51 957 082 739" [ref=e582] [cursor=pointer]:
+                - /url: https://wa.me/51957082739?text=Hola%20MAQSYMA%2C%20quiero%20cotizar%20un%20equipo%20de%20soldadura.
+            - listitem [ref=e583]:
+              - link "Tel. 957 082 739" [ref=e584] [cursor=pointer]:
+                - /url: tel:+51957082739
+            - listitem [ref=e585]:
+              - link "ventas@maqsyma.com" [ref=e586] [cursor=pointer]:
+                - /url: mailto:ventas@maqsyma.com
+            - listitem [ref=e587]: Av. Venezuela 866
+      - generic [ref=e588]:
+        - paragraph [ref=e589]: © 2026 MAQSYMA — Todos los derechos reservados
+        - paragraph [ref=e590]: Catálogo administrable vía base de datos · V1
+  - link "Contactar por WhatsApp" [ref=e591] [cursor=pointer]:
+    - /url: https://wa.me/51957082739?text=Hola%20MAQSYMA%2C%20necesito%20asesor%C3%ADa%20sobre%20equipos%20de%20soldadura.

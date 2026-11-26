@@ -1,9 +1,17 @@
 import React from "react";
-import HeroShowroom from "./HeroShowroom";
+import HeroScrollytelling from "./HeroScrollytelling";
 
 /**
- * Hero component principal configurado con HeroShowroom (Opción 2 + Scroll-Trigger)
+ * Hero component principal — HeroScrollytelling (Experiencia Cinemática 5 Actos)
+ *
+ * Legados disponibles para referencia:
+ *   - HeroShowroom.jsx  (video scrubbing 4 estaciones, 240vh)
+ *   - HeroCinematic.jsx (crossfade de imágenes, 320-400vh)
+ *   - Hero3DOriginal.jsx (nave industrial Three.js)
+ *   - HeroParallax/    (parallax 2.5D multicapa)
+ *
+ * Para activar legados: ?hero=showroom | ?hero=cinematic | ?hero=3d
  */
 export default function Hero({ onReady }) {
-  return <HeroShowroom onReady={onReady} />;
+  return <HeroScrollytelling onReady={onReady} />;
 }
