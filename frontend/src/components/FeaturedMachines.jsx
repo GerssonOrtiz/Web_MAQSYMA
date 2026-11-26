@@ -190,12 +190,12 @@ export default function FeaturedMachines() {
               data-testid={`featured-card-${i}`}
             >
               <div className="grid grid-cols-1 sm:grid-cols-5">
-                <div className="relative flex aspect-[4/3] items-center justify-center border-b border-white/10 bg-ink/70 p-6 sm:col-span-2 sm:aspect-auto sm:border-b-0 sm:border-r">
+                <div className="relative flex aspect-[4/3] items-center justify-center overflow-hidden border-b border-white/10 bg-[#0B0D11] p-2 sm:col-span-2 sm:aspect-auto sm:border-b-0 sm:border-r">
                   <img
                     src={p.main_image}
                     alt={`Máquina de soldar ${p.brand} ${p.model}`}
                     loading="lazy"
-                    className="max-h-40 max-w-full object-contain transition-transform duration-500 group-hover:scale-105"
+                    className="max-h-44 max-w-full object-contain transition-transform duration-500 group-hover:scale-105"
                   />
                   <span className="absolute left-3 top-3 border border-white/15 bg-ink/80 px-2 py-0.5 font-mono text-[9px] uppercase tracking-wider text-accent">
                     {p.category}

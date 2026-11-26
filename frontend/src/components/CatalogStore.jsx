@@ -550,11 +550,9 @@ export default function CatalogStore() {
                       className="group relative flex flex-col justify-between border border-white/10 bg-coal/65 transition-all duration-300 hover:border-accent/55 hover:bg-coal hover:shadow-[0_12px_32px_rgba(0,0,0,0.45)]"
                     >
                       <div>
-                        {/* Escenario de imagen PNG sin fondo */}
-                        <div className="relative flex aspect-[4/3] w-full items-center justify-center overflow-hidden border-b border-white/10 bg-[#0B0D11] p-6">
-                          {/* Iluminación radial de estudio */}
-                          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_55%,rgba(255,255,255,0.065),transparent_70%)] transition-opacity duration-300 group-hover:opacity-100" />
-                          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-accent/25 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                        {/* Escenario de imagen de estudio 4:3 */}
+                        <div className="relative flex aspect-[4/3] w-full items-center justify-center overflow-hidden border-b border-white/10 bg-[#0B0D11]">
+                          <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-px bg-gradient-to-r from-transparent via-accent/25 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
 
                           {p.main_image ? (
                             <img
@@ -564,7 +562,7 @@ export default function CatalogStore() {
                               decoding="async"
                               width={400}
                               height={300}
-                              className="relative z-10 max-h-full max-w-full object-contain drop-shadow-[0_14px_22px_rgba(0,0,0,0.7)] transition-transform duration-500 group-hover:scale-105"
+                              className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                             />
                           ) : (
                             <NoPhotoPlaceholder product={p} />
