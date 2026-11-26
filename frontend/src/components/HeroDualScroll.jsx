@@ -169,12 +169,6 @@ function StaticDualFallback({ onReady }) {
     >
       <div className="mx-auto grid max-w-7xl items-center gap-10 px-6 lg:grid-cols-12 lg:px-12">
         <div className="lg:col-span-7">
-          <div className="mb-4 flex items-center gap-3">
-            <span className="h-px w-8 bg-accent" />
-            <span className="font-mono text-[10px] uppercase tracking-[0.24em] text-accent">
-              Venta Directa · Equipos Industriales ESAB
-            </span>
-          </div>
           <h1 className="font-display text-5xl font-black uppercase leading-[0.9] tracking-tight sm:text-7xl">
             Venta de Máquinas de Soldar <span className="text-accent">Industriales.</span>
           </h1>
@@ -432,13 +426,6 @@ export default function HeroDualScroll({ onReady }) {
           <div className="grid w-full items-center gap-8 lg:grid-cols-12">
             {/* Columna Izquierda: Propuesta de venta directa */}
             <div className="lg:col-span-7">
-              <div className="mb-4 inline-flex items-center gap-2.5 border border-accent/30 bg-accent/10 px-3.5 py-1.5 backdrop-blur-sm">
-                <span className="h-2 w-2 rounded-full bg-accent animate-pulse" />
-                <span className="font-mono text-[10px] font-medium uppercase tracking-[0.22em] text-accent">
-                  Venta Directa · Equipos Industriales ESAB
-                </span>
-              </div>
-
               <h1 className="font-display text-[clamp(2.8rem,6.2vw,5.2rem)] font-black uppercase leading-[0.88] tracking-tight text-fog">
                 Venta de Máquinas
                 <br />
@@ -614,9 +601,6 @@ export default function HeroDualScroll({ onReady }) {
                   Equipos Estrella <span className="text-accent">en Venta</span>
                 </h2>
               </div>
-              <p className="max-w-md text-xs leading-relaxed text-mist sm:text-sm">
-                Pasa el cursor sobre cualquier equipo para resaltarlo y selecciona el modelo que necesitas cotizar.
-              </p>
             </div>
 
             {/* Grid uniforme de 4 tarjetas idénticas de izquierda a derecha con Parallax 2.5D */}
