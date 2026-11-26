@@ -15,6 +15,8 @@ import {
   useReducedMotion,
   useScroll,
   useTransform,
+  useMotionValue,
+  useSpring,
   useMotionValueEvent,
   AnimatePresence,
 } from "framer-motion";
@@ -171,14 +173,14 @@ function StaticDualFallback({ onReady }) {
           <div className="mb-4 flex items-center gap-3">
             <span className="h-px w-8 bg-accent" />
             <span className="font-mono text-[10px] uppercase tracking-[0.24em] text-accent">
-              Venta Directa · Distribuidor Autorizado ESAB
+              Venta Directa · Equipos Industriales ESAB
             </span>
           </div>
           <h1 className="font-display text-5xl font-black uppercase leading-[0.9] tracking-tight sm:text-7xl">
             Venta de Máquinas de Soldar <span className="text-accent">Industriales.</span>
           </h1>
           <p className="mt-5 max-w-xl text-sm leading-relaxed text-mist sm:text-base">
-            Equipos MIG, TIG, MMA, Multiproceso y Láser con stock inmediato, garantía oficial de fábrica y envío a todo el Perú.
+            Equipos MIG, TIG, MMA, Multiproceso y Láser con stock inmediato, garantía de fábrica y envío a todo el Perú.
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
             <a
@@ -237,7 +239,41 @@ export default function HeroDualScroll({ onReady }) {
 
   const [activeSection, setActiveSection] = useState(0); // 0 = Venta, 1 = Equipo Estrella
   const [selectedStarIdx, setSelectedStarIdx] = useState(0);
+  const [hoveredStarId, setHoveredStarId] = useState(null);
   const activeStar = STAR_MACHINES[selectedStarIdx];
+
+  /* ── Mouse Parallax 2.5D suave ── */
+  const rawMouseX = useMotionValue(0);
+  const rawMouseY = useMotionValue(0);
+  const mouseX = useSpring(rawMouseX, { stiffness: 90, damping: 20, mass: 0.5 });
+  const mouseY = useSpring(rawMouseY, { stiffness: 90, damping: 20, mass: 0.5 });
+
+  // Capas 2.5D: fondo (0.35x), medio (0.75x), primer plano (1.35x + tilt 3D)
+  const bgParallaxX = useTransform(mouseX, [-1, 1], [14, -14]);
+  const bgParallaxY = useTransform(mouseY, [-1, 1], [10, -10]);
+  const midParallaxX = useTransform(mouseX, [-1, 1], [-24, 24]);
+  const midParallaxY = useTransform(mouseY, [-1, 1], [-18, 18]);
+  const fgParallaxX = useTransform(mouseX, [-1, 1], [-44, 44]);
+  const fgParallaxY = useTransform(mouseY, [-1, 1], [-28, 28]);
+  const fgRotateY = useTransform(mouseX, [-1, 1], [-7, 7]);
+  const fgRotateX = useTransform(mouseY, [-1, 1], [5, -5]);
+
+  const handleMouseMove = useCallback(
+    (e) => {
+      const rect = e.currentTarget.getBoundingClientRect();
+      const nx = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      const ny = ((e.clientY - rect.top) / rect.height) * 2 - 1;
+      rawMouseX.set(nx);
+      rawMouseY.set(ny);
+    },
+    [rawMouseX, rawMouseY]
+  );
+
+  const handleMouseLeave = useCallback(() => {
+    rawMouseX.set(0);
+    rawMouseY.set(0);
+    setHoveredStarId(null);
+  }, [rawMouseX, rawMouseY]);
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -336,7 +372,12 @@ export default function HeroDualScroll({ onReady }) {
       aria-label="Venta de máquinas de soldar industriales y equipos estrella"
     >
       {/* Viewport Sticky 100vh */}
-      <div className="sticky top-0 h-screen w-full overflow-hidden bg-ink">
+      <div
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        className="sticky top-0 h-screen w-full overflow-hidden bg-ink"
+        style={{ perspective: "1200px" }}
+      >
         {/* Video atmosférico limpio procesado con FFmpeg */}
         <video
           ref={videoRef}
@@ -395,7 +436,7 @@ export default function HeroDualScroll({ onReady }) {
               <div className="mb-4 inline-flex items-center gap-2.5 border border-accent/30 bg-accent/10 px-3.5 py-1.5 backdrop-blur-sm">
                 <span className="h-2 w-2 rounded-full bg-accent animate-pulse" />
                 <span className="font-mono text-[10px] font-medium uppercase tracking-[0.22em] text-accent">
-                  Venta Directa · Distribuidor Autorizado ESAB Perú
+                  Venta Directa · Equipos Industriales ESAB
                 </span>
               </div>
 
@@ -407,7 +448,7 @@ export default function HeroDualScroll({ onReady }) {
               </h1>
 
               <p className="mt-4 max-w-xl text-sm leading-relaxed text-mist sm:text-base">
-                Equipos <strong className="text-fog font-medium">MIG, TIG, MMA, Multiproceso y Láser</strong> listos para entrega inmediata. Asesoría técnica especializada para talleres, construcción y minería.
+                Equipos <strong className="text-fog font-medium">MIG, TIG, MMA, Multiproceso y Láser</strong> listos para entrega inmediata. Máquinas de alto rendimiento para talleres, construcción y minería.
               </p>
 
               {/* Trust Strip */}
@@ -416,7 +457,7 @@ export default function HeroDualScroll({ onReady }) {
                   <Zap className="h-3.5 w-3.5 text-accent" /> Stock Inmediato
                 </span>
                 <span className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.16em] text-fog/90">
-                  <ShieldCheck className="h-3.5 w-3.5 text-accent" /> Garantía Oficial ESAB
+                  <ShieldCheck className="h-3.5 w-3.5 text-accent" /> Garantía de Fábrica
                 </span>
                 <span className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.16em] text-fog/90">
                   <Truck className="h-3.5 w-3.5 text-accent" /> Envío a todo el Perú
@@ -530,7 +571,7 @@ export default function HeroDualScroll({ onReady }) {
         </motion.div>
 
         {/* ═══════════════════════════════════════════════════════════════
-            SECCIÓN 2 (50%–100%): EQUIPO ESTRELLA & LÍNEA INSIGNIA EN VENTA
+            SECCIÓN 2 (50%–100%): EQUIPO ESTRELLA 2.5D PARALLAX FULL-SECTION
             ═══════════════════════════════════════════════════════════════ */}
         <motion.div
           style={{
@@ -538,13 +579,96 @@ export default function HeroDualScroll({ onReady }) {
             opacity: sec2Opacity,
             pointerEvents: activeSection === 1 ? "auto" : "none",
           }}
-          className="absolute inset-0 z-30 mx-auto flex h-full max-w-7xl items-center px-5 pt-16 sm:px-10 lg:px-12"
+          className="absolute inset-0 z-30 overflow-hidden"
         >
-          <div className="grid w-full items-center gap-8 lg:grid-cols-12">
-            {/* Imagen protagonista del Equipo Estrella seleccionado */}
-            <div className="relative flex flex-col items-center justify-center lg:col-span-6">
-              <div
-                className="pointer-events-none absolute inset-0 m-auto h-72 w-72 rounded-full blur-3xl opacity-30 transition-colors duration-500 sm:h-96 sm:w-96"
+          {/* CAPA 0 (Fondo 2.5D): Tipografía gigante y aura de arco */}
+          <motion.div
+            style={{ x: bgParallaxX, y: bgParallaxY }}
+            className="pointer-events-none absolute inset-0 flex items-center justify-center select-none"
+            aria-hidden="true"
+          >
+            <span
+              className="font-display text-[clamp(8rem,22vw,20rem)] font-black uppercase leading-none tracking-tighter opacity-[0.04]"
+              style={{ color: activeStar.accent }}
+            >
+              {activeStar.name.split(" ")[0]}
+            </span>
+          </motion.div>
+
+          {/* CAPA 1 (Plano Medio 2.5D): Equipos estrella secundarios distribuidos en toda la sección */}
+          <motion.div
+            style={{ x: midParallaxX, y: midParallaxY }}
+            className="absolute inset-0 hidden lg:block"
+          >
+            {STAR_MACHINES.map((machine, idx) => {
+              if (idx === selectedStarIdx) return null;
+              const otherMachines = STAR_MACHINES.filter((_, i) => i !== selectedStarIdx);
+              const posIdx = otherMachines.findIndex((m) => m.id === machine.id);
+              const placements = [
+                "right-[6%] top-[10%] h-44 w-52",
+                "right-[2%] bottom-[10%] h-48 w-56",
+                "left-[44%] top-[8%] h-40 w-48",
+              ];
+              const isHovered = hoveredStarId === machine.id;
+              return (
+                <motion.button
+                  key={machine.id}
+                  type="button"
+                  onClick={() => setSelectedStarIdx(idx)}
+                  onMouseEnter={() => setHoveredStarId(machine.id)}
+                  onMouseLeave={() => setHoveredStarId(null)}
+                  whileHover={{ scale: 1.12, y: -8 }}
+                  transition={{ type: "spring", stiffness: 260, damping: 20 }}
+                  className={`group absolute ${placements[posIdx % placements.length]} flex flex-col items-center justify-center rounded-sm border p-3 backdrop-blur-sm transition-all duration-300`}
+                  style={{
+                    borderColor: isHovered ? machine.accent : "rgba(255,255,255,0.08)",
+                    backgroundColor: isHovered ? "rgba(16,18,23,0.85)" : "rgba(16,18,23,0.35)",
+                    opacity: isHovered ? 1 : 0.42,
+                    filter: isHovered ? "blur(0px) brightness(1.1)" : "blur(1px) brightness(0.8)",
+                    boxShadow: isHovered ? `0 20px 50px -10px ${machine.accent}55` : "none",
+                  }}
+                  title={`Ver ${machine.name}`}
+                >
+                  <img
+                    src={machine.image}
+                    alt={machine.name}
+                    className="h-28 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+                  />
+                  <span
+                    className="mt-1.5 font-mono text-[9px] uppercase tracking-[0.18em] transition-colors"
+                    style={{ color: isHovered ? machine.accent : "#9CA3AF" }}
+                  >
+                    {machine.name}
+                  </span>
+                </motion.button>
+              );
+            })}
+          </motion.div>
+
+          {/* CAPA 2 (Primer Plano 2.5D): Equipo Estrella Protagonista a escala completa */}
+          <motion.div
+            style={{
+              x: fgParallaxX,
+              y: fgParallaxY,
+              rotateX: fgRotateX,
+              rotateY: fgRotateY,
+              transformStyle: "preserve-3d",
+            }}
+            className="pointer-events-none absolute inset-0 flex items-center justify-center lg:justify-end lg:pr-[12%]"
+          >
+            <div
+              className="pointer-events-auto relative flex items-center justify-center"
+              onMouseEnter={() => setHoveredStarId("hero-main")}
+              onMouseLeave={() => setHoveredStarId(null)}
+            >
+              {/* Halo de arco reactivo al acercarse */}
+              <motion.div
+                animate={{
+                  scale: hoveredStarId === "hero-main" ? 1.2 : 1,
+                  opacity: hoveredStarId === "hero-main" ? 0.55 : 0.28,
+                }}
+                transition={{ duration: 0.35 }}
+                className="pointer-events-none absolute inset-0 m-auto h-80 w-80 rounded-full blur-3xl sm:h-[440px] sm:w-[440px]"
                 style={{
                   background: `radial-gradient(circle, ${activeStar.accent} 0%, transparent 70%)`,
                 }}
@@ -554,51 +678,35 @@ export default function HeroDualScroll({ onReady }) {
               <AnimatePresence mode="wait">
                 <motion.div
                   key={activeStar.id}
-                  initial={{ opacity: 0, y: 24, scale: 0.96 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: -20, scale: 0.97 }}
-                  transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-                  className="relative flex h-56 items-center justify-center sm:h-80 lg:h-[380px]"
+                  initial={{ opacity: 0, y: 30, scale: 0.94 }}
+                  animate={{
+                    opacity: 1,
+                    y: 0,
+                    scale: hoveredStarId === "hero-main" ? 1.07 : 1,
+                  }}
+                  exit={{ opacity: 0, y: -24, scale: 0.95 }}
+                  transition={{ type: "spring", stiffness: 200, damping: 22 }}
+                  className="relative flex h-[42vh] items-center justify-center sm:h-[52vh] lg:h-[64vh] lg:max-h-[580px]"
                 >
                   <img
                     src={activeStar.image}
                     alt={activeStar.name}
-                    className="max-h-full w-auto object-contain drop-shadow-[0_24px_45px_rgba(0,0,0,0.9)]"
+                    className="max-h-full w-auto cursor-pointer object-contain transition-all duration-300"
+                    style={{
+                      filter:
+                        hoveredStarId === "hero-main"
+                          ? `drop-shadow(0 28px 55px rgba(0,0,0,0.95)) drop-shadow(0 0 28px ${activeStar.accent}66) brightness(1.08)`
+                          : "drop-shadow(0 24px 45px rgba(0,0,0,0.9))",
+                    }}
                   />
                 </motion.div>
               </AnimatePresence>
-
-              {/* Selector rápido de Equipos Estrella */}
-              <div
-                className="mt-4 flex flex-wrap justify-center gap-2"
-                role="tablist"
-                aria-label="Seleccionar equipo estrella"
-              >
-                {STAR_MACHINES.map((machine, idx) => {
-                  const isSelected = idx === selectedStarIdx;
-                  return (
-                    <button
-                      key={machine.id}
-                      type="button"
-                      role="tab"
-                      aria-selected={isSelected}
-                      onClick={() => setSelectedStarIdx(idx)}
-                      className="border px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.16em] transition-all"
-                      style={{
-                        borderColor: isSelected ? machine.accent : "rgba(255,255,255,0.14)",
-                        backgroundColor: isSelected ? `${machine.accent}22` : "rgba(16,18,23,0.7)",
-                        color: isSelected ? "#F5F6F8" : "#9CA3AF",
-                      }}
-                    >
-                      {machine.name}
-                    </button>
-                  );
-                })}
-              </div>
             </div>
+          </motion.div>
 
-            {/* Ficha Técnica y Cotización Directa */}
-            <div className="lg:col-span-6">
+          {/* CAPA 3 (HUD Frontal): Ficha Técnica, Selector y CTAs */}
+          <div className="pointer-events-none relative z-30 mx-auto flex h-full max-w-7xl items-end pb-12 px-5 pt-20 sm:px-10 lg:items-center lg:pb-0 lg:px-12">
+            <div className="pointer-events-auto w-full max-w-xl border border-white/10 bg-ink/70 p-6 backdrop-blur-md lg:border-0 lg:bg-transparent lg:p-0 lg:backdrop-blur-none">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={activeStar.id}
@@ -633,7 +741,7 @@ export default function HeroDualScroll({ onReady }) {
                   </p>
 
                   {/* Tabla compacta de especificaciones */}
-                  <div className="mt-6 grid grid-cols-3 gap-3 border-y border-white/10 py-4">
+                  <div className="mt-5 grid grid-cols-3 gap-3 border-y border-white/10 py-4">
                     <div>
                       <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-mist">
                         Proceso
@@ -661,6 +769,36 @@ export default function HeroDualScroll({ onReady }) {
                         {activeStar.modality}
                       </p>
                     </div>
+                  </div>
+
+                  {/* Selector rápido de Equipos Estrella */}
+                  <div
+                    className="mt-5 flex flex-wrap gap-2"
+                    role="tablist"
+                    aria-label="Seleccionar equipo estrella"
+                  >
+                    {STAR_MACHINES.map((machine, idx) => {
+                      const isSelected = idx === selectedStarIdx;
+                      return (
+                        <button
+                          key={machine.id}
+                          type="button"
+                          role="tab"
+                          aria-selected={isSelected}
+                          onMouseEnter={() => setHoveredStarId(machine.id)}
+                          onMouseLeave={() => setHoveredStarId(null)}
+                          onClick={() => setSelectedStarIdx(idx)}
+                          className="border px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.16em] transition-all hover:scale-105"
+                          style={{
+                            borderColor: isSelected ? machine.accent : "rgba(255,255,255,0.16)",
+                            backgroundColor: isSelected ? `${machine.accent}26` : "rgba(16,18,23,0.75)",
+                            color: isSelected ? "#F5F6F8" : "#9CA3AF",
+                          }}
+                        >
+                          {machine.name}
+                        </button>
+                      );
+                    })}
                   </div>
 
                   {/* CTAs de conversión */}
