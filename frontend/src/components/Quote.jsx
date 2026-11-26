@@ -6,11 +6,10 @@ const FINAL = "ENCONTREMOS LA MÁQUINA ADECUADA PARA TU TRABAJO.";
 const GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#/—";
 
 const CONTACTS = [
-  ["Correo", "[correo] — por confirmar"],
-  ["WhatsApp", WHATSAPP_DISPLAY],
-  ["Teléfono", "[teléfono] — por confirmar"],
-  ["Ubicación", "[ubicación] — por confirmar"],
-  ["Horario", "[horario] — por confirmar"],
+  ["Correo", "ventas@maqsyma.com", "mailto:ventas@maqsyma.com"],
+  ["WhatsApp", WHATSAPP_DISPLAY, WA_DEFAULT],
+  ["Teléfono", "957 082 739", "tel:+51957082739"],
+  ["Ubicación", "Av. Venezuela 866", null],
 ];
 
 function useScramble(active, rm) {
@@ -96,8 +95,8 @@ export default function Quote() {
           </a>
         </div>
 
-        <dl className="mt-16 grid grid-cols-1 border-t border-white/10 sm:grid-cols-2 lg:grid-cols-5">
-          {CONTACTS.map(([k, v], i) => (
+        <dl className="mt-16 grid grid-cols-1 border-t border-white/10 sm:grid-cols-2 lg:grid-cols-4">
+          {CONTACTS.map(([k, v, href], i) => (
             <div
               key={k}
               className={`border-b border-white/10 py-5 sm:border-l sm:border-white/10 sm:pl-5 lg:border-b-0 ${i === 0 ? "sm:border-l-0 sm:pl-0" : ""}`}
@@ -105,11 +104,11 @@ export default function Quote() {
             >
               <dt className="mono-label">{k}</dt>
               <dd className="mt-2.5 font-mono text-xs uppercase tracking-wider text-fog/90">
-                {k === "WhatsApp" ? (
+                {href ? (
                   <a
-                    href={WA_DEFAULT}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    href={href}
+                    target={href.startsWith("http") ? "_blank" : undefined}
+                    rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
                     className="underline decoration-accent/60 underline-offset-4 transition-colors duration-200 hover:text-accent"
                   >
                     {v}

@@ -1,9 +1,11 @@
 import { useState, useMemo, useEffect } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Search,
   SlidersHorizontal,
   ArrowUpRight,
+  ArrowLeft,
   Check,
   X,
   Shield,
@@ -29,13 +31,21 @@ const CATEGORIES = [
 ];
 
 export default function CatalogStore() {
-  const [selectedCat, setSelectedCat] = useState("ALL");
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [selectedCat, setSelectedCat] = useState(
+    () => searchParams.get("categoria") || "ALL"
+  );
+  const [searchQuery, setSearchQuery] = useState(
+    () => searchParams.get("q") || ""
+  );
   const [sortBy, setSortBy] = useState("default");
-  const [filters, setFilters] = useState({
-    amperageRanges: [],
-    powerSupply: [],
-    applications: [],
+  const [filters, setFilters] = useState(() => {
+    const appParam = searchParams.get("app");
+    return {
+      amperageRanges: [],
+      powerSupply: [],
+      applications: appParam ? [appParam] : [],
+    };
   });
   const [showFiltersMobile, setShowFiltersMobile] = useState(false);
   const [activeProduct, setActiveProduct] = useState(null);
@@ -43,12 +53,16 @@ export default function CatalogStore() {
   const [showCompareModal, setShowCompareModal] = useState(false);
 
   useEffect(() => {
-    const onCatEvent = (e) => {
-      if (e.detail) setSelectedCat(e.detail);
-    };
-    window.addEventListener("filter-category", onCatEvent);
-    return () => window.removeEventListener("filter-category", onCatEvent);
-  }, []);
+    const catParam = searchParams.get("categoria");
+    const appParam = searchParams.get("app");
+    if (catParam) setSelectedCat(catParam);
+    if (appParam) {
+      setFilters((prev) => ({
+        ...prev,
+        applications: [appParam],
+      }));
+    }
+  }, [searchParams]);
 
   const handleFilterChange = (type, value) => {
     if (type === "reset") {
@@ -144,27 +158,33 @@ export default function CatalogStore() {
     setSearchQuery("");
     setSortBy("default");
     setFilters({ amperageRanges: [], powerSupply: [], applications: [] });
+    setSearchParams({});
   };
 
   return (
     <section
       id="tienda"
-      className="relative border-t border-white/10 bg-ink/90 py-24 sm:py-32"
+      className="relative min-h-screen bg-ink/90 pb-24 pt-28 sm:pb-32 sm:pt-32"
       aria-label="Catálogo completo de equipos"
     >
       <div className="pointer-events-none absolute left-1/2 top-0 h-96 w-full max-w-7xl -translate-x-1/2 bg-[radial-gradient(ellipse_at_top,rgba(255,183,3,0.06),transparent_70%)]" />
 
       <div className="section-head relative z-10">
+        <div className="mb-6">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.2em] text-mist transition-colors hover:text-accent"
+          >
+            <ArrowLeft className="h-3.5 w-3.5" /> Volver al inicio
+          </Link>
+        </div>
+
         {/* Encabezado de sección */}
         <div className="flex flex-col justify-between gap-6 border-b border-white/10 pb-8 md:flex-row md:items-end">
           <div>
-            <p className="mono-label flex items-center gap-3">
-              <span className="font-mono text-accent">04</span> Inventario Técnico ESAB
-              <span className="h-px w-16 bg-white/10" />
-            </p>
-            <h2 className="mt-4 font-display text-4xl font-black uppercase tracking-tight sm:text-5xl lg:text-6xl">
-              Catálogo & <span className="text-accent">Equipos</span>
-            </h2>
+            <h1 className="font-display text-4xl font-black uppercase tracking-tight sm:text-5xl lg:text-6xl">
+              Catálogo & <span className="text-accent">Equipos ESAB</span>
+            </h1>
             <p className="mt-3 max-w-xl text-sm text-mist sm:text-base">
               Explora nuestra gama completa de fuentes de poder, multiprocesos, tecnología láser y alimentadores de alambre originales con respaldo de garantía oficial.
             </p>

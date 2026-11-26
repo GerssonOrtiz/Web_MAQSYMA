@@ -1,22 +1,23 @@
 import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import Logo from "./Logo";
 import { scrollToSection } from "../lib/scroll";
 
 const LINKS = [
-  { id: "maquinas", label: "Destacados" },
-  { id: "tienda", label: "Catálogo" },
-  { id: "categorias", label: "Categorías" },
-  { id: "aplicaciones", label: "Aplicaciones" },
-  { id: "contacto", label: "Contacto" },
+  { id: "maquinas", label: "Destacados", type: "section" },
+  { id: "/catalogo", label: "Catálogo", type: "route" },
+  { id: "categorias", label: "Categorías", type: "section" },
+  { id: "aplicaciones", label: "Aplicaciones", type: "section" },
+  { id: "contacto", label: "Contacto", type: "section" },
 ];
-
-const go = (id) => () => scrollToSection(id);
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const onKey = (e) => e.key === "Escape" && setOpen(false);
@@ -30,17 +31,40 @@ export default function Navbar() {
     };
   }, []);
 
+  const handleNav = (link) => {
+    setOpen(false);
+    if (link.type === "route") {
+      navigate(link.id);
+      return;
+    }
+    if (location.pathname !== "/") {
+      navigate("/", { state: { scrollTo: link.id } });
+    } else {
+      scrollToSection(link.id);
+    }
+  };
+
+  const handleBrandClick = () => {
+    if (location.pathname !== "/") {
+      navigate("/");
+    } else if (window.__lenis) {
+      window.__lenis.scrollTo(0);
+    } else {
+      window.scrollTo(0, 0);
+    }
+  };
+
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
-        scrolled
+        scrolled || location.pathname !== "/"
           ? "border-b border-white/10 bg-ink/90 shadow-lg backdrop-blur-md"
           : "bg-transparent"
       }`}
     >
       <nav className="section-head flex h-16 items-center justify-between" aria-label="Principal">
         <button
-          onClick={() => window.__lenis ? window.__lenis.scrollTo(0) : window.scrollTo(0, 0)}
+          onClick={handleBrandClick}
           className="flex items-center gap-3"
           data-testid="nav-brand"
           aria-label="MAQSYMA — inicio"
@@ -54,17 +78,26 @@ export default function Navbar() {
         </button>
 
         <div className="hidden lg:flex items-center gap-8">
-          {LINKS.map((l) => (
-            <button
-              key={l.id}
-              onClick={go(l.id)}
-              data-testid={`nav-link-${l.id}`}
-              className="group relative font-mono text-[11px] uppercase tracking-[0.22em] text-mist transition-colors duration-200 hover:text-fog"
-            >
-              {l.label}
-              <span className="absolute -bottom-1.5 left-0 h-px w-full origin-left scale-x-0 bg-accent transition-transform duration-200 group-hover:scale-x-100" />
-            </button>
-          ))}
+          {LINKS.map((l) => {
+            const isActive = l.type === "route" && location.pathname === l.id;
+            return (
+              <button
+                key={l.id}
+                onClick={() => handleNav(l)}
+                data-testid={`nav-link-${l.id.replace("/", "")}`}
+                className={`group relative font-mono text-[11px] uppercase tracking-[0.22em] transition-colors duration-200 ${
+                  isActive ? "text-accent" : "text-mist hover:text-fog"
+                }`}
+              >
+                {l.label}
+                <span
+                  className={`absolute -bottom-1.5 left-0 h-px w-full origin-left bg-accent transition-transform duration-200 ${
+                    isActive ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                  }`}
+                />
+              </button>
+            );
+          })}
           <span
             className="flex items-center gap-2.5 border border-white/10 px-3.5 py-2"
             data-testid="nav-status"
@@ -106,12 +139,9 @@ export default function Navbar() {
               {LINKS.map((l) => (
                 <button
                   key={l.id}
-                  onClick={() => {
-                    setOpen(false);
-                    go(l.id)();
-                  }}
+                  onClick={() => handleNav(l)}
                   className="flex items-center justify-between border-b border-white/5 py-4 font-mono text-xs uppercase tracking-[0.22em] text-mist hover:text-fog"
-                  data-testid={`nav-mobile-${l.id}`}
+                  data-testid={`nav-mobile-${l.id.replace("/", "")}`}
                 >
                   {l.label}
                   <span className="text-accent">→</span>

@@ -1,87 +1,31 @@
-import { useEffect, useRef, useState } from "react";
-import {
-  AnimatePresence,
-  motion,
-  useMotionTemplate,
-  useMotionValue,
-  useMotionValueEvent,
-  useReducedMotion,
-  useScroll,
-  useSpring,
-  useTransform,
-} from "framer-motion";
-import { X } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { AnimatePresence, motion } from "framer-motion";
+import { X, ArrowUpRight } from "lucide-react";
 import { waLink } from "../lib/scroll";
-import { supabase } from "../lib/supabase";
 import { ESAB_PRODUCTS } from "../data/esabProducts";
-
-const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
-
-const Z_GAP = 850;
-const X_PATTERN = [0, 7, -6, 5, -5, 6, -4, 4];
 
 const spec = (p, key) => p[key]?.trim() || "SEGÚN MODELO";
 const mqCode = (i) => `MQ—${String(i + 1).padStart(3, "0")}`;
 
-// Usar los productos destacados del catálogo oficial de ESAB como lista principal de la experiencia 3D/túnel
-const FALLBACK_PRODUCTS = ESAB_PRODUCTS.filter((p) => p.featured);
+// Selección curada de 4 equipos protagonistas (variedad de procesos)
+const CURATED_FEATURED = (() => {
+  const featured = ESAB_PRODUCTS.filter((p) => p.featured);
+  const picks = [];
+  const usedCats = new Set();
 
-function useProducts() {
-  const [products, setProducts] = useState(null);
-  const [error, setError] = useState(false);
-
-  useEffect(() => {
-    let alive = true;
-
-    async function fetchProducts() {
-      // 1. Prioridad: Consulta a Supabase si está configurado
-      if (supabase) {
-        try {
-          const { data, error: supaError } = await supabase
-            .from("products")
-            .select("*")
-            .order("sort_order", { ascending: true });
-
-          if (!supaError && data && data.length > 0) {
-            if (alive) setProducts(data);
-            return;
-          }
-        } catch (e) {
-          console.warn("Supabase fetch failed, trying API fallback", e);
-        }
-      }
-
-      // 2. Segunda opción: Backend API REST local
-      try {
-        const r = await fetch(`${API}/products`);
-        if (r.ok) {
-          const data = await r.json();
-          if (alive && data?.length > 0) {
-            setProducts(data);
-            return;
-          }
-        }
-      } catch (e) {
-        console.warn("Backend API not reachable, using fallback catalog", e);
-      }
-
-      // 3. Respaldo garantizado: Productos iniciales
-      if (alive) {
-        setProducts(FALLBACK_PRODUCTS);
-      }
+  for (const p of featured) {
+    if (!usedCats.has(p.category) && picks.length < 4) {
+      picks.push(p);
+      usedCats.add(p.category);
     }
-
-    fetchProducts();
-
-    return () => {
-      alive = false;
-    };
-  }, []);
-
-  return { products, error };
-}
-
-/* ---------- Ficha técnica (especificaciones reales del catálogo) ---------- */
+  }
+  for (const p of featured) {
+    if (picks.length >= 4) break;
+    if (!picks.some((x) => x.id === p.id)) picks.push(p);
+  }
+  return picks.slice(0, 4);
+})();
 
 function SpecSheet({ p, index, onClose }) {
   useEffect(() => {
@@ -103,8 +47,6 @@ function SpecSheet({ p, index, onClose }) {
     ["Alimentación", spec(p, "power_supply")],
     ["Factor de trabajo", spec(p, "duty_cycle")],
     ["SKU", p.sku || "POR CONFIRMAR"],
-    ["Precio", p.price || "POR COTIZAR"],
-    ["Disponibilidad", p.availability || "POR CONFIRMAR"],
   ];
 
   return (
@@ -135,7 +77,7 @@ function SpecSheet({ p, index, onClose }) {
         <div className="flex items-start justify-between gap-4">
           <div>
             <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent">{p.brand}</p>
-            <h3 className="mt-2 font-display text-4xl font-extrabold uppercase leading-none tracking-tight">
+            <h3 className="mt-2 font-display text-3xl font-extrabold uppercase leading-none tracking-tight sm:text-4xl">
               {p.model}
             </h3>
             <p className="mt-2 font-mono text-[10px] tabular-nums text-mist">{mqCode(index)}</p>
@@ -193,21 +135,20 @@ function SpecSheet({ p, index, onClose }) {
         <div className="mt-8 flex flex-col gap-3 border-t border-white/10 pt-6 sm:flex-row">
           <a
             className="btn-primary"
-            href={p.quote_url || waLink(`Hola MAQSYMA, quiero cotizar ${p.brand} ${p.model} (${mqCode(index)}).`)}
+            href={
+              p.quote_url ||
+              waLink(`Hola MAQSYMA, quiero cotizar ${p.brand} ${p.model} (${p.sku || mqCode(index)}).`)
+            }
             target="_blank"
             rel="noopener noreferrer"
             data-testid="spec-sheet-quote"
           >
             Solicitar cotización <span aria-hidden="true">→</span>
           </a>
-          {p.datasheet_url ? (
+          {p.datasheet_url && (
             <a className="btn-ghost" href={p.datasheet_url} target="_blank" rel="noopener noreferrer">
-              Ficha técnica (PDF)
+              Ficha técnica oficial
             </a>
-          ) : (
-            <span className="inline-flex items-center font-mono text-[10px] uppercase tracking-[0.2em] text-mist/70">
-              Ficha técnica PDF / por publicar
-            </span>
           )}
         </div>
       </motion.div>
@@ -215,359 +156,108 @@ function SpecSheet({ p, index, onClose }) {
   );
 }
 
-/* ---------- Info band (compartida) ---------- */
-
-function InfoBand({ p, index, onSpec, tabIndex }) {
-  return (
-    <>
-      <div className="flex items-baseline justify-between gap-4">
-        <div>
-          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent">{p.brand}</p>
-          <h3 className="mt-1 font-display text-3xl font-extrabold uppercase leading-none tracking-tight sm:text-4xl">
-            {p.model}
-          </h3>
-        </div>
-        <span className="font-mono text-[10px] tabular-nums text-mist">{mqCode(index)}</span>
-      </div>
-      <div className="mt-3 grid grid-cols-2 gap-x-4 gap-y-1.5 border-t border-white/10 pt-3 sm:grid-cols-4">
-        {[
-          ["Categoría", p.category],
-          ["Proceso", p.process],
-          ["Amperaje", spec(p, "amperage")],
-          ["Voltaje", spec(p, "voltage")],
-        ].map(([k, v]) => (
-          <div key={k}>
-            <p className="font-mono text-[8px] uppercase tracking-[0.2em] text-mist">{k}</p>
-            <p className="mt-0.5 font-mono text-[11px] uppercase text-fog/90">{v}</p>
-          </div>
-        ))}
-      </div>
-      <p className="mt-3 text-xs leading-relaxed text-mist sm:text-sm">{p.description}</p>
-      <div className="mt-4 flex flex-col gap-2.5 sm:flex-row">
-        <button
-          className="btn-primary !px-5 !py-3 !text-[10px]"
-          onClick={() => onSpec(p, index)}
-          tabIndex={tabIndex}
-          data-testid={`machine-specs-${index}`}
-        >
-          Ver especificaciones
-        </button>
-        <a
-          className="btn-ghost !px-5 !py-3 !text-[10px]"
-          href={p.quote_url || waLink(`Hola MAQSYMA, quiero cotizar ${p.brand} ${p.model} (${mqCode(index)}).`)}
-          target="_blank"
-          rel="noopener noreferrer"
-          tabIndex={tabIndex}
-          data-testid={`machine-quote-${index}`}
-        >
-          Solicitar cotización
-        </a>
-      </div>
-    </>
-  );
-}
-
-/* ---------- Escena 3D ligada al scroll ---------- */
-
-function HollowFrame({ index, total, progress }) {
-  const d = useTransform(progress, (v) => index + 1.5 - v * (total + 1));
-  const z = useTransform(d, (v) => -v * Z_GAP);
-  const opacity = useTransform(d, [-0.45, 0.1, 1.1, 1.9], [0, 0.35, 0.28, 0]);
-  const xPct = useTransform(d, () => `${X_PATTERN[(index + 1) % X_PATTERN.length] / 2}%`);
-  const transform = useMotionTemplate`translate(-50%, -50%) translate3d(${xPct}, 0, ${z}px)`;
-  return (
-    <motion.div
-      aria-hidden="true"
-      style={{ transform, opacity }}
-      className="pointer-events-none absolute left-1/2 top-1/2 w-[min(62vw,580px)] will-change-transform"
-    >
-      <div className="relative aspect-[16/10] border border-white/5">
-        <span className="absolute left-0 top-0 h-3 w-3 border-l border-t border-white/15" />
-        <span className="absolute bottom-0 right-0 h-3 w-3 border-b border-r border-white/15" />
-      </div>
-    </motion.div>
-  );
-}
-
-function MachineCard({ p, index, total, progress, active, onSpec }) {
-  const d = useTransform(progress, (v) => index + 1 - v * (total + 1));
-  const z = useTransform(d, (v) => -v * Z_GAP);
-  const xPct = useTransform(d, () => `${X_PATTERN[index % X_PATTERN.length]}%`);
-  const opacity = useTransform(d, [-0.5, -0.12, 1.25, 2.1], [0, 1, 1, 0]);
-  const veil = useTransform(d, [-0.6, 0, 1.5], [0.45, 0, 0.75]);
-  const infoOpacity = useTransform(d, [-0.35, 0, 0.45, 0.95], [0, 1, 1, 0]);
-
-  const rx = useMotionValue(0);
-  const ry = useMotionValue(0);
-  const srx = useSpring(rx, { stiffness: 130, damping: 18 });
-  const sry = useSpring(ry, { stiffness: 130, damping: 18 });
-  const [glare, setGlare] = useState({ x: 50, y: 35, on: false });
-
-  const transform = useMotionTemplate`translate(-50%, -50%) translate3d(${xPct}, 0, ${z}px) rotateX(${srx}deg) rotateY(${sry}deg)`;
-
-  const onMove = (e) => {
-    if (!active || !window.matchMedia("(pointer: fine)").matches) return;
-    const r = e.currentTarget.getBoundingClientRect();
-    const px = (e.clientX - r.left) / r.width;
-    const py = (e.clientY - r.top) / r.height;
-    ry.set((px - 0.5) * 4);
-    rx.set(-(py - 0.5) * 4);
-    setGlare({ x: px * 100, y: py * 100, on: true });
-  };
-  const onLeave = () => {
-    rx.set(0);
-    ry.set(0);
-    setGlare((g) => ({ ...g, on: false }));
-  };
-
-  return (
-    <motion.div
-      style={{ transform, opacity, pointerEvents: active ? "auto" : "none" }}
-      onMouseMove={onMove}
-      onMouseLeave={onLeave}
-      className="absolute left-1/2 top-[55%] w-[min(70vw,660px)] will-change-transform"
-      data-testid={`machine-frame-${index}`}
-      aria-hidden={!active}
-    >
-      <div className="relative aspect-[16/10] overflow-hidden border border-white/15 bg-coal">
-        <img
-          src={p.main_image}
-          alt={`Máquina de soldar ${p.brand} ${p.model}`}
-          className="h-full w-full object-cover"
-        />
-        <motion.div style={{ opacity: veil }} className="pointer-events-none absolute inset-0 bg-ink" />
-        <div
-          className="pointer-events-none absolute inset-0 transition-opacity duration-300"
-          style={{
-            opacity: glare.on ? 0.6 : 0,
-            background: `radial-gradient(300px at ${glare.x}% ${glare.y}%, rgba(255,255,255,0.10), transparent 65%)`,
-          }}
-        />
-        {p.is_example && (
-          <span className="absolute left-3 top-3 border border-accent/50 bg-ink/60 px-2 py-1 font-mono text-[9px] uppercase tracking-[0.2em] text-accent backdrop-blur-sm">
-            Ejemplo
-          </span>
-        )}
-        <span className="absolute right-3 top-3 bg-ink/50 px-2 py-1 font-mono text-[9px] tabular-nums text-fog/80 backdrop-blur-sm">
-          {mqCode(index)}
-        </span>
-        <span className="absolute bottom-3 left-3 h-4 w-4 border-b border-l border-white/40" />
-        <span className="absolute bottom-3 right-3 h-4 w-4 border-b border-r border-white/40" />
-      </div>
-      <motion.div
-        style={{ opacity: infoOpacity }}
-        className="border border-t-0 border-white/15 bg-ink/95 px-5 py-4 sm:px-6"
-      >
-        <InfoBand p={p} index={index} onSpec={onSpec} tabIndex={active ? 0 : -1} />
-      </motion.div>
-    </motion.div>
-  );
-}
-
-function Tunnel({ products, onSpec }) {
-  const ref = useRef(null);
-  const total = products.length;
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
-  const [current, setCurrent] = useState(0);
-
-  useMotionValueEvent(scrollYProgress, "change", (v) => {
-    const i = Math.min(total - 1, Math.max(0, Math.round(v * (total + 1) - 1)));
-    setCurrent((c) => (c === i ? c : i));
-  });
-
-  return (
-    <div
-      ref={ref}
-      className="relative"
-      style={{ height: `${(total + 2) * 100}vh` }}
-      data-testid="machines-tunnel"
-    >
-      <div className="sticky top-0 h-screen overflow-hidden">
-        <div className="absolute inset-x-0 top-0 z-20 pt-24">
-          <div className="section-head flex flex-wrap items-end justify-between gap-4">
-            <div>
-              <p className="mono-label flex items-center gap-3">
-                <span className="font-mono text-accent">03</span> Catálogo
-                <span className="h-px w-16 bg-white/10" />
-              </p>
-              <h2 className="mt-3 font-display text-4xl font-extrabold uppercase leading-[0.95] tracking-tight sm:text-5xl lg:text-6xl">
-                Máquinas <span className="text-accent">seleccionadas</span>
-              </h2>
-            </div>
-            <div className="text-right">
-              <p className="font-mono text-[11px] tabular-nums text-fog/80" data-testid="machines-counter">
-                {String(total).padStart(2, "0")} UNIDADES EN EXHIBICIÓN
-              </p>
-              <p className="mono-label mt-1.5 flex items-center justify-end gap-2">
-                Desplázate para explorar <span className="text-accent">↓</span>
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 flex items-center justify-center"
-        >
-          <div className="h-[72vmin] w-[72vmin] rounded-full bg-[radial-gradient(circle,rgba(0,230,118,0.055),transparent_62%)]" />
-          <span className="absolute h-3 w-px bg-white/20" />
-          <span className="absolute h-px w-3 bg-white/20" />
-        </div>
-
-        <div
-          className="absolute inset-0"
-          style={{ perspective: "1100px", transformStyle: "preserve-3d" }}
-        >
-          {products.slice(0, -1).map((_, i) => (
-            <HollowFrame key={`hollow-${i}`} index={i} total={total} progress={scrollYProgress} />
-          ))}
-          {products.map((p, i) => (
-            <MachineCard
-              key={p.id ?? i}
-              p={p}
-              index={i}
-              total={total}
-              progress={scrollYProgress}
-              active={current === i}
-              onSpec={onSpec}
-            />
-          ))}
-        </div>
-
-        <div className="absolute inset-x-0 bottom-0 z-20 pb-7">
-          <div className="section-head">
-            <div className="flex items-center gap-4 border-t border-white/10 pt-4">
-              <span className="font-mono text-sm tabular-nums text-accent" data-testid="machines-current">
-                {String(current + 1).padStart(2, "0")}
-              </span>
-              <span className="font-mono text-[10px] text-mist">/ {String(total).padStart(2, "0")}</span>
-              <span className="hidden font-mono text-[10px] uppercase tracking-[0.2em] text-fog sm:inline">
-                {products[current]?.model}
-              </span>
-              <span className="relative h-px flex-1 bg-white/10">
-                <motion.span
-                  style={{ scaleX: scrollYProgress }}
-                  className="absolute inset-0 origin-left bg-accent"
-                  data-testid="machines-progress"
-                />
-              </span>
-              <span className="mono-label hidden sm:inline">Explorando catálogo</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ---------- Alternativa vertical (móvil y movimiento reducido) ---------- */
-
-function MachineStatic({ p, index, onSpec }) {
-  return (
-    <motion.article
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.15 }}
-      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-      className="grid grid-cols-1 gap-6 border-t border-white/10 py-12 sm:grid-cols-2 sm:gap-8"
-      data-testid={`machine-row-${index}`}
-    >
-      <div className="relative aspect-[4/3] overflow-hidden border border-white/10 bg-coal">
-        <img
-          src={p.main_image}
-          alt={`Máquina de soldar ${p.brand} ${p.model}`}
-          className="h-full w-full object-cover"
-        />
-        {p.is_example && (
-          <span className="absolute left-3 top-3 border border-accent/50 bg-ink/60 px-2 py-1 font-mono text-[9px] uppercase tracking-[0.2em] text-accent backdrop-blur-sm">
-            Ejemplo
-          </span>
-        )}
-        <span className="absolute right-3 top-3 bg-ink/50 px-2 py-1 font-mono text-[9px] tabular-nums text-fog/80 backdrop-blur-sm">
-          {mqCode(index)}
-        </span>
-      </div>
-      <div>
-        <InfoBand p={p} index={index} onSpec={onSpec} tabIndex={0} />
-      </div>
-    </motion.article>
-  );
-}
-
-function Stack({ products, onSpec }) {
-  const total = products.length;
-  return (
-    <div className="py-24 lg:py-36">
-      <div className="section-head">
-        <p className="mono-label flex items-center gap-3">
-          <span className="font-mono text-accent">03</span> Catálogo
-          <span className="h-px flex-1 bg-white/10" />
-        </p>
-        <div className="mt-6 flex flex-wrap items-end justify-between gap-6">
-          <h2 className="font-display text-5xl font-extrabold uppercase leading-[0.95] tracking-tight sm:text-6xl lg:text-7xl">
-            Máquinas <span className="text-accent">seleccionadas</span>
-          </h2>
-          <p className="font-mono text-[11px] tabular-nums text-fog/80" data-testid="machines-counter">
-            {String(total).padStart(2, "0")} UNIDADES EN EXHIBICIÓN
-          </p>
-        </div>
-        <div className="mt-12 border-b border-white/10">
-          {products.map((p, i) => (
-            <MachineStatic key={p.id ?? i} p={p} index={i} onSpec={onSpec} />
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ---------- Sección ---------- */
-
 export default function FeaturedMachines() {
-  const { products, error } = useProducts();
   const [specFor, setSpecFor] = useState(null);
-  const rm = useReducedMotion();
-  const [wide, setWide] = useState(
-    typeof window !== "undefined" ? window.matchMedia("(min-width: 768px)").matches : true
-  );
-
-  useEffect(() => {
-    const mq = window.matchMedia("(min-width: 768px)");
-    const update = () => setWide(mq.matches);
-    update();
-    mq.addEventListener("change", update);
-    return () => mq.removeEventListener("change", update);
-  }, []);
-
-  const total = products?.length ?? 0;
-  const onSpec = (p, index) => setSpecFor({ p, index });
+  const navigate = useNavigate();
 
   return (
-    <section id="maquinas" aria-label="Máquinas destacadas">
-      {products === null && !error && (
-        <div className="py-40 text-center">
-          <p className="font-mono text-xs uppercase tracking-[0.24em] text-mist">
-            {error ? "Catálogo no disponible — reintenta en unos segundos" : "Cargando catálogo…"}
-          </p>
+    <section id="maquinas" className="border-t border-white/10 py-20 lg:py-28" aria-label="Máquinas seleccionadas">
+      <div className="section-head">
+        <div className="flex flex-wrap items-end justify-between gap-6">
+          <div>
+            <h2 className="font-display text-4xl font-extrabold uppercase leading-[0.95] tracking-tight sm:text-5xl lg:text-6xl">
+              Máquinas <span className="text-accent">seleccionadas</span>
+            </h2>
+            <p className="mt-3 max-w-xl text-sm text-mist sm:text-base">
+              Cuatro equipos protagonistas de nuestro showroom listos para entrega inmediata.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => navigate("/catalogo")}
+            className="btn-primary !px-5 !py-3 !text-[10px]"
+            data-testid="featured-all-catalog"
+          >
+            Ver los {ESAB_PRODUCTS.length} equipos <ArrowUpRight className="h-3.5 w-3.5" />
+          </button>
         </div>
-      )}
-      {products === null && error && (
-        <div className="py-40 text-center">
-          <p className="font-mono text-xs uppercase tracking-[0.24em] text-mist">
-            Catálogo no disponible — reintenta en unos segundos
-          </p>
+
+        <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2">
+          {CURATED_FEATURED.map((p, i) => (
+            <article
+              key={p.id}
+              className="group flex flex-col justify-between border border-white/10 bg-coal/60 transition-colors duration-300 hover:border-accent/50"
+              data-testid={`featured-card-${i}`}
+            >
+              <div className="grid grid-cols-1 sm:grid-cols-5">
+                <div className="relative flex aspect-[4/3] items-center justify-center border-b border-white/10 bg-ink/70 p-6 sm:col-span-2 sm:aspect-auto sm:border-b-0 sm:border-r">
+                  <img
+                    src={p.main_image}
+                    alt={`Máquina de soldar ${p.brand} ${p.model}`}
+                    loading="lazy"
+                    className="max-h-40 max-w-full object-contain transition-transform duration-500 group-hover:scale-105"
+                  />
+                  <span className="absolute left-3 top-3 border border-white/15 bg-ink/80 px-2 py-0.5 font-mono text-[9px] uppercase tracking-wider text-accent">
+                    {p.category}
+                  </span>
+                </div>
+
+                <div className="flex flex-col justify-between p-5 sm:col-span-3 sm:p-6">
+                  <div>
+                    <div className="flex items-center justify-between">
+                      <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-accent">
+                        {p.brand}
+                      </span>
+                      <span className="font-mono text-[10px] tabular-nums text-mist">
+                        {mqCode(i)}
+                      </span>
+                    </div>
+                    <h3 className="mt-1.5 font-display text-2xl font-extrabold uppercase tracking-tight text-fog sm:text-3xl">
+                      {p.model}
+                    </h3>
+                    <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-mist sm:text-sm">
+                      {p.description}
+                    </p>
+
+                    <div className="mt-4 grid grid-cols-2 gap-3 border-t border-white/10 pt-3 font-mono text-[10px]">
+                      <div>
+                        <span className="block uppercase text-mist/60">Amperaje</span>
+                        <span className="font-semibold text-accent">{spec(p, "amperage")}</span>
+                      </div>
+                      <div>
+                        <span className="block uppercase text-mist/60">Ciclo</span>
+                        <span className="truncate block text-fog">{spec(p, "duty_cycle")}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-5 flex flex-col gap-2.5 sm:flex-row">
+                    <button
+                      type="button"
+                      className="btn-ghost flex-1 !px-3 !py-2.5 !text-[10px]"
+                      onClick={() => setSpecFor({ p, index: i })}
+                      data-testid={`machine-specs-${i}`}
+                    >
+                      Ficha técnica
+                    </button>
+                    <a
+                      className="btn-primary flex-1 !px-3 !py-2.5 !text-[10px]"
+                      href={waLink(
+                        `Hola MAQSYMA, quiero cotizar ${p.brand} ${p.model} (${p.sku || mqCode(i)}).`
+                      )}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      data-testid={`machine-quote-${i}`}
+                    >
+                      Cotizar <ArrowUpRight className="h-3 w-3" />
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </article>
+          ))}
         </div>
-      )}
-      {products && total === 0 && (
-        <div className="py-40 text-center">
-          <p className="font-mono text-xs uppercase tracking-[0.24em] text-mist">
-            Catálogo en carga — [productos por publicar]
-          </p>
-        </div>
-      )}
-      {products && total > 0 && (wide && !rm
-        ? <Tunnel products={products} onSpec={onSpec} />
-        : <Stack products={products} onSpec={onSpec} />)}
+      </div>
 
       <AnimatePresence>
         {specFor && (

@@ -1,14 +1,30 @@
+import { useLocation, useNavigate } from "react-router-dom";
 import Logo from "./Logo";
 import { WA_DEFAULT, WHATSAPP_DISPLAY, scrollToSection } from "../lib/scroll";
 
 const LINKS = [
-  ["Máquinas", "maquinas"],
-  ["Categorías", "categorias"],
-  ["Aplicaciones", "aplicaciones"],
-  ["Contacto", "contacto"],
+  ["Catálogo completo", "/catalogo", "route"],
+  ["Destacados", "maquinas", "section"],
+  ["Categorías", "categorias", "section"],
+  ["Aplicaciones", "aplicaciones", "section"],
+  ["Contacto", "contacto", "section"],
 ];
 
 export default function Footer() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleLink = (target, type) => {
+    if (type === "route") {
+      navigate(target);
+      return;
+    }
+    if (location.pathname !== "/") {
+      navigate("/", { state: { scrollTo: target } });
+    } else {
+      scrollToSection(target);
+    }
+  };
   return (
     <footer className="border-t border-white/10 bg-coal/40">
       <div className="section-head py-14">
@@ -26,12 +42,12 @@ export default function Footer() {
           <nav className="lg:col-span-3" aria-label="Pie de página">
             <p className="mono-label">Navegación</p>
             <ul className="mt-4 space-y-2.5">
-              {LINKS.map(([label, id]) => (
+              {LINKS.map(([label, id, type]) => (
                 <li key={id}>
                   <button
-                    onClick={() => scrollToSection(id)}
+                    onClick={() => handleLink(id, type)}
                     className="font-mono text-[11px] uppercase tracking-[0.2em] text-mist transition-colors duration-200 hover:text-accent"
-                    data-testid={`footer-link-${id}`}
+                    data-testid={`footer-link-${id.replace("/", "")}`}
                   >
                     {label}
                   </button>
@@ -54,8 +70,23 @@ export default function Footer() {
                   WhatsApp {WHATSAPP_DISPLAY}
                 </a>
               </li>
-              <li>[correo] — por confirmar</li>
-              <li>[ubicación] — por confirmar</li>
+              <li>
+                <a
+                  href="tel:+51957082739"
+                  className="transition-colors duration-200 hover:text-accent"
+                >
+                  Tel. 957 082 739
+                </a>
+              </li>
+              <li>
+                <a
+                  href="mailto:ventas@maqsyma.com"
+                  className="lowercase transition-colors duration-200 hover:text-accent"
+                >
+                  ventas@maqsyma.com
+                </a>
+              </li>
+              <li>Av. Venezuela 866</li>
             </ul>
           </div>
         </div>

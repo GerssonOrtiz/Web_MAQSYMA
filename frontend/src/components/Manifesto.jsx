@@ -32,7 +32,7 @@ function Word({ progress, index, total, children }) {
 
 function Milestone({ progress, at, label }) {
   const opacity = useTransform(progress, [at - 0.07, at], [0.25, 1]);
-  const dotColor = useTransform(progress, [at - 0.07, at], ["#263042", "#00E676"]);
+  const dotColor = useTransform(progress, [at - 0.07, at], ["#263042", "#FFB703"]);
   const textColor = useTransform(progress, [at - 0.07, at], ["#64748B", "#F4F5F8"]);
   return (
     <motion.li style={{ opacity }} className="flex items-center gap-2.5">

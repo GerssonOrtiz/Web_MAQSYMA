@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   motion,
   useMotionValueEvent,
@@ -6,7 +7,7 @@ import {
   useScroll,
   useTransform,
 } from "framer-motion";
-import { waLink, scrollToSection } from "../lib/scroll";
+import { waLink } from "../lib/scroll";
 
 const SCENES = {
   ext: "https://customer-assets-gfyr7b9c.emergentagent.net/job_maqsyma-soldadura--1wdqpq22/artifacts/703c20f5b0e76d19_1.png",
@@ -89,7 +90,7 @@ function Scene({ progress, spec, src, alt }) {
   );
 }
 
-function StationPanel({ progress, win, station, index }) {
+function StationPanel({ progress, win, station, index, onGoCatalog }) {
   const opacity = useTransform(
     progress,
     [win[0], win[0] + 0.025, win[1] - 0.025, win[1] + 0.015],
@@ -140,7 +141,7 @@ function StationPanel({ progress, win, station, index }) {
         <button
           type="button"
           className="btn-ghost !px-4 !py-2.5 !text-[10px]"
-          onClick={() => scrollToSection("tienda")}
+          onClick={onGoCatalog}
           data-testid={`hero-panel-catalog-${index}`}
         >
           Ver en catálogo
@@ -150,7 +151,7 @@ function StationPanel({ progress, win, station, index }) {
   );
 }
 
-function StaticHero({ products }) {
+function StaticHero({ products, onGoCatalog }) {
   const stations = [0, 1, 2].map((i) => products?.[i]);
   return (
     <section className="relative min-h-[100svh] overflow-hidden" aria-label="MAQSYMA showroom">
@@ -177,7 +178,7 @@ function StaticHero({ products }) {
           <button
             type="button"
             className="btn-primary"
-            onClick={() => scrollToSection("tienda")}
+            onClick={onGoCatalog}
             data-testid="static-hero-catalog"
           >
             Ver catálogo completo <span aria-hidden="true">→</span>
@@ -210,6 +211,7 @@ function StaticHero({ products }) {
 }
 
 export default function HeroCinematic({ onReady }) {
+  const navigate = useNavigate();
   const rm = useReducedMotion();
   const products = useProducts();
   const ref = useRef(null);
@@ -218,6 +220,7 @@ export default function HeroCinematic({ onReady }) {
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
   const [seg, setSeg] = useState(0);
   const [introActive, setIntroActive] = useState(true);
+  const goCatalog = () => navigate("/catalogo");
 
   useEffect(() => {
     const link = document.createElement("link");
@@ -297,7 +300,7 @@ export default function HeroCinematic({ onReady }) {
   const introY = useTransform(scrollYProgress, [0, 0.18], [0, -24]);
   const hintOpacity = useTransform(scrollYProgress, [0, 0.08, 0.14], [1, 1, 0]);
 
-  if (rm) return <StaticHero products={products} />;
+  if (rm) return <StaticHero products={products} onGoCatalog={goCatalog} />;
 
   return (
     <section
@@ -337,7 +340,7 @@ export default function HeroCinematic({ onReady }) {
             <button
               type="button"
               className="btn-primary"
-              onClick={() => scrollToSection("tienda")}
+              onClick={goCatalog}
               data-testid="hero-cta-catalog"
             >
               Ver catálogo completo <span aria-hidden="true">→</span>
@@ -415,15 +418,15 @@ export default function HeroCinematic({ onReady }) {
 
         <button
           type="button"
-          onClick={() => scrollToSection("tienda")}
+          onClick={goCatalog}
           className="absolute bottom-7 right-5 z-20 border border-white/15 bg-ink/70 px-3 py-1.5 font-mono text-[9px] uppercase tracking-[0.2em] text-mist backdrop-blur-sm transition-colors hover:border-accent hover:text-accent sm:right-12"
           data-testid="hero-skip-btn"
         >
-          Saltar al catálogo ↓
+          Ir al catálogo →
         </button>
 
         {PANEL_WINDOWS.map((win, i) => (
-          <StationPanel key={i} progress={scrollYProgress} win={win} station={stations[i]} index={i} />
+          <StationPanel key={i} progress={scrollYProgress} win={win} station={stations[i]} index={i} onGoCatalog={goCatalog} />
         ))}
       </div>
     </section>

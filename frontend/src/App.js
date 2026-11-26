@@ -1,4 +1,5 @@
 import { Component, useEffect, useState } from "react";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import Marquee from "./components/Marquee";
@@ -6,7 +7,6 @@ import Manifesto from "./components/Manifesto";
 import Categories from "./components/Categories";
 import FeaturedMachines from "./components/FeaturedMachines";
 import CatalogStore from "./components/CatalogStore";
-import Selector from "./components/Selector";
 import Applications from "./components/Applications";
 import TechInfo from "./components/TechInfo";
 import Quote from "./components/Quote";
@@ -14,7 +14,7 @@ import Footer from "./components/Footer";
 import TrustBar from "./components/TrustBar";
 import WhatsAppFAB from "./components/WhatsAppFAB";
 import LoadingScreen from "./components/LoadingScreen";
-import { initSmoothScroll } from "./lib/scroll";
+import { initSmoothScroll, scrollToSection } from "./lib/scroll";
 
 class ErrorBoundary extends Component {
   constructor(props) {
@@ -38,12 +38,59 @@ class ErrorBoundary extends Component {
   }
 }
 
+function RouteScrollManager() {
+  const location = useLocation();
+
+  useEffect(() => {
+    const targetSection = location.state?.scrollTo;
+    if (targetSection) {
+      const timer = setTimeout(() => scrollToSection(targetSection), 120);
+      return () => clearTimeout(timer);
+    }
+    if (window.__lenis) {
+      window.__lenis.scrollTo(0, { immediate: true });
+    } else {
+      window.scrollTo(0, 0);
+    }
+  }, [location.pathname, location.state]);
+
+  return null;
+}
+
+function HomePage({ onHeroReady }) {
+  return (
+    <main>
+      <Hero onReady={onHeroReady} />
+      <Marquee />
+      <TrustBar />
+      <Manifesto />
+      <Categories />
+      <FeaturedMachines />
+      <Applications />
+      <TechInfo />
+      <Quote />
+    </main>
+  );
+}
+
+function CatalogPage({ onReady }) {
+  useEffect(() => {
+    onReady();
+  }, [onReady]);
+
+  return (
+    <main>
+      <CatalogStore />
+      <Quote />
+    </main>
+  );
+}
+
 export default function App() {
   const [loadingComplete, setLoadingComplete] = useState(false);
   const [heroReady, setHeroReady] = useState(false);
 
   useEffect(() => {
-    // Force instant scroll restoration to top on refresh
     if ("scrollRestoration" in window.history) {
       window.history.scrollRestoration = "manual";
     }
@@ -55,28 +102,28 @@ export default function App() {
 
   return (
     <ErrorBoundary>
-      <div className="grain min-h-screen overflow-x-clip bg-ink font-sans text-fog">
-        <LoadingScreen
-          isReady={heroReady}
-          onLoadingComplete={() => setLoadingComplete(true)}
-        />
-        <Navbar />
-        <main>
-          <Hero onReady={() => setHeroReady(true)} />
-          <Marquee />
-          <TrustBar />
-          <Manifesto />
-          <Categories />
-          <FeaturedMachines />
-          <CatalogStore />
-          <Selector />
-          <Applications />
-          <TechInfo />
-          <Quote />
-        </main>
-        <Footer />
-        <WhatsAppFAB />
-      </div>
+      <BrowserRouter>
+        <RouteScrollManager />
+        <div className="grain min-h-screen overflow-x-clip bg-ink font-sans text-fog">
+          <LoadingScreen
+            isReady={heroReady || loadingComplete}
+            onLoadingComplete={() => setLoadingComplete(true)}
+          />
+          <Navbar />
+          <Routes>
+            <Route
+              path="/"
+              element={<HomePage onHeroReady={() => setHeroReady(true)} />}
+            />
+            <Route
+              path="/catalogo"
+              element={<CatalogPage onReady={() => setHeroReady(true)} />}
+            />
+          </Routes>
+          <Footer />
+          <WhatsAppFAB />
+        </div>
+      </BrowserRouter>
     </ErrorBoundary>
   );
 }
