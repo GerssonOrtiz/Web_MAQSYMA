@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Plus } from "lucide-react";
+import { Plus, ArrowUpRight } from "lucide-react";
+import { ESAB_PRODUCTS } from "../data/esabProducts";
+import { scrollToSection } from "../lib/scroll";
 
 const PROCS = [
   {
@@ -174,6 +176,41 @@ export default function Selector() {
                       </li>
                     ))}
                   </ul>
+
+                  {(() => {
+                    const key = p.name.split(" ")[0].toLowerCase();
+                    const matches = ESAB_PRODUCTS.filter(
+                      (item) =>
+                        item.category.toLowerCase().includes(key) ||
+                        item.process.toLowerCase().includes(key)
+                    ).slice(0, 3);
+                    if (matches.length === 0) return null;
+                    return (
+                      <div className="mt-7 border-t border-white/10 pt-5">
+                        <div className="flex items-center justify-between">
+                          <p className="mono-label">Equipos disponibles</p>
+                          <button
+                            type="button"
+                            onClick={() => scrollToSection("tienda")}
+                            className="inline-flex items-center gap-1 font-mono text-[9px] uppercase tracking-wider text-accent hover:underline"
+                          >
+                            Ver catálogo <ArrowUpRight className="h-3 w-3" />
+                          </button>
+                        </div>
+                        <ul className="mt-3 space-y-2">
+                          {matches.map((m) => (
+                            <li
+                              key={m.id}
+                              className="flex items-center justify-between border-b border-white/5 pb-1.5 font-mono text-xs"
+                            >
+                              <span className="text-fog">{m.model}</span>
+                              <span className="text-[10px] text-accent">{m.amperage}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    );
+                  })()}
                 </motion.div>
               </AnimatePresence>
             </div>

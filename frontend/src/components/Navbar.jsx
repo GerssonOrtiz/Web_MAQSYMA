@@ -16,15 +16,28 @@ const go = (id) => () => scrollToSection(id);
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     const onKey = (e) => e.key === "Escape" && setOpen(false);
+    const onScroll = () => setScrolled(window.scrollY > 60);
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      window.removeEventListener("scroll", onScroll);
+    };
   }, []);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 bg-transparent transition-colors duration-300">
+    <header
+      className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
+        scrolled
+          ? "border-b border-white/10 bg-ink/90 shadow-lg backdrop-blur-md"
+          : "bg-transparent"
+      }`}
+    >
       <nav className="section-head flex h-16 items-center justify-between" aria-label="Principal">
         <button
           onClick={() => window.__lenis ? window.__lenis.scrollTo(0) : window.scrollTo(0, 0)}

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
+import { scrollToSection } from "../lib/scroll";
 
 const CATS = [
   {
@@ -157,6 +158,22 @@ export default function Categories() {
                   <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.2em] text-accent">
                     {cat.meta}
                   </p>
+                  {["MMA", "MIG / MAG", "TIG", "MULTIPROCESO"].includes(cat.name.toUpperCase()) && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        scrollToSection("tienda");
+                        window.dispatchEvent(
+                          new CustomEvent("filter-category", {
+                            detail: cat.name.toUpperCase(),
+                          })
+                        );
+                      }}
+                      className="btn-ghost mt-4 !px-3 !py-1.5 !text-[10px]"
+                    >
+                      Ver equipos {cat.name} →
+                    </button>
+                  )}
                 </motion.div>
               </AnimatePresence>
             </div>

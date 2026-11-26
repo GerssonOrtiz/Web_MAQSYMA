@@ -11,6 +11,8 @@ import Applications from "./components/Applications";
 import TechInfo from "./components/TechInfo";
 import Quote from "./components/Quote";
 import Footer from "./components/Footer";
+import TrustBar from "./components/TrustBar";
+import WhatsAppFAB from "./components/WhatsAppFAB";
 import LoadingScreen from "./components/LoadingScreen";
 import { initSmoothScroll } from "./lib/scroll";
 
@@ -62,6 +64,7 @@ export default function App() {
         <main>
           <Hero onReady={() => setHeroReady(true)} />
           <Marquee />
+          <TrustBar />
           <Manifesto />
           <Categories />
           <FeaturedMachines />
@@ -72,6 +75,7 @@ export default function App() {
           <Quote />
         </main>
         <Footer />
+        <WhatsAppFAB />
       </div>
     </ErrorBoundary>
   );

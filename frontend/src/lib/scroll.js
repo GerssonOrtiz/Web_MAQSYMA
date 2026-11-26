@@ -22,7 +22,13 @@ export function scrollToSection(id) {
 
 export function initSmoothScroll() {
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  const lenis = new Lenis({ duration: 1.15, smoothWheel: true });
+  const isFirefox = navigator.userAgent.toLowerCase().includes("firefox");
+  const lenis = new Lenis({
+    duration: isFirefox ? 0.85 : 1.15,
+    smoothWheel: !isFirefox,
+    wheelMultiplier: isFirefox ? 1.2 : 1,
+    touchMultiplier: isFirefox ? 1.5 : 2,
+  });
   window.__lenis = lenis;
   let rafId;
   const raf = (time) => {

@@ -14,69 +14,48 @@ const SCENES = {
   st1: "https://static.prod-images.emergentagent.com/jobs/0367909c-413c-4cc9-aff8-b7b2180f8e4b/images/8564ac0f408b6257ef419f10ba99241874ffab8e0c6e6bfd80b3899bf3ac8df2.jpeg",
   st2: "https://static.prod-images.emergentagent.com/jobs/0367909c-413c-4cc9-aff8-b7b2180f8e4b/images/ab83bb25449657a116fa7779c79c0b48325b435a7f732080d6492cdecc9371f3.jpeg",
   st3: "https://static.prod-images.emergentagent.com/jobs/0367909c-413c-4cc9-aff8-b7b2180f8e4b/images/fd7ac519c127a3066720a747757ab573552514656c2ed2ddcb69f24e6b18a74a.jpeg",
-  acc: "https://static.prod-images.emergentagent.com/jobs/0367909c-413c-4cc9-aff8-b7b2180f8e4b/images/d90fc02ea97e656001b063ac94c4146c757d867e9af9baf8d0eb290277530317.jpeg",
-  wide: "https://static.prod-images.emergentagent.com/jobs/0367909c-413c-4cc9-aff8-b7b2180f8e4b/images/15385da378a8c93bdf83a4fa6f288163a57a88da403d3521cde0578f993d0ffa.jpeg",
-  portal: "https://static.prod-images.emergentagent.com/jobs/0367909c-413c-4cc9-aff8-b7b2180f8e4b/images/47dc9a25b939d46e624d960f673ddf91ef2da3641d52b523bcb60a1ee9b06603.jpeg",
 };
 
-/* Línea de tiempo del recorrido (fracciones del progreso 0→1) */
+/* Línea de tiempo condensada (4 hitos clave, 2D GPU-friendly sin rotateY) */
 const KF = {
   ext: {
-    o: [[0, 0.08, 0.115, 0.15], [1, 1, 0.4, 0]],
-    s: [[0, 0.15], [1.06, 1.5]],
-    y: [[0, 0.15], ["0%", "-5%"]],
+    o: [[0, 0.16, 0.24, 0.30], [1, 1, 0.4, 0]],
+    s: [[0, 0.30], [1.0, 1.07]],
+    y: [[0, 0.30], ["0%", "-3%"]],
   },
   room: {
-    o: [[0.08, 0.12, 0.255, 0.29], [0, 1, 1, 0]],
-    s: [[0.08, 0.29], [1.26, 1.05]],
-    x: [[0.08, 0.29], ["2%", "-1%"]],
+    o: [[0.20, 0.28, 0.46, 0.54], [0, 1, 1, 0]],
+    s: [[0.20, 0.54], [1.06, 1.0]],
+    x: [[0.20, 0.54], ["1.5%", "-1%"]],
   },
   st1: {
-    o: [[0.235, 0.275, 0.325, 0.36], [0, 1, 1, 0]],
-    s: [[0.235, 0.36], [1.2, 1.3]],
-    x: [[0.235, 0.36], ["-2%", "1%"]],
-    r: [[0.27, 0.33], [2, -1.5]],
+    o: [[0.46, 0.52, 0.68, 0.75], [0, 1, 1, 0]],
+    s: [[0.46, 0.75], [1.0, 1.06]],
+    x: [[0.46, 0.75], ["-1.5%", "1%"]],
   },
   st2: {
-    o: [[0.395, 0.435, 0.48, 0.515], [0, 1, 1, 0]],
-    s: [[0.395, 0.515], [1.2, 1.33]],
-    x: [[0.395, 0.515], ["3%", "-2%"]],
-    r: [[0.44, 0.5], [-1.8, 1.6]],
+    o: [[0.68, 0.74, 0.86, 0.92], [0, 1, 1, 0]],
+    s: [[0.68, 0.92], [1.06, 1.0]],
+    x: [[0.68, 0.92], ["1.5%", "-1%"]],
   },
   st3: {
-    o: [[0.575, 0.64, 0.695, 0.73], [0, 1, 1, 0]],
-    s: [[0.575, 0.73], [1.18, 1.3]],
-    r: [[0.64, 0.705], [2.2, -2.2]],
-  },
-  acc: {
-    o: [[0.775, 0.815, 0.855, 0.885], [0, 1, 1, 0]],
-    s: [[0.775, 0.885], [1.14, 1.2]],
-    x: [[0.775, 0.885], ["-5%", "4%"]],
-  },
-  wide: {
-    o: [[0.88, 0.915, 0.938, 0.955], [0, 1, 1, 0]],
-    s: [[0.88, 0.955], [1.22, 1.04]],
-  },
-  portal: {
-    o: [[0.945, 0.972, 1, 1.001], [0, 1, 1, 1]],
-    s: [[0.945, 1], [1.38, 1.04]],
+    o: [[0.84, 0.90, 1, 1.001], [0, 1, 1, 1]],
+    s: [[0.84, 1], [1.0, 1.05]],
   },
 };
 
 const SEGMENTS = [
-  [0, "Exterior"],
-  [0.08, "Ingreso"],
-  [0.235, "ESAB 01"],
-  [0.395, "ESAB 02"],
-  [0.575, "ESAB 03"],
-  [0.775, "Accesorios"],
-  [0.945, "Portal"],
+  [0, "Inicio"],
+  [0.22, "Showroom"],
+  [0.48, "ESAB 01"],
+  [0.70, "ESAB 02"],
+  [0.86, "ESAB 03"],
 ];
 
 const PANEL_WINDOWS = [
-  [0.27, 0.325],
-  [0.435, 0.48],
-  [0.635, 0.695],
+  [0.50, 0.67],
+  [0.72, 0.85],
+  [0.88, 0.99],
 ];
 
 function useProducts() {
@@ -99,10 +78,10 @@ function Scene({ progress, spec, src, alt }) {
   const scale = useTransform(progress, spec.s[0], spec.s[1]);
   const x = useTransform(progress, spec.x ? spec.x[0] : [0, 1], spec.x ? spec.x[1] : ["0%", "0%"]);
   const y = useTransform(progress, spec.y ? spec.y[0] : [0, 1], spec.y ? spec.y[1] : ["0%", "0%"]);
-  const rotate = useTransform(progress, spec.r ? spec.r[0] : [0, 1], spec.r ? spec.r[1] : [0, 0]);
+
   return (
     <motion.div
-      style={{ opacity, scale, x, y, rotateY: rotate, transformPerspective: 1400 }}
+      style={{ opacity, scale, x, y }}
       className="absolute inset-0 will-change-transform"
     >
       <img src={src} alt={alt} decoding="async" className="h-full w-full object-cover" />
@@ -113,13 +92,13 @@ function Scene({ progress, spec, src, alt }) {
 function StationPanel({ progress, win, station, index }) {
   const opacity = useTransform(
     progress,
-    [win[0], win[0] + 0.012, win[1] - 0.012, win[1] + 0.008],
+    [win[0], win[0] + 0.025, win[1] - 0.025, win[1] + 0.015],
     [0, 1, 1, 0]
   );
-  const y = useTransform(progress, [win[0], win[0] + 0.02], [28, 0]);
+  const y = useTransform(progress, [win[0], win[0] + 0.03], [24, 0]);
   const [visible, setVisible] = useState(false);
   useMotionValueEvent(progress, "change", (v) =>
-    setVisible(v >= win[0] && v <= win[1] + 0.01)
+    setVisible(v >= win[0] && v <= win[1] + 0.015)
   );
 
   return (
@@ -161,7 +140,7 @@ function StationPanel({ progress, win, station, index }) {
         <button
           type="button"
           className="btn-ghost !px-4 !py-2.5 !text-[10px]"
-          onClick={() => scrollToSection("maquinas")}
+          onClick={() => scrollToSection("tienda")}
           data-testid={`hero-panel-catalog-${index}`}
         >
           Ver en catálogo
@@ -184,7 +163,7 @@ function StaticHero({ products }) {
       <div className="section-head relative flex min-h-[100svh] flex-col justify-end pb-16 pt-32">
         <p className="mono-label flex items-center gap-3">
           <span className="inline-block h-2 w-2 bg-accent" />
-          Equipos de soldadura / Tecnología industrial
+          Distribuidor Autorizado ESAB / Tecnología Industrial
         </p>
         <h1 className="mt-6 font-display text-[clamp(3rem,9vw,7rem)] font-black uppercase leading-[0.92] tracking-tight">
           Potencia para
@@ -192,17 +171,16 @@ function StaticHero({ products }) {
           soldar <span className="text-accent">sin límites.</span>
         </h1>
         <p className="mt-5 max-w-xl text-base leading-relaxed text-mist sm:text-lg">
-          Recorrido por el showroom MAQSYMA: equipos ESAB protagonistas y accesorios
-          seleccionados para soldadores, talleres e industria.
+          Equipos MIG, TIG, MMA y Multiproceso con garantía oficial, stock inmediato y asesoría técnica directa para soldadores, talleres e industria.
         </p>
         <div className="mt-8 flex flex-col gap-4 sm:flex-row">
           <button
             type="button"
             className="btn-primary"
-            onClick={() => scrollToSection("maquinas")}
+            onClick={() => scrollToSection("tienda")}
             data-testid="static-hero-catalog"
           >
-            Ver máquinas <span aria-hidden="true">→</span>
+            Ver catálogo completo <span aria-hidden="true">→</span>
           </button>
           <a
             className="btn-ghost"
@@ -211,10 +189,15 @@ function StaticHero({ products }) {
             rel="noopener noreferrer"
             data-testid="static-hero-quote"
           >
-            Solicitar cotización
+            Cotizar por WhatsApp
           </a>
         </div>
-        <ul className="mt-10 grid grid-cols-1 gap-2 border-t border-white/10 pt-5 sm:grid-cols-3">
+        <div className="mt-8 flex flex-wrap gap-5 border-t border-white/10 pt-5">
+          <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-mist">✓ Garantía oficial ESAB</span>
+          <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-mist">✓ Stock inmediato</span>
+          <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-mist">✓ Envío a nivel nacional</span>
+        </div>
+        <ul className="mt-6 grid grid-cols-1 gap-2 border-t border-white/10 pt-5 sm:grid-cols-3">
           {stations.map((p, i) => (
             <li key={i} className="font-mono text-[10px] uppercase tracking-[0.2em] text-mist">
               <span className="text-accent">ESAB 0{i + 1}</span> — {p ? p.model : "[modelo por confirmar]"}
@@ -230,45 +213,60 @@ export default function HeroCinematic({ onReady }) {
   const rm = useReducedMotion();
   const products = useProducts();
   const ref = useRef(null);
+  const pctRef = useRef(null);
+  const barRef = useRef(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
   const [seg, setSeg] = useState(0);
-  const [pct, setPct] = useState(0);
+  const [introActive, setIntroActive] = useState(true);
 
-  // Notificar cuando el Hero esté montado y listo para la pantalla de carga (LoadingScreen)
   useEffect(() => {
-    let timer = setTimeout(() => {
-      if (onReady) onReady();
-    }, 300);
+    const link = document.createElement("link");
+    link.rel = "preload";
+    link.as = "image";
+    link.href = SCENES.ext;
+    link.fetchPriority = "high";
+    document.head.appendChild(link);
 
-    // Precargar las primeras imágenes críticas en segundo plano
-    const preloadList = [SCENES.ext, SCENES.room, SCENES.st1];
-    let loadedCount = 0;
-    preloadList.forEach((url) => {
+    const lazy = [SCENES.room, SCENES.st1, SCENES.st2, SCENES.st3];
+    lazy.forEach((url) => {
       const img = new Image();
+      img.loading = "lazy";
       img.src = url;
-      img.onload = img.onerror = () => {
-        loadedCount++;
-        if (loadedCount >= 1 && onReady) {
-          onReady();
-        }
-      };
     });
 
-    return () => clearTimeout(timer);
+    const timer = setTimeout(() => {
+      if (onReady) onReady();
+    }, 200);
+
+    return () => {
+      clearTimeout(timer);
+      if (link.parentNode) document.head.removeChild(link);
+    };
   }, [onReady]);
 
   useMotionValueEvent(scrollYProgress, "change", (v) => {
     let s = 0;
     for (let i = 0; i < SEGMENTS.length; i++) if (v >= SEGMENTS[i][0]) s = i;
     setSeg((c) => (c === s ? c : s));
-    setPct(Math.round(v * 100));
+    setIntroActive((prev) => {
+      const next = v < 0.16;
+      return prev === next ? prev : next;
+    });
+
+    const pctValue = Math.round(v * 100);
+    if (pctRef.current) {
+      pctRef.current.textContent = `${String(pctValue).padStart(3, "0")}%`;
+    }
+    if (barRef.current) {
+      barRef.current.style.width = `${pctValue}%`;
+    }
   });
 
   const jump = (thr) => {
     const el = ref.current;
     if (!el) return;
     const y = el.offsetTop + thr * (el.offsetHeight - window.innerHeight);
-    if (window.__lenis) window.__lenis.scrollTo(y, { duration: 1.4 });
+    if (window.__lenis) window.__lenis.scrollTo(y, { duration: 1.1 });
     else window.scrollTo({ top: y, behavior: "smooth" });
   };
 
@@ -295,23 +293,71 @@ export default function HeroCinematic({ onReady }) {
         };
   });
 
-  const hintOpacity = useTransform(scrollYProgress, [0, 0.035, 0.05], [1, 1, 0]);
+  const introOpacity = useTransform(scrollYProgress, [0, 0.10, 0.18], [1, 1, 0]);
+  const introY = useTransform(scrollYProgress, [0, 0.18], [0, -24]);
+  const hintOpacity = useTransform(scrollYProgress, [0, 0.08, 0.14], [1, 1, 0]);
 
   if (rm) return <StaticHero products={products} />;
 
   return (
-    <section ref={ref} className="relative h-[1250vh] md:h-[1600vh]" data-testid="hero-cinematic" aria-label="Recorrido cinematográfico MAQSYMA">
+    <section
+      ref={ref}
+      className="relative h-[320vh] md:h-[400vh]"
+      data-testid="hero-cinematic"
+      aria-label="Recorrido cinematográfico MAQSYMA"
+    >
       <div className="sticky top-0 h-screen overflow-hidden bg-ink">
         <Scene progress={scrollYProgress} spec={KF.ext} src={SCENES.ext} alt="Exterior del showroom MAQSYMA al anochecer con iluminación dorada" />
         <Scene progress={scrollYProgress} spec={KF.room} src={SCENES.room} alt="Interior del showroom MAQSYMA con plataformas de exhibición" />
         <Scene progress={scrollYProgress} spec={KF.st1} src={SCENES.st1} alt="Estación 01: equipo de soldadura en plataforma" />
         <Scene progress={scrollYProgress} spec={KF.st2} src={SCENES.st2} alt="Estación 02: equipo MIG con alimentador de alambre" />
         <Scene progress={scrollYProgress} spec={KF.st3} src={SCENES.st3} alt="Estación 03: equipo industrial protagonista" />
-        <Scene progress={scrollYProgress} spec={KF.acc} src={SCENES.acc} alt="Zona de accesorios de soldadura exhibidos" />
-        <Scene progress={scrollYProgress} spec={KF.wide} src={SCENES.wide} alt="Vista general del showroom MAQSYMA" />
-        <Scene progress={scrollYProgress} spec={KF.portal} src={SCENES.portal} alt="Gran portal iluminado al final del recorrido" />
 
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-ink/70 via-transparent to-ink/55" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-ink/75 via-ink/25 to-ink/85" />
+
+        {/* Propuesta de valor inmediata en el viewport inicial */}
+        <motion.div
+          style={{ opacity: introOpacity, y: introY, pointerEvents: introActive ? "auto" : "none" }}
+          className="absolute inset-x-5 bottom-20 z-20 sm:inset-x-auto sm:bottom-24 sm:left-12 sm:max-w-2xl"
+          data-testid="hero-value-proposition"
+        >
+          <p className="mono-label flex items-center gap-3">
+            <span className="inline-block h-2 w-2 bg-accent" />
+            Distribuidor Autorizado ESAB en Perú
+          </p>
+          <h1 className="mt-4 font-display text-[clamp(2.5rem,6.5vw,5.2rem)] font-black uppercase leading-[0.92] tracking-tight">
+            Potencia para
+            <br />
+            soldar <span className="text-accent">sin límites.</span>
+          </h1>
+          <p className="mt-4 max-w-xl text-sm leading-relaxed text-mist sm:text-base">
+            Equipos MIG, TIG, MMA y Multiproceso con garantía oficial, stock inmediato y asesoría técnica directa.
+          </p>
+          <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+            <button
+              type="button"
+              className="btn-primary"
+              onClick={() => scrollToSection("tienda")}
+              data-testid="hero-cta-catalog"
+            >
+              Ver catálogo completo <span aria-hidden="true">→</span>
+            </button>
+            <a
+              className="btn-ghost"
+              href={waLink("Hola MAQSYMA, quiero cotizar un equipo de soldadura.")}
+              target="_blank"
+              rel="noopener noreferrer"
+              data-testid="hero-cta-whatsapp"
+            >
+              Cotizar por WhatsApp
+            </a>
+          </div>
+          <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2 border-t border-white/10 pt-4">
+            <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-mist">✓ Garantía oficial ESAB</span>
+            <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-mist">✓ Stock inmediato</span>
+            <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-mist">✓ Envío a nivel nacional</span>
+          </div>
+        </motion.div>
 
         {/* HUD derecho */}
         <div className="absolute right-5 top-1/2 z-20 hidden -translate-y-1/2 flex-col gap-4 sm:flex" data-testid="hero-hud">
@@ -346,20 +392,35 @@ export default function HeroCinematic({ onReady }) {
           </p>
           <div className="mt-2 flex items-center gap-3">
             <span className="h-px w-24 bg-white/15">
-              <span className="block h-px bg-accent transition-[width] duration-150" style={{ width: `${pct}%` }} />
+              <span
+                ref={barRef}
+                className="block h-px bg-accent transition-[width] duration-150"
+                style={{ width: "0%" }}
+              />
             </span>
-            <span className="font-mono text-[9px] tabular-nums text-mist">{String(pct).padStart(3, "0")}%</span>
+            <span ref={pctRef} className="font-mono text-[9px] tabular-nums text-mist">
+              000%
+            </span>
           </div>
         </div>
 
-        {/* Indicación inicial */}
+        {/* Indicación inicial y botón saltar recorrido */}
         <motion.p
           style={{ opacity: hintOpacity }}
-          className="mono-label absolute bottom-7 left-1/2 z-20 -translate-x-1/2 whitespace-nowrap"
+          className="mono-label pointer-events-none absolute bottom-7 left-1/2 z-20 hidden -translate-x-1/2 whitespace-nowrap md:block"
           data-testid="hero-scroll-hint"
         >
-          Desliza para iniciar el recorrido ↓
+          Desliza para explorar el showroom ↓
         </motion.p>
+
+        <button
+          type="button"
+          onClick={() => scrollToSection("tienda")}
+          className="absolute bottom-7 right-5 z-20 border border-white/15 bg-ink/70 px-3 py-1.5 font-mono text-[9px] uppercase tracking-[0.2em] text-mist backdrop-blur-sm transition-colors hover:border-accent hover:text-accent sm:right-12"
+          data-testid="hero-skip-btn"
+        >
+          Saltar al catálogo ↓
+        </button>
 
         {PANEL_WINDOWS.map((win, i) => (
           <StationPanel key={i} progress={scrollYProgress} win={win} station={stations[i]} index={i} />
