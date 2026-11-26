@@ -87,7 +87,7 @@ export default function Nosotros() {
       id="nosotros"
       data-testid="nosotros-section"
       aria-label="Sobre MAQSYMA"
-      className="relative min-h-screen overflow-hidden bg-[#0E1117] bg-grid pb-24 pt-28 sm:pb-32 sm:pt-32"
+      className="relative min-h-screen overflow-hidden bg-ink bg-grid pb-24 pt-28 sm:pb-32 sm:pt-32"
     >
       {/* Iluminación ambiental sutil para evitar fondo negro plano */}
       <div className="pointer-events-none absolute left-1/2 top-0 h-[28rem] w-full max-w-7xl -translate-x-1/2 bg-[radial-gradient(ellipse_at_top,rgba(255,183,3,0.09),transparent_70%)]" />
@@ -149,7 +149,7 @@ export default function Nosotros() {
               {SECTORS.map((sector) => (
                 <span
                   key={sector}
-                  className="border border-white/15 bg-[#0E1117] px-2.5 py-1 font-mono text-[10px] font-medium uppercase tracking-[0.14em] text-[#E2E8F0]"
+                  className="border border-white/15 bg-ink px-2.5 py-1 font-mono text-[10px] font-medium uppercase tracking-[0.14em] text-[#E2E8F0]"
                 >
                   {sector}
                 </span>

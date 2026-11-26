@@ -16,6 +16,7 @@ import {
   Wrench,
   HardHat,
   Zap,
+  ZoomIn,
 } from "lucide-react";
 import { ESAB_PRODUCTS } from "../data/esabProducts";
 import { waLink } from "../lib/scroll";
@@ -530,7 +531,7 @@ export default function CatalogStore() {
           </div>
 
           <div>
-            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
               <AnimatePresence mode="popLayout">
                 {filteredProducts.map((p) => {
                   const isCompared = compareList.some((c) => c.id === p.id);
@@ -552,6 +553,7 @@ export default function CatalogStore() {
                       <div>
                         {/* Escenario de imagen de estudio 4:3 */}
                         <div className="relative flex aspect-[4/3] w-full items-center justify-center overflow-hidden border-b border-white/10 bg-[#0B0D11]">
+                          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_55%,rgba(255,255,255,0.06),transparent_70%)]" />
                           <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-px bg-gradient-to-r from-transparent via-accent/25 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
 
                           {p.main_image ? (
@@ -562,7 +564,7 @@ export default function CatalogStore() {
                               decoding="async"
                               width={400}
                               height={300}
-                              className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                              className="relative z-10 h-full w-full scale-[1.12] object-contain transition-transform duration-500 group-hover:scale-[1.18]"
                             />
                           ) : (
                             <NoPhotoPlaceholder product={p} />
@@ -610,7 +612,7 @@ export default function CatalogStore() {
                         </div>
 
                         {/* Cuerpo de la tarjeta */}
-                        <div className="p-5">
+                        <div className="p-4">
                           <div className="flex items-center justify-between gap-2 text-mist">
                             <span className="font-mono text-[10px] font-semibold uppercase tracking-widest text-accent">
                               {p.brand}
@@ -620,12 +622,12 @@ export default function CatalogStore() {
                             </span>
                           </div>
 
-                          <h3 className="mt-1.5 line-clamp-1 font-display text-xl font-extrabold uppercase tracking-tight text-fog transition-colors group-hover:text-accent">
+                          <h3 className="mt-1 line-clamp-1 font-display text-lg font-extrabold uppercase tracking-tight text-fog transition-colors group-hover:text-accent sm:text-xl">
                             {p.model}
                           </h3>
 
                           {/* Bloque de Precio */}
-                          <div className="mt-2.5 flex flex-wrap items-baseline gap-x-2.5 gap-y-1 border-b border-white/5 pb-3">
+                          <div className="mt-2 flex flex-wrap items-baseline gap-x-2.5 gap-y-0.5">
                             {typeof p.price_current === "number" ? (
                               <>
                                 <span className="font-mono text-base font-bold text-fog tabular-nums">
@@ -647,11 +649,7 @@ export default function CatalogStore() {
                             )}
                           </div>
 
-                          <p className="mt-3 line-clamp-2 min-h-[2.5rem] text-xs leading-relaxed text-mist">
-                            {p.description}
-                          </p>
-
-                          <div className="mt-4 grid grid-cols-2 gap-3 border-t border-white/5 pt-3 font-mono text-[10px]">
+                          <div className="mt-2.5 grid grid-cols-2 gap-2.5 border-t border-white/5 pt-2.5 font-mono text-[10px]">
                             <div>
                               <span className="block text-[9px] uppercase tracking-wider text-mist/60">
                                 Proceso
@@ -673,11 +671,11 @@ export default function CatalogStore() {
                       </div>
 
                       {/* Acciones */}
-                      <div className="grid grid-cols-2 gap-2 p-5 pt-0">
+                      <div className="grid grid-cols-2 gap-2 p-4 pt-0">
                         <button
                           type="button"
                           onClick={() => setActiveProduct(p)}
-                          className="btn-ghost w-full !px-3 !py-2.5 text-center !text-[10px]"
+                          className="btn-ghost w-full !px-3 !py-2 text-center !text-[10px]"
                         >
                           Ficha Técnica
                         </button>
@@ -694,7 +692,7 @@ export default function CatalogStore() {
                           )}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="btn-primary inline-flex w-full items-center justify-center gap-1 !px-3 !py-2.5 text-center !text-[10px]"
+                          className="btn-primary inline-flex w-full items-center justify-center gap-1 !px-3 !py-2 text-center !text-[10px]"
                         >
                           {typeof p.price_current === "number" ? "Comprar" : "Cotizar"}{" "}
                           <ArrowUpRight className="h-3 w-3" />
@@ -812,6 +810,58 @@ export default function CatalogStore() {
   );
 }
 
+function ZoomableProductImage({ product: p }) {
+  const [isZoomed, setIsZoomed] = useState(false);
+  const [origin, setOrigin] = useState({ x: 50, y: 50 });
+
+  const handleMouseMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = Math.min(100, Math.max(0, ((e.clientX - rect.left) / rect.width) * 100));
+    const y = Math.min(100, Math.max(0, ((e.clientY - rect.top) / rect.height) * 100));
+    setOrigin({ x, y });
+    if (!isZoomed) setIsZoomed(true);
+  };
+
+  return (
+    <div
+      className={`relative flex aspect-square w-full items-center justify-center overflow-hidden border border-white/10 bg-[#0B0D11] p-2 ${
+        p.main_image ? "cursor-zoom-in" : ""
+      }`}
+      onMouseEnter={() => p.main_image && setIsZoomed(true)}
+      onMouseLeave={() => setIsZoomed(false)}
+      onMouseMove={p.main_image ? handleMouseMove : undefined}
+    >
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_55%,rgba(255,255,255,0.065),transparent_70%)]" />
+      {p.main_image ? (
+        <>
+          <img
+            src={p.main_image}
+            alt={p.model}
+            style={{
+              transformOrigin: `${origin.x}% ${origin.y}%`,
+              transform: isZoomed ? "scale(2.2)" : "scale(1)",
+            }}
+            className="relative z-10 h-full w-full object-contain drop-shadow-[0_14px_24px_rgba(0,0,0,0.75)] transition-transform duration-150 ease-out will-change-transform"
+          />
+          <span
+            className={`pointer-events-none absolute bottom-3 right-3 z-20 inline-flex items-center gap-1.5 border border-white/15 bg-ink/85 px-2.5 py-1 font-mono text-[9px] uppercase tracking-wider backdrop-blur-sm transition-opacity duration-200 ${
+              isZoomed ? "border-accent/60 text-accent" : "text-mist/85"
+            }`}
+          >
+            <ZoomIn className="h-3 w-3" />
+            {isZoomed ? "Zoom 2.2x" : "Pasa el cursor para zoom"}
+          </span>
+        </>
+      ) : (
+        <NoPhotoPlaceholder product={p} />
+      )}
+      <span className="pointer-events-none absolute left-3 top-3 z-20 bg-accent px-2 py-0.5 font-mono text-[9px] font-bold uppercase tracking-wider text-ink">
+        {p.category}
+      </span>
+    </div>
+  );
+}
+
 function ProductDetailModal({ product: p, isCompared, onToggleCompare, onClose }) {
   useEffect(() => {
     const onKey = (e) => e.key === "Escape" && onClose();
@@ -868,21 +918,7 @@ function ProductDetailModal({ product: p, isCompared, onToggleCompare, onClose }
 
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
           <div className="flex flex-col">
-            <div className="relative flex aspect-square w-full items-center justify-center border border-white/10 bg-[#0B0D11] p-6">
-              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_55%,rgba(255,255,255,0.065),transparent_70%)]" />
-              {p.main_image ? (
-                <img
-                  src={p.main_image}
-                  alt={p.model}
-                  className="relative z-10 max-h-full max-w-full object-contain drop-shadow-[0_14px_24px_rgba(0,0,0,0.75)]"
-                />
-              ) : (
-                <NoPhotoPlaceholder product={p} />
-              )}
-              <span className="absolute left-3 top-3 z-20 bg-accent px-2 py-0.5 font-mono text-[9px] font-bold uppercase tracking-wider text-ink">
-                {p.category}
-              </span>
-            </div>
+            <ZoomableProductImage product={p} />
 
             <div className="mt-4 flex items-center justify-between font-mono text-xs text-mist">
               <span>SKU: {p.sku}</span>
