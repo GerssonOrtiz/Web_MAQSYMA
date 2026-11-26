@@ -1,7 +1,12 @@
 import { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, ArrowUpRight, Scale } from "lucide-react";
+import { X, ArrowUpRight, Scale, Package } from "lucide-react";
 import { waLink } from "../lib/scroll";
+
+const formatPrice = (val) =>
+  typeof val === "number"
+    ? `S/ ${val.toLocaleString("es-PE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+    : "A cotizar";
 
 export function CompareDrawer({ items, onRemove, onClear, onOpenModal }) {
   if (!items || items.length === 0) return null;
@@ -71,7 +76,9 @@ export function CompareModal({ items, onClose }) {
   }, [onClose]);
 
   const rows = [
+    { label: "Precio", key: "price_current", format: (v) => formatPrice(v), highlight: true },
     { label: "Categoría", key: "category" },
+    { label: "Tipo", key: "tipo" },
     { label: "Proceso", key: "process" },
     { label: "Amperaje / Potencia", key: "amperage", highlight: true },
     { label: "Voltaje", key: "voltage" },
@@ -103,14 +110,9 @@ export function CompareModal({ items, onClose }) {
           data-lenis-prevent
         >
           <div className="flex items-center justify-between border-b border-white/10 pb-4">
-            <div>
-              <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-accent">
-                Comparativa técnica
-              </p>
-              <h2 className="mt-1 font-display text-2xl font-black uppercase text-fog sm:text-3xl">
-                Equipos seleccionados
-              </h2>
-            </div>
+            <h2 className="font-display text-2xl font-black uppercase text-fog sm:text-3xl">
+              Comparativa técnica de <span className="text-accent">equipos</span>
+            </h2>
             <button
               type="button"
               onClick={onClose}
@@ -130,12 +132,16 @@ export function CompareModal({ items, onClose }) {
                   </th>
                   {items.map((p) => (
                     <th key={p.id} className="px-4 py-3 align-top">
-                      <div className="flex h-24 items-center justify-center border border-white/10 bg-ink/60 p-2">
-                        <img
-                          src={p.main_image}
-                          alt={p.model}
-                          className="max-h-full max-w-full object-contain"
-                        />
+                      <div className="flex h-28 items-center justify-center border border-white/10 bg-[#0B0D11] p-3">
+                        {p.main_image ? (
+                          <img
+                            src={p.main_image}
+                            alt={p.model}
+                            className="max-h-full max-w-full object-contain drop-shadow-[0_6px_12px_rgba(0,0,0,0.7)]"
+                          />
+                        ) : (
+                          <Package className="h-8 w-8 text-mist/35" />
+                        )}
                       </div>
                       <p className="mt-2 font-mono text-[9px] uppercase tracking-widest text-accent">
                         {p.brand}
@@ -156,11 +162,11 @@ export function CompareModal({ items, onClose }) {
                     {items.map((p) => (
                       <td
                         key={p.id}
-                        className={`px-4 py-3 ${
+                        className={`px-4 py-3 tabular-nums ${
                           r.highlight ? "font-bold text-accent" : "text-fog/90"
                         }`}
                       >
-                        {p[r.key] || "—"}
+                        {r.format ? r.format(p[r.key]) : p[r.key] || "—"}
                       </td>
                     ))}
                   </tr>

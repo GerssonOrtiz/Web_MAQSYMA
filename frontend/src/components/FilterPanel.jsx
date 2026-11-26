@@ -1,5 +1,24 @@
 import { useState } from "react";
-import { SlidersHorizontal, ChevronDown } from "lucide-react";
+import { SlidersHorizontal, ChevronDown, Check } from "lucide-react";
+
+export const AVAILABILITY_OPTIONS = [
+  { id: "offer", label: "Precio público / Oferta" },
+  { id: "quote", label: "Precio a cotizar" },
+];
+
+export const TYPE_OPTIONS = [
+  { id: "Portátil", label: "Portátil" },
+  { id: "Profesional", label: "Profesional" },
+  { id: "Industrial", label: "Industrial" },
+];
+
+export const PROCESS_OPTIONS = [
+  { id: "SMAW", label: "SMAW (Electrodo)" },
+  { id: "GMAW", label: "GMAW (MIG / MAG)" },
+  { id: "FCAW", label: "FCAW (Alambre tubular)" },
+  { id: "GTAW", label: "GTAW (TIG)" },
+  { id: "LBW", label: "Soldadura Láser" },
+];
 
 export const AMPERAGE_RANGES = [
   { id: "0-200", label: "Hasta 200 A", min: 0, max: 200 },
@@ -12,15 +31,24 @@ export const POWER_SUPPLY_OPTIONS = [
   { id: "mono", label: "Monofásica" },
   { id: "tri", label: "Trifásica" },
   { id: "multi", label: "Multivoltaje" },
+  { id: "comb", label: "Combustión / Autónoma" },
+];
+
+export const BRAND_OPTIONS = [
+  { id: "ESAB", label: "ESAB" },
+  { id: "Victor", label: "Victor" },
+  { id: "Arcair", label: "Arcair" },
+  { id: "GCE", label: "GCE" },
 ];
 
 export const APPLICATION_KEYWORDS = [
+  { id: "herreria", label: "Herrería / Taller ligero" },
   { id: "mantenimiento", label: "Mantenimiento y reparación" },
   { id: "estructura", label: "Estructuras metálicas" },
   { id: "industrial", label: "Fabricación industrial" },
   { id: "produccion", label: "Producción continua" },
-  { id: "taller", label: "Taller profesional" },
-  { id: "inoxidable", label: "Acero inoxidable / Aluminio" },
+  { id: "inoxidable", label: "Acero inox / Aluminio" },
+  { id: "campo", label: "Campo / Obra" },
 ];
 
 export function parseAmperageValue(str) {
@@ -31,29 +59,103 @@ export function parseAmperageValue(str) {
   return Number.isNaN(num) ? null : num;
 }
 
+function FilterCheckbox({ checked, onChange, label, count }) {
+  const isZero = count === 0 && !checked;
+  return (
+    <label
+      className={`group flex cursor-pointer items-center justify-between gap-2 py-0.5 transition-opacity ${
+        isZero ? "opacity-40" : "opacity-100"
+      }`}
+    >
+      <span className="flex items-center gap-2.5">
+        <input
+          type="checkbox"
+          checked={checked}
+          onChange={onChange}
+          className="sr-only"
+        />
+        <span
+          aria-hidden="true"
+          className={`flex h-3.5 w-3.5 shrink-0 items-center justify-center border transition-colors ${
+            checked
+              ? "border-accent bg-accent text-ink"
+              : "border-white/25 bg-ink/70 group-hover:border-accent/60"
+          }`}
+        >
+          {checked && <Check className="h-2.5 w-2.5 stroke-[3]" />}
+        </span>
+        <span
+          className={`font-mono text-[11px] transition-colors ${
+            checked ? "font-semibold text-fog" : "text-mist group-hover:text-fog"
+          }`}
+        >
+          {label}
+        </span>
+      </span>
+      {typeof count === "number" && (
+        <span className="font-mono text-[10px] tabular-nums text-mist/60">
+          {count}
+        </span>
+      )}
+    </label>
+  );
+}
+
+function FilterSection({ title, expanded, onToggle, children, isFirst = false }) {
+  return (
+    <div className={isFirst ? "" : "border-t border-white/5 pt-4"}>
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={expanded}
+        className="flex w-full items-center justify-between text-left"
+      >
+        <span className="font-mono text-[10px] uppercase tracking-wider text-fog">
+          {title}
+        </span>
+        <ChevronDown
+          className={`h-3.5 w-3.5 text-mist transition-transform duration-200 ${
+            expanded ? "rotate-180" : ""
+          }`}
+        />
+      </button>
+      {expanded && <div className="mt-3 space-y-1.5">{children}</div>}
+    </div>
+  );
+}
+
 export default function FilterPanel({
   filters,
   onFilterChange,
+  facetCounts = {},
   productCount,
   totalCount,
   className = "",
 }) {
   const [expanded, setExpanded] = useState({
+    availability: true,
+    type: true,
+    process: true,
     amperage: true,
-    power: true,
-    application: true,
+    power: false,
+    brand: false,
+    application: false,
   });
 
   const toggle = (key) => setExpanded((e) => ({ ...e, [key]: !e[key] }));
 
   const hasActiveFilters =
+    (filters.availability?.length || 0) > 0 ||
+    (filters.types?.length || 0) > 0 ||
+    (filters.processes?.length || 0) > 0 ||
     (filters.amperageRanges?.length || 0) > 0 ||
     (filters.powerSupply?.length || 0) > 0 ||
+    (filters.brands?.length || 0) > 0 ||
     (filters.applications?.length || 0) > 0;
 
   return (
     <aside
-      className={`border border-white/10 bg-coal/50 p-5 space-y-6 ${className}`}
+      className={`border border-white/10 bg-coal/60 p-5 space-y-5 ${className}`}
       aria-label="Filtros técnicos"
     >
       <div className="flex items-center justify-between border-b border-white/10 pb-3">
@@ -66,119 +168,118 @@ export default function FilterPanel({
         </span>
       </div>
 
-      {/* Filtro por amperaje */}
-      <div>
-        <button
-          type="button"
-          onClick={() => toggle("amperage")}
-          className="flex w-full items-center justify-between text-left"
-        >
-          <span className="font-mono text-[10px] uppercase tracking-wider text-fog">
-            Amperaje
-          </span>
-          <ChevronDown
-            className={`h-3.5 w-3.5 text-mist transition-transform ${
-              expanded.amperage ? "rotate-180" : ""
-            }`}
+      <FilterSection
+        title="Precio / Modalidad"
+        expanded={expanded.availability}
+        onToggle={() => toggle("availability")}
+        isFirst
+      >
+        {AVAILABILITY_OPTIONS.map((opt) => (
+          <FilterCheckbox
+            key={opt.id}
+            label={opt.label}
+            checked={filters.availability?.includes(opt.id) || false}
+            onChange={() => onFilterChange("availability", opt.id)}
+            count={facetCounts.availability?.[opt.id]}
           />
-        </button>
-        {expanded.amperage && (
-          <div className="mt-3 space-y-2">
-            {AMPERAGE_RANGES.map((r) => (
-              <label
-                key={r.id}
-                className="group flex cursor-pointer items-center gap-2.5"
-              >
-                <input
-                  type="checkbox"
-                  checked={filters.amperageRanges?.includes(r.id) || false}
-                  onChange={() => onFilterChange("amperageRanges", r.id)}
-                  className="h-3.5 w-3.5 accent-accent"
-                />
-                <span className="font-mono text-[11px] text-mist transition-colors group-hover:text-fog">
-                  {r.label}
-                </span>
-              </label>
-            ))}
-          </div>
-        )}
-      </div>
+        ))}
+      </FilterSection>
 
-      {/* Filtro por alimentación eléctrica */}
-      <div className="border-t border-white/5 pt-4">
-        <button
-          type="button"
-          onClick={() => toggle("power")}
-          className="flex w-full items-center justify-between text-left"
-        >
-          <span className="font-mono text-[10px] uppercase tracking-wider text-fog">
-            Alimentación
-          </span>
-          <ChevronDown
-            className={`h-3.5 w-3.5 text-mist transition-transform ${
-              expanded.power ? "rotate-180" : ""
-            }`}
+      <FilterSection
+        title="Nivel / Tipo"
+        expanded={expanded.type}
+        onToggle={() => toggle("type")}
+      >
+        {TYPE_OPTIONS.map((opt) => (
+          <FilterCheckbox
+            key={opt.id}
+            label={opt.label}
+            checked={filters.types?.includes(opt.id) || false}
+            onChange={() => onFilterChange("types", opt.id)}
+            count={facetCounts.types?.[opt.id]}
           />
-        </button>
-        {expanded.power && (
-          <div className="mt-3 space-y-2">
-            {POWER_SUPPLY_OPTIONS.map((ps) => (
-              <label
-                key={ps.id}
-                className="group flex cursor-pointer items-center gap-2.5"
-              >
-                <input
-                  type="checkbox"
-                  checked={filters.powerSupply?.includes(ps.id) || false}
-                  onChange={() => onFilterChange("powerSupply", ps.id)}
-                  className="h-3.5 w-3.5 accent-accent"
-                />
-                <span className="font-mono text-[11px] text-mist transition-colors group-hover:text-fog">
-                  {ps.label}
-                </span>
-              </label>
-            ))}
-          </div>
-        )}
-      </div>
+        ))}
+      </FilterSection>
 
-      {/* Filtro por aplicación */}
-      <div className="border-t border-white/5 pt-4">
-        <button
-          type="button"
-          onClick={() => toggle("application")}
-          className="flex w-full items-center justify-between text-left"
-        >
-          <span className="font-mono text-[10px] uppercase tracking-wider text-fog">
-            Aplicación
-          </span>
-          <ChevronDown
-            className={`h-3.5 w-3.5 text-mist transition-transform ${
-              expanded.application ? "rotate-180" : ""
-            }`}
+      <FilterSection
+        title="Proceso"
+        expanded={expanded.process}
+        onToggle={() => toggle("process")}
+      >
+        {PROCESS_OPTIONS.map((opt) => (
+          <FilterCheckbox
+            key={opt.id}
+            label={opt.label}
+            checked={filters.processes?.includes(opt.id) || false}
+            onChange={() => onFilterChange("processes", opt.id)}
+            count={facetCounts.processes?.[opt.id]}
           />
-        </button>
-        {expanded.application && (
-          <div className="mt-3 space-y-2">
-            {APPLICATION_KEYWORDS.map((app) => (
-              <label
-                key={app.id}
-                className="group flex cursor-pointer items-center gap-2.5"
-              >
-                <input
-                  type="checkbox"
-                  checked={filters.applications?.includes(app.id) || false}
-                  onChange={() => onFilterChange("applications", app.id)}
-                  className="h-3.5 w-3.5 accent-accent"
-                />
-                <span className="font-mono text-[11px] text-mist transition-colors group-hover:text-fog">
-                  {app.label}
-                </span>
-              </label>
-            ))}
-          </div>
-        )}
-      </div>
+        ))}
+      </FilterSection>
+
+      <FilterSection
+        title="Corriente máxima"
+        expanded={expanded.amperage}
+        onToggle={() => toggle("amperage")}
+      >
+        {AMPERAGE_RANGES.map((r) => (
+          <FilterCheckbox
+            key={r.id}
+            label={r.label}
+            checked={filters.amperageRanges?.includes(r.id) || false}
+            onChange={() => onFilterChange("amperageRanges", r.id)}
+            count={facetCounts.amperageRanges?.[r.id]}
+          />
+        ))}
+      </FilterSection>
+
+      <FilterSection
+        title="Alimentación"
+        expanded={expanded.power}
+        onToggle={() => toggle("power")}
+      >
+        {POWER_SUPPLY_OPTIONS.map((ps) => (
+          <FilterCheckbox
+            key={ps.id}
+            label={ps.label}
+            checked={filters.powerSupply?.includes(ps.id) || false}
+            onChange={() => onFilterChange("powerSupply", ps.id)}
+            count={facetCounts.powerSupply?.[ps.id]}
+          />
+        ))}
+      </FilterSection>
+
+      <FilterSection
+        title="Marca"
+        expanded={expanded.brand}
+        onToggle={() => toggle("brand")}
+      >
+        {BRAND_OPTIONS.map((b) => (
+          <FilterCheckbox
+            key={b.id}
+            label={b.label}
+            checked={filters.brands?.includes(b.id) || false}
+            onChange={() => onFilterChange("brands", b.id)}
+            count={facetCounts.brands?.[b.id]}
+          />
+        ))}
+      </FilterSection>
+
+      <FilterSection
+        title="Aplicación"
+        expanded={expanded.application}
+        onToggle={() => toggle("application")}
+      >
+        {APPLICATION_KEYWORDS.map((app) => (
+          <FilterCheckbox
+            key={app.id}
+            label={app.label}
+            checked={filters.applications?.includes(app.id) || false}
+            onChange={() => onFilterChange("applications", app.id)}
+            count={facetCounts.applications?.[app.id]}
+          />
+        ))}
+      </FilterSection>
 
       {hasActiveFilters && (
         <button
