@@ -1,0 +1,161 @@
+<!doctype html>
+<html
+  lang="es"
+  data-composition-variables='[
+    {"id":"brandTag","type":"string","label":"Etiqueta de marca","default":"MAQSYMA // SHOWROOM ESAB"},
+    {"id":"accent","type":"color","label":"Color acento","default":"#FFB703"}
+  ]'
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <style>
+      :root {
+        --ground: #08090c;
+        --coal: #101217;
+        --fog: #f5f6f8;
+        --mist: #9ca3af;
+        --accent: #ffb703;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: var(--ground);
+        color: var(--fog);
+        font-family: "Inter", sans-serif;
+      }
+      #root {
+        position: relative;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: var(--ground);
+      }
+      .bg-grid-layer {
+        position: absolute;
+        inset: 0;
+        background-image:
+          linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        background-size: 72px 72px;
+        pointer-events: none;
+        z-index: 0;
+      }
+      .brand-hud {
+        position: absolute;
+        top: 54px;
+        left: 96px;
+        z-index: 30;
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        pointer-events: none;
+      }
+      .brand-hud img {
+        height: 36px;
+        width: auto;
+        display: block;
+      }
+      .brand-sep {
+        width: 1px;
+        height: 24px;
+        background: rgba(255, 255, 255, 0.16);
+      }
+      .brand-tag {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 14px;
+        letter-spacing: 0.24em;
+        text-transform: uppercase;
+        color: var(--mist);
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="root"
+      data-composition-id="main"
+      data-start="0"
+      data-duration="10"
+      data-width="1920"
+      data-height="1080"
+    >
+      <div class="bg-grid-layer"></div>
+
+      <div
+        id="station1"
+        class="clip"
+        data-composition-id="station1"
+        data-composition-src="compositions/station1.html"
+        data-start="0"
+        data-duration="2.5"
+        data-track-index="0"
+        data-track-kind="graphics"
+        data-width="1920"
+        data-height="1080"
+        style="z-index: 10;"
+      ></div>
+
+      <div
+        id="station2"
+        class="clip"
+        data-composition-id="station2"
+        data-composition-src="compositions/station2.html"
+        data-start="2.5"
+        data-duration="2.5"
+        data-track-index="0"
+        data-track-kind="graphics"
+        data-width="1920"
+        data-height="1080"
+        style="z-index: 10;"
+      ></div>
+
+      <div
+        id="station3"
+        class="clip"
+        data-composition-id="station3"
+        data-composition-src="compositions/station3.html"
+        data-start="5.0"
+        data-duration="2.5"
+        data-track-index="0"
+        data-track-kind="graphics"
+        data-width="1920"
+        data-height="1080"
+        style="z-index: 10;"
+      ></div>
+
+      <div
+        id="station4"
+        class="clip"
+        data-composition-id="station4"
+        data-composition-src="compositions/station4.html"
+        data-start="7.5"
+        data-duration="2.5"
+        data-track-index="0"
+        data-track-kind="graphics"
+        data-width="1920"
+        data-height="1080"
+        style="z-index: 10;"
+      ></div>
+
+      <div class="brand-hud">
+        <img src="assets/logo-maqsyma.png" alt="MAQSYMA" />
+        <span class="brand-sep"></span>
+        <span class="brand-tag" data-var-text="brandTag">MAQSYMA // SHOWROOM ESAB</span>
+      </div>
+    </div>
+
+    <script>
+      const tl = gsap.timeline({ paused: true });
+      window.__timelines["main"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>

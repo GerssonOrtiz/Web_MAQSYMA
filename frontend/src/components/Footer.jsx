@@ -4,6 +4,7 @@ import { WA_DEFAULT, WHATSAPP_DISPLAY, scrollToSection } from "../lib/scroll";
 
 const LINKS = [
   ["Catálogo completo", "/catalogo", "route"],
+  ["Nosotros", "nosotros", "section"],
   ["Destacados", "maquinas", "section"],
   ["Categorías", "categorias", "section"],
   ["Aplicaciones", "aplicaciones", "section"],

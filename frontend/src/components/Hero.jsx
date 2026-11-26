@@ -1,9 +1,9 @@
 import React from "react";
-import HeroCinematic from "./HeroCinematic";
+import HeroShowroom from "./HeroShowroom";
 
 /**
- * Hero component principal configurado con HeroCinematic
+ * Hero component principal configurado con HeroShowroom (Opción 2 + Scroll-Trigger)
  */
 export default function Hero({ onReady }) {
-  return <HeroCinematic onReady={onReady} />;
+  return <HeroShowroom onReady={onReady} />;
 }

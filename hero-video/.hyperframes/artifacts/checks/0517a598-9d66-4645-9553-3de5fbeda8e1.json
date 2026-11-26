@@ -1,0 +1,627 @@
+{
+  "ok": true,
+  "strict": false,
+  "browserSkipped": false,
+  "lint": {
+    "ok": true,
+    "errorCount": 0,
+    "warningCount": 10,
+    "infoCount": 0,
+    "findings": [
+      {
+        "code": "gsap_repeated_fromto_without_baseline",
+        "severity": "warning",
+        "message": "2 tl.fromTo() calls target \"#st1-glow\" with no stable baseline. The last-authored fromTo \"from\" values become the element's resting state for any seek before the first tween actually runs, because GSAP applies fromTo from-values at authoring time (immediateRender), not at tween position.",
+        "selector": "#st1-glow",
+        "dataAttributes": {},
+        "sourceFile": "C:\\Users\\gorti\\Desktop\\web_MAQSYMA\\hero-video\\compositions\\station1.html",
+        "bbox": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        "time": 0,
+        "fixHint": "Add `immediateRender: false` to every fromTo except the earliest-positioned one (at 0s), so pre-first-tween seeks keep its \"from\" values. A hiding `tl.set(..., 0)` baseline trips gsap_timeline_set_initial_hide, and a `gsap.set` authored before the fromTo calls is overwritten by them."
+      },
+      {
+        "code": "gsap_repeated_fromto_without_baseline",
+        "severity": "warning",
+        "message": "3 tl.fromTo() calls target \"#st1-stage\" with no stable baseline. The last-authored fromTo \"from\" values become the element's resting state for any seek before the first tween actually runs, because GSAP applies fromTo from-values at authoring time (immediateRender), not at tween position.",
+        "selector": "#st1-stage",
+        "dataAttributes": {},
+        "sourceFile": "C:\\Users\\gorti\\Desktop\\web_MAQSYMA\\hero-video\\compositions\\station1.html",
+        "bbox": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        "time": 0,
+        "fixHint": "Add `immediateRender: false` to every fromTo except the earliest-positioned one (at 0.1s), so pre-first-tween seeks keep its \"from\" values. A hiding `tl.set(..., 0)` baseline trips gsap_timeline_set_initial_hide, and a `gsap.set` authored before the fromTo calls is overwritten by them."
+      },
+      {
+        "code": "gsap_repeated_fromto_without_baseline",
+        "severity": "warning",
+        "message": "2 tl.fromTo() calls target \"#st1-meta\" with no stable baseline. The last-authored fromTo \"from\" values become the element's resting state for any seek before the first tween actually runs, because GSAP applies fromTo from-values at authoring time (immediateRender), not at tween position.",
+        "selector": "#st1-meta",
+        "dataAttributes": {},
+        "sourceFile": "C:\\Users\\gorti\\Desktop\\web_MAQSYMA\\hero-video\\compositions\\station1.html",
+        "bbox": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        "time": 0,
+        "fixHint": "Add `immediateRender: false` to every fromTo except the earliest-positioned one (at 0.15s), so pre-first-tween seeks keep its \"from\" values. A hiding `tl.set(..., 0)` baseline trips gsap_timeline_set_initial_hide, and a `gsap.set` authored before the fromTo calls is overwritten by them."
+      },
+      {
+        "code": "gsap_repeated_fromto_without_baseline",
+        "severity": "warning",
+        "message": "2 tl.fromTo() calls target \"#st2-glow\" with no stable baseline. The last-authored fromTo \"from\" values become the element's resting state for any seek before the first tween actually runs, because GSAP applies fromTo from-values at authoring time (immediateRender), not at tween position.",
+        "selector": "#st2-glow",
+        "dataAttributes": {},
+        "sourceFile": "C:\\Users\\gorti\\Desktop\\web_MAQSYMA\\hero-video\\compositions\\station2.html",
+        "bbox": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        "time": 0,
+        "fixHint": "Add `immediateRender: false` to every fromTo except the earliest-positioned one (at 0s), so pre-first-tween seeks keep its \"from\" values. A hiding `tl.set(..., 0)` baseline trips gsap_timeline_set_initial_hide, and a `gsap.set` authored before the fromTo calls is overwritten by them."
+      },
+      {
+        "code": "gsap_repeated_fromto_without_baseline",
+        "severity": "warning",
+        "message": "3 tl.fromTo() calls target \"#st2-stage\" with no stable baseline. The last-authored fromTo \"from\" values become the element's resting state for any seek before the first tween actually runs, because GSAP applies fromTo from-values at authoring time (immediateRender), not at tween position.",
+        "selector": "#st2-stage",
+        "dataAttributes": {},
+        "sourceFile": "C:\\Users\\gorti\\Desktop\\web_MAQSYMA\\hero-video\\compositions\\station2.html",
+        "bbox": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        "time": 0,
+        "fixHint": "Add `immediateRender: false` to every fromTo except the earliest-positioned one (at 0.08s), so pre-first-tween seeks keep its \"from\" values. A hiding `tl.set(..., 0)` baseline trips gsap_timeline_set_initial_hide, and a `gsap.set` authored before the fromTo calls is overwritten by them."
+      },
+      {
+        "code": "gsap_repeated_fromto_without_baseline",
+        "severity": "warning",
+        "message": "2 tl.fromTo() calls target \"#st2-meta\" with no stable baseline. The last-authored fromTo \"from\" values become the element's resting state for any seek before the first tween actually runs, because GSAP applies fromTo from-values at authoring time (immediateRender), not at tween position.",
+        "selector": "#st2-meta",
+        "dataAttributes": {},
+        "sourceFile": "C:\\Users\\gorti\\Desktop\\web_MAQSYMA\\hero-video\\compositions\\station2.html",
+        "bbox": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        "time": 0,
+        "fixHint": "Add `immediateRender: false` to every fromTo except the earliest-positioned one (at 0.14s), so pre-first-tween seeks keep its \"from\" values. A hiding `tl.set(..., 0)` baseline trips gsap_timeline_set_initial_hide, and a `gsap.set` authored before the fromTo calls is overwritten by them."
+      },
+      {
+        "code": "gsap_repeated_fromto_without_baseline",
+        "severity": "warning",
+        "message": "2 tl.fromTo() calls target \"#st3-glow\" with no stable baseline. The last-authored fromTo \"from\" values become the element's resting state for any seek before the first tween actually runs, because GSAP applies fromTo from-values at authoring time (immediateRender), not at tween position.",
+        "selector": "#st3-glow",
+        "dataAttributes": {},
+        "sourceFile": "C:\\Users\\gorti\\Desktop\\web_MAQSYMA\\hero-video\\compositions\\station3.html",
+        "bbox": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        "time": 0,
+        "fixHint": "Add `immediateRender: false` to every fromTo except the earliest-positioned one (at 0s), so pre-first-tween seeks keep its \"from\" values. A hiding `tl.set(..., 0)` baseline trips gsap_timeline_set_initial_hide, and a `gsap.set` authored before the fromTo calls is overwritten by them."
+      },
+      {
+        "code": "gsap_repeated_fromto_without_baseline",
+        "severity": "warning",
+        "message": "3 tl.fromTo() calls target \"#st3-stage\" with no stable baseline. The last-authored fromTo \"from\" values become the element's resting state for any seek before the first tween actually runs, because GSAP applies fromTo from-values at authoring time (immediateRender), not at tween position.",
+        "selector": "#st3-stage",
+        "dataAttributes": {},
+        "sourceFile": "C:\\Users\\gorti\\Desktop\\web_MAQSYMA\\hero-video\\compositions\\station3.html",
+        "bbox": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        "time": 0,
+        "fixHint": "Add `immediateRender: false` to every fromTo except the earliest-positioned one (at 0.08s), so pre-first-tween seeks keep its \"from\" values. A hiding `tl.set(..., 0)` baseline trips gsap_timeline_set_initial_hide, and a `gsap.set` authored before the fromTo calls is overwritten by them."
+      },
+      {
+        "code": "gsap_repeated_fromto_without_baseline",
+        "severity": "warning",
+        "message": "2 tl.fromTo() calls target \"#st3-meta\" with no stable baseline. The last-authored fromTo \"from\" values become the element's resting state for any seek before the first tween actually runs, because GSAP applies fromTo from-values at authoring time (immediateRender), not at tween position.",
+        "selector": "#st3-meta",
+        "dataAttributes": {},
+        "sourceFile": "C:\\Users\\gorti\\Desktop\\web_MAQSYMA\\hero-video\\compositions\\station3.html",
+        "bbox": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        "time": 0,
+        "fixHint": "Add `immediateRender: false` to every fromTo except the earliest-positioned one (at 0.14s), so pre-first-tween seeks keep its \"from\" values. A hiding `tl.set(..., 0)` baseline trips gsap_timeline_set_initial_hide, and a `gsap.set` authored before the fromTo calls is overwritten by them."
+      },
+      {
+        "code": "gsap_repeated_fromto_without_baseline",
+        "severity": "warning",
+        "message": "2 tl.fromTo() calls target \"#st4-stage\" with no stable baseline. The last-authored fromTo \"from\" values become the element's resting state for any seek before the first tween actually runs, because GSAP applies fromTo from-values at authoring time (immediateRender), not at tween position.",
+        "selector": "#st4-stage",
+        "dataAttributes": {},
+        "sourceFile": "C:\\Users\\gorti\\Desktop\\web_MAQSYMA\\hero-video\\compositions\\station4.html",
+        "bbox": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        "time": 0,
+        "fixHint": "Add `immediateRender: false` to every fromTo except the earliest-positioned one (at 0.08s), so pre-first-tween seeks keep its \"from\" values. A hiding `tl.set(..., 0)` baseline trips gsap_timeline_set_initial_hide, and a `gsap.set` authored before the fromTo calls is overwritten by them."
+      }
+    ],
+    "filesScanned": 5
+  },
+  "runtime": {
+    "ok": true,
+    "errorCount": 0,
+    "warningCount": 0,
+    "infoCount": 0,
+    "findings": []
+  },
+  "layout": {
+    "ok": true,
+    "errorCount": 0,
+    "warningCount": 0,
+    "infoCount": 0,
+    "findings": [],
+    "duration": 10,
+    "samples": [
+      0.556,
+      1.667,
+      2.778,
+      3.889,
+      5,
+      6.111,
+      7.222,
+      8.333,
+      9.444
+    ],
+    "transitionSamples": [],
+    "transitionSamplesDropped": 0,
+    "tolerance": 2,
+    "totalIssueCount": 0,
+    "truncated": false,
+    "faceCheck": {
+      "ran": true,
+      "candidates": 0,
+      "faces": 0
+    }
+  },
+  "motion": {
+    "ok": true,
+    "errorCount": 0,
+    "warningCount": 0,
+    "infoCount": 0,
+    "findings": [],
+    "enabled": false,
+    "samples": 0
+  },
+  "contrast": {
+    "ok": true,
+    "errorCount": 0,
+    "warningCount": 0,
+    "infoCount": 0,
+    "findings": [],
+    "enabled": true,
+    "samples": [
+      0.556,
+      2.778,
+      5,
+      7.222,
+      9.444
+    ],
+    "checked": 45,
+    "passed": 45
+  },
+  "craft": {
+    "ok": true,
+    "errorCount": 0,
+    "warningCount": 5,
+    "infoCount": 0,
+    "findings": [
+      {
+        "code": "text_below_floor",
+        "severity": "warning",
+        "message": "Type floor is 28 px (2.6% of the 1080 px short side, what a phone can read) and \"MAQSYMA // SHOWROOM ESAB\" renders at 14 px for 10.00 s: set reading text to at least 28 px, or put data-layout-ignore on text that is texture rather than reading; see references/look.md.",
+        "text": "MAQSYMA // SHOWROOM ESAB",
+        "selector": "span.brand-tag",
+        "dataAttributes": {},
+        "sourceFile": "index.html",
+        "bbox": {
+          "x": 241,
+          "y": 63,
+          "width": 282.25,
+          "height": 18
+        },
+        "time": 0,
+        "times": [
+          0
+        ],
+        "fontPx": 14,
+        "floorPx": 28,
+        "seconds": 10,
+        "elements": [
+          {
+            "selector": "span.brand-tag",
+            "text": "MAQSYMA // SHOWROOM ESAB",
+            "fontPx": 14,
+            "time": 0,
+            "seconds": 10
+          }
+        ]
+      },
+      {
+        "code": "text_below_floor",
+        "severity": "warning",
+        "message": "Type floor is 28 px (2.6% of the 1080 px short side, what a phone can read) and 7 text elements stay under it for 0.5 s or more, the smallest \"AMPERAJE\" at 12 px: set reading text to at least 28 px, or put data-layout-ignore on text that is texture rather than reading; see references/look.md.",
+        "text": "AMPERAJE",
+        "selector": "div.st1-specs > div:nth-of-type(1) > p:nth-of-type(1)",
+        "dataAttributes": {},
+        "sourceFile": "compositions/station1.html",
+        "bbox": {
+          "x": 96,
+          "y": 931.34,
+          "width": 78.73,
+          "height": 16
+        },
+        "time": 0.25,
+        "times": [
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ],
+        "fontPx": 12,
+        "floorPx": 28,
+        "seconds": 2.25,
+        "elements": [
+          {
+            "selector": "div.st1-specs > div:nth-of-type(1) > p:nth-of-type(1)",
+            "text": "AMPERAJE",
+            "fontPx": 12,
+            "time": 0.25,
+            "seconds": 2.25
+          },
+          {
+            "selector": "div.st1-specs > div:nth-of-type(2) > p:nth-of-type(1)",
+            "text": "PROCESOS",
+            "fontPx": 12,
+            "time": 0.25,
+            "seconds": 2.25
+          },
+          {
+            "selector": "div.st1-specs > div:nth-of-type(3) > p:nth-of-type(1)",
+            "text": "MODALIDAD",
+            "fontPx": 12,
+            "time": 0.25,
+            "seconds": 2.25
+          },
+          {
+            "selector": "p.st1-kicker",
+            "text": "ESTACIÓN 01 // MULTIPROCESO PULSADO",
+            "fontPx": 16,
+            "time": 0.25,
+            "seconds": 2.25
+          },
+          {
+            "selector": "div.st1-specs > div:nth-of-type(1) > p:nth-of-type(2)",
+            "text": "500 A · 60%",
+            "fontPx": 20,
+            "time": 0.25,
+            "seconds": 2.25
+          },
+          {
+            "selector": "div.st1-specs > div:nth-of-type(2) > p:nth-of-type(2)",
+            "text": "MIG / TIG / MMA",
+            "fontPx": 20,
+            "time": 0.25,
+            "seconds": 2.25
+          },
+          {
+            "selector": "div.st1-specs > div:nth-of-type(3) > p:nth-of-type(2)",
+            "text": "VENTA · RENTING",
+            "fontPx": 20,
+            "time": 0.25,
+            "seconds": 2.25
+          }
+        ]
+      },
+      {
+        "code": "text_below_floor",
+        "severity": "warning",
+        "message": "Type floor is 28 px (2.6% of the 1080 px short side, what a phone can read) and 7 text elements stay under it for 0.5 s or more, the smallest \"AMPERAJE\" at 12 px: set reading text to at least 28 px, or put data-layout-ignore on text that is texture rather than reading; see references/look.md.",
+        "text": "AMPERAJE",
+        "selector": "div.st2-specs > div:nth-of-type(1) > p:nth-of-type(1)",
+        "dataAttributes": {},
+        "sourceFile": "compositions/station2.html",
+        "bbox": {
+          "x": 96,
+          "y": 930.13,
+          "width": 78.73,
+          "height": 16
+        },
+        "time": 2.75,
+        "times": [
+          2.75,
+          2.75,
+          2.75,
+          2.75,
+          2.75,
+          2.75,
+          2.75
+        ],
+        "fontPx": 12,
+        "floorPx": 28,
+        "seconds": 2.25,
+        "elements": [
+          {
+            "selector": "div.st2-specs > div:nth-of-type(1) > p:nth-of-type(1)",
+            "text": "AMPERAJE",
+            "fontPx": 12,
+            "time": 2.75,
+            "seconds": 2.25
+          },
+          {
+            "selector": "div.st2-specs > div:nth-of-type(2) > p:nth-of-type(1)",
+            "text": "PROCESOS",
+            "fontPx": 12,
+            "time": 2.75,
+            "seconds": 2.25
+          },
+          {
+            "selector": "div.st2-specs > div:nth-of-type(3) > p:nth-of-type(1)",
+            "text": "MODALIDAD",
+            "fontPx": 12,
+            "time": 2.75,
+            "seconds": 2.25
+          },
+          {
+            "selector": "p.st2-kicker",
+            "text": "ESTACIÓN 02 // TRABAJO PESADO MMA & ARCAIR",
+            "fontPx": 16,
+            "time": 2.75,
+            "seconds": 2.25
+          },
+          {
+            "selector": "div.st2-specs > div:nth-of-type(1) > p:nth-of-type(2)",
+            "text": "601 A",
+            "fontPx": 20,
+            "time": 2.75,
+            "seconds": 2.25
+          },
+          {
+            "selector": "div.st2-specs > div:nth-of-type(2) > p:nth-of-type(2)",
+            "text": "SMAW / ARCAIR",
+            "fontPx": 20,
+            "time": 2.75,
+            "seconds": 2.25
+          },
+          {
+            "selector": "div.st2-specs > div:nth-of-type(3) > p:nth-of-type(2)",
+            "text": "VENTA · ALQUILER",
+            "fontPx": 20,
+            "time": 2.75,
+            "seconds": 2.25
+          }
+        ]
+      },
+      {
+        "code": "text_below_floor",
+        "severity": "warning",
+        "message": "Type floor is 28 px (2.6% of the 1080 px short side, what a phone can read) and 7 text elements stay under it for 0.5 s or more, the smallest \"AMPERAJE\" at 12 px: set reading text to at least 28 px, or put data-layout-ignore on text that is texture rather than reading; see references/look.md.",
+        "text": "AMPERAJE",
+        "selector": "div.st3-specs > div:nth-of-type(1) > p:nth-of-type(1)",
+        "dataAttributes": {},
+        "sourceFile": "compositions/station3.html",
+        "bbox": {
+          "x": 96,
+          "y": 930.13,
+          "width": 78.73,
+          "height": 16
+        },
+        "time": 5.25,
+        "times": [
+          5.25,
+          5.25,
+          5.25,
+          5.25,
+          5.25,
+          5.25,
+          5.25
+        ],
+        "fontPx": 12,
+        "floorPx": 28,
+        "seconds": 2.25,
+        "elements": [
+          {
+            "selector": "div.st3-specs > div:nth-of-type(1) > p:nth-of-type(1)",
+            "text": "AMPERAJE",
+            "fontPx": 12,
+            "time": 5.25,
+            "seconds": 2.25
+          },
+          {
+            "selector": "div.st3-specs > div:nth-of-type(2) > p:nth-of-type(1)",
+            "text": "PROCESOS",
+            "fontPx": 12,
+            "time": 5.25,
+            "seconds": 2.25
+          },
+          {
+            "selector": "div.st3-specs > div:nth-of-type(3) > p:nth-of-type(1)",
+            "text": "MODALIDAD",
+            "fontPx": 12,
+            "time": 5.25,
+            "seconds": 2.25
+          },
+          {
+            "selector": "p.st3-kicker",
+            "text": "ESTACIÓN 03 // MULTIPROCESO EN OBRA",
+            "fontPx": 16,
+            "time": 5.25,
+            "seconds": 2.25
+          },
+          {
+            "selector": "div.st3-specs > div:nth-of-type(1) > p:nth-of-type(2)",
+            "text": "320 A",
+            "fontPx": 20,
+            "time": 5.25,
+            "seconds": 2.25
+          },
+          {
+            "selector": "div.st3-specs > div:nth-of-type(2) > p:nth-of-type(2)",
+            "text": "MIG / FCAW / TIG",
+            "fontPx": 20,
+            "time": 5.25,
+            "seconds": 2.25
+          },
+          {
+            "selector": "div.st3-specs > div:nth-of-type(3) > p:nth-of-type(2)",
+            "text": "VENTA · ALQUILER",
+            "fontPx": 20,
+            "time": 5.25,
+            "seconds": 2.25
+          }
+        ]
+      },
+      {
+        "code": "text_below_floor",
+        "severity": "warning",
+        "message": "Type floor is 28 px (2.6% of the 1080 px short side, what a phone can read) and 7 text elements stay under it for 0.5 s or more, the smallest \"POTENCIA\" at 12 px: set reading text to at least 28 px, or put data-layout-ignore on text that is texture rather than reading; see references/look.md.",
+        "text": "POTENCIA",
+        "selector": "div.st4-specs > div:nth-of-type(1) > p:nth-of-type(1)",
+        "dataAttributes": {},
+        "sourceFile": "compositions/station4.html",
+        "bbox": {
+          "x": 96,
+          "y": 930.13,
+          "width": 78.73,
+          "height": 16
+        },
+        "time": 7.75,
+        "times": [
+          7.75,
+          7.75,
+          7.75,
+          7.75,
+          7.75,
+          7.75,
+          7.75
+        ],
+        "fontPx": 12,
+        "floorPx": 28,
+        "seconds": 2.25,
+        "elements": [
+          {
+            "selector": "div.st4-specs > div:nth-of-type(1) > p:nth-of-type(1)",
+            "text": "POTENCIA",
+            "fontPx": 12,
+            "time": 7.75,
+            "seconds": 2.25
+          },
+          {
+            "selector": "div.st4-specs > div:nth-of-type(2) > p:nth-of-type(1)",
+            "text": "PROCESO",
+            "fontPx": 12,
+            "time": 7.75,
+            "seconds": 2.25
+          },
+          {
+            "selector": "div.st4-specs > div:nth-of-type(3) > p:nth-of-type(1)",
+            "text": "SOPORTE",
+            "fontPx": 12,
+            "time": 7.75,
+            "seconds": 2.25
+          },
+          {
+            "selector": "p.st4-kicker",
+            "text": "ESTACIÓN 04 // SOLDADURA LÁSER PORTÁTIL",
+            "fontPx": 16,
+            "time": 7.75,
+            "seconds": 2.25
+          },
+          {
+            "selector": "div.st4-specs > div:nth-of-type(1) > p:nth-of-type(2)",
+            "text": "1,500 W",
+            "fontPx": 20,
+            "time": 7.75,
+            "seconds": 2.25
+          },
+          {
+            "selector": "div.st4-specs > div:nth-of-type(2) > p:nth-of-type(2)",
+            "text": "LÁSER LBW",
+            "fontPx": 20,
+            "time": 7.75,
+            "seconds": 2.25
+          },
+          {
+            "selector": "div.st4-specs > div:nth-of-type(3) > p:nth-of-type(2)",
+            "text": "CAPACITACIÓN ESAB",
+            "fontPx": 20,
+            "time": 7.75,
+            "seconds": 2.25
+          }
+        ]
+      }
+    ],
+    "enabled": true,
+    "step": 0.125,
+    "samples": 80
+  },
+  "audio": {
+    "ok": true,
+    "errorCount": 0,
+    "warningCount": 0,
+    "infoCount": 1,
+    "findings": [
+      {
+        "code": "audio_none",
+        "severity": "info",
+        "message": "The film has no sound: no clip in it plays audio.",
+        "selector": "[data-composition-id]",
+        "dataAttributes": {},
+        "sourceFile": "index.html",
+        "bbox": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        "time": 0
+      }
+    ]
+  },
+  "hdr": {
+    "autoPromotion": null,
+    "inspection": "available"
+  },
+  "snapshots": {
+    "enabled": false,
+    "files": [],
+    "times": [],
+    "findingFiles": []
+  }
+}

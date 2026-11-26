@@ -4,6 +4,7 @@ import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import Marquee from "./components/Marquee";
 import Manifesto from "./components/Manifesto";
+import Nosotros from "./components/Nosotros";
 import Categories from "./components/Categories";
 import FeaturedMachines from "./components/FeaturedMachines";
 import CatalogStore from "./components/CatalogStore";
@@ -64,6 +65,7 @@ function HomePage({ onHeroReady }) {
       <Marquee />
       <TrustBar />
       <Manifesto />
+      <Nosotros />
       <Categories />
       <FeaturedMachines />
       <Applications />
