@@ -63,10 +63,7 @@ export default function Manifesto() {
     >
       <div className={rm ? "" : "sticky top-0 flex h-screen items-center"}>
         <div className="section-head w-full">
-          <p className="mono-label flex items-center gap-3">
-            <span className="font-mono text-accent">01</span> Manifiesto
-            <span className="h-px flex-1 bg-white/10" />
-          </p>
+          <div className="h-px w-full bg-white/10" aria-hidden="true" />
 
           <p className="mt-10 max-w-5xl font-display text-[clamp(1.9rem,4.6vw,4rem)] font-bold uppercase leading-[1.08] tracking-tight">
             {rm

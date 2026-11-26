@@ -18,7 +18,6 @@ import {
   useMotionValue,
   useSpring,
   useMotionValueEvent,
-  AnimatePresence,
 } from "framer-motion";
 import { ArrowUpRight, ChevronDown, ShieldCheck, Truck, Zap, Sparkles } from "lucide-react";
 import { waLink } from "../lib/scroll";
@@ -571,7 +570,7 @@ export default function HeroDualScroll({ onReady }) {
         </motion.div>
 
         {/* ═══════════════════════════════════════════════════════════════
-            SECCIÓN 2 (50%–100%): EQUIPO ESTRELLA 2.5D PARALLAX FULL-SECTION
+            SECCIÓN 2 (50%–100%): 4 EQUIPOS ESTRELLA UNIFORMES EN PARALLAX 2.5D
             ═══════════════════════════════════════════════════════════════ */}
         <motion.div
           style={{
@@ -579,7 +578,7 @@ export default function HeroDualScroll({ onReady }) {
             opacity: sec2Opacity,
             pointerEvents: activeSection === 1 ? "auto" : "none",
           }}
-          className="absolute inset-0 z-30 overflow-hidden"
+          className="absolute inset-0 z-30 flex flex-col justify-center overflow-hidden px-5 pt-16 pb-8 sm:px-10 lg:px-12"
         >
           {/* CAPA 0 (Fondo 2.5D): Tipografía gigante y aura de arco */}
           <motion.div
@@ -588,243 +587,204 @@ export default function HeroDualScroll({ onReady }) {
             aria-hidden="true"
           >
             <span
-              className="font-display text-[clamp(8rem,22vw,20rem)] font-black uppercase leading-none tracking-tighter opacity-[0.04]"
+              className="font-display text-[clamp(8rem,22vw,20rem)] font-black uppercase leading-none tracking-tighter opacity-[0.04] transition-colors duration-500"
               style={{ color: activeStar.accent }}
             >
-              {activeStar.name.split(" ")[0]}
+              ESTRELLA
             </span>
           </motion.div>
 
-          {/* CAPA 1 (Plano Medio 2.5D): Equipos estrella secundarios distribuidos en toda la sección */}
-          <motion.div
-            style={{ x: midParallaxX, y: midParallaxY }}
-            className="absolute inset-0 hidden lg:block"
-          >
-            {STAR_MACHINES.map((machine, idx) => {
-              if (idx === selectedStarIdx) return null;
-              const otherMachines = STAR_MACHINES.filter((_, i) => i !== selectedStarIdx);
-              const posIdx = otherMachines.findIndex((m) => m.id === machine.id);
-              const placements = [
-                "right-[6%] top-[10%] h-44 w-52",
-                "right-[2%] bottom-[10%] h-48 w-56",
-                "left-[44%] top-[8%] h-40 w-48",
-              ];
-              const isHovered = hoveredStarId === machine.id;
-              return (
-                <motion.button
-                  key={machine.id}
-                  type="button"
-                  onClick={() => setSelectedStarIdx(idx)}
-                  onMouseEnter={() => setHoveredStarId(machine.id)}
-                  onMouseLeave={() => setHoveredStarId(null)}
-                  whileHover={{ scale: 1.12, y: -8 }}
-                  transition={{ type: "spring", stiffness: 260, damping: 20 }}
-                  className={`group absolute ${placements[posIdx % placements.length]} flex flex-col items-center justify-center rounded-sm border p-3 backdrop-blur-sm transition-all duration-300`}
-                  style={{
-                    borderColor: isHovered ? machine.accent : "rgba(255,255,255,0.08)",
-                    backgroundColor: isHovered ? "rgba(16,18,23,0.85)" : "rgba(16,18,23,0.35)",
-                    opacity: isHovered ? 1 : 0.42,
-                    filter: isHovered ? "blur(0px) brightness(1.1)" : "blur(1px) brightness(0.8)",
-                    boxShadow: isHovered ? `0 20px 50px -10px ${machine.accent}55` : "none",
-                  }}
-                  title={`Ver ${machine.name}`}
-                >
-                  <img
-                    src={machine.image}
-                    alt={machine.name}
-                    className="h-28 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+          <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col gap-5 lg:gap-7">
+            {/* Encabezado compacto de la sección */}
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <div className="mb-1.5 flex items-center gap-2.5">
+                  <span
+                    className="h-px w-7 flex-shrink-0 transition-colors duration-300"
+                    style={{ backgroundColor: activeStar.accent }}
                   />
                   <span
-                    className="mt-1.5 font-mono text-[9px] uppercase tracking-[0.18em] transition-colors"
-                    style={{ color: isHovered ? machine.accent : "#9CA3AF" }}
+                    className="font-mono text-[10px] uppercase tracking-[0.24em] transition-colors duration-300"
+                    style={{ color: activeStar.accent }}
                   >
-                    {machine.name}
+                    Línea Insignia · Stock Inmediato
                   </span>
-                </motion.button>
-              );
-            })}
-          </motion.div>
-
-          {/* CAPA 2 (Primer Plano 2.5D): Equipo Estrella Protagonista a escala completa */}
-          <motion.div
-            style={{
-              x: fgParallaxX,
-              y: fgParallaxY,
-              rotateX: fgRotateX,
-              rotateY: fgRotateY,
-              transformStyle: "preserve-3d",
-            }}
-            className="pointer-events-none absolute inset-0 flex items-center justify-center lg:justify-end lg:pr-[12%]"
-          >
-            <div
-              className="pointer-events-auto relative flex items-center justify-center"
-              onMouseEnter={() => setHoveredStarId("hero-main")}
-              onMouseLeave={() => setHoveredStarId(null)}
-            >
-              {/* Halo de arco reactivo al acercarse */}
-              <motion.div
-                animate={{
-                  scale: hoveredStarId === "hero-main" ? 1.2 : 1,
-                  opacity: hoveredStarId === "hero-main" ? 0.55 : 0.28,
-                }}
-                transition={{ duration: 0.35 }}
-                className="pointer-events-none absolute inset-0 m-auto h-80 w-80 rounded-full blur-3xl sm:h-[440px] sm:w-[440px]"
-                style={{
-                  background: `radial-gradient(circle, ${activeStar.accent} 0%, transparent 70%)`,
-                }}
-                aria-hidden="true"
-              />
-
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={activeStar.id}
-                  initial={{ opacity: 0, y: 30, scale: 0.94 }}
-                  animate={{
-                    opacity: 1,
-                    y: 0,
-                    scale: hoveredStarId === "hero-main" ? 1.07 : 1,
-                  }}
-                  exit={{ opacity: 0, y: -24, scale: 0.95 }}
-                  transition={{ type: "spring", stiffness: 200, damping: 22 }}
-                  className="relative flex h-[42vh] items-center justify-center sm:h-[52vh] lg:h-[64vh] lg:max-h-[580px]"
-                >
-                  <img
-                    src={activeStar.image}
-                    alt={activeStar.name}
-                    className="max-h-full w-auto cursor-pointer object-contain transition-all duration-300"
-                    style={{
-                      filter:
-                        hoveredStarId === "hero-main"
-                          ? `drop-shadow(0 28px 55px rgba(0,0,0,0.95)) drop-shadow(0 0 28px ${activeStar.accent}66) brightness(1.08)`
-                          : "drop-shadow(0 24px 45px rgba(0,0,0,0.9))",
-                    }}
-                  />
-                </motion.div>
-              </AnimatePresence>
+                </div>
+                <h2 className="font-display text-[clamp(2rem,4vw,3.4rem)] font-black uppercase leading-[0.9] tracking-tight text-fog">
+                  Equipos Estrella <span className="text-accent">en Venta</span>
+                </h2>
+              </div>
+              <p className="max-w-md text-xs leading-relaxed text-mist sm:text-sm">
+                Pasa el cursor sobre cualquier equipo para resaltarlo y selecciona el modelo que necesitas cotizar.
+              </p>
             </div>
-          </motion.div>
 
-          {/* CAPA 3 (HUD Frontal): Ficha Técnica, Selector y CTAs */}
-          <div className="pointer-events-none relative z-30 mx-auto flex h-full max-w-7xl items-end pb-12 px-5 pt-20 sm:px-10 lg:items-center lg:pb-0 lg:px-12">
-            <div className="pointer-events-auto w-full max-w-xl border border-white/10 bg-ink/70 p-6 backdrop-blur-md lg:border-0 lg:bg-transparent lg:p-0 lg:backdrop-blur-none">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={activeStar.id}
-                  initial={{ opacity: 0, y: 18 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -14 }}
-                  transition={{ duration: 0.3, ease: "easeOut" }}
-                >
-                  <div className="mb-3 flex items-center gap-3">
-                    <span
-                      className="h-px w-8 flex-shrink-0"
-                      style={{ backgroundColor: activeStar.accent }}
-                    />
-                    <span
-                      className="font-mono text-[10px] uppercase tracking-[0.24em]"
-                      style={{ color: activeStar.accent }}
-                    >
-                      {activeStar.badge}
-                    </span>
-                  </div>
+            {/* Grid uniforme de 4 tarjetas idénticas de izquierda a derecha con Parallax 2.5D */}
+            <motion.div
+              style={{
+                x: midParallaxX,
+                y: midParallaxY,
+                rotateX: fgRotateX,
+                rotateY: fgRotateY,
+                transformStyle: "preserve-3d",
+              }}
+              className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4 lg:gap-6"
+            >
+              {STAR_MACHINES.map((machine, idx) => {
+                const isSelected = idx === selectedStarIdx;
+                const isHovered = hoveredStarId === machine.id;
+                const isHighlighted = isHovered || isSelected;
 
-                  <h2 className="font-display text-[clamp(2.4rem,5vw,4.2rem)] font-black uppercase leading-[0.9] tracking-tight text-fog">
-                    {activeStar.name}
-                  </h2>
-
-                  <p className="mt-2 font-mono text-xs uppercase tracking-[0.16em] text-accent">
-                    {activeStar.highlight}
-                  </p>
-
-                  <p className="mt-4 max-w-lg text-sm leading-relaxed text-mist sm:text-base">
-                    {activeStar.description}
-                  </p>
-
-                  {/* Tabla compacta de especificaciones */}
-                  <div className="mt-5 grid grid-cols-3 gap-3 border-y border-white/10 py-4">
-                    <div>
-                      <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-mist">
-                        Proceso
-                      </p>
-                      <p className="mt-1 font-mono text-xs font-semibold text-fog sm:text-sm">
-                        {activeStar.process}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-mist">
-                        Potencia
-                      </p>
-                      <p
-                        className="mt-1 font-mono text-xs font-semibold sm:text-sm"
-                        style={{ color: activeStar.accent }}
-                      >
-                        {activeStar.power}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-mist">
-                        Modalidad
-                      </p>
-                      <p className="mt-1 font-mono text-xs font-semibold text-fog sm:text-sm">
-                        {activeStar.modality}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Selector rápido de Equipos Estrella */}
-                  <div
-                    className="mt-5 flex flex-wrap gap-2"
-                    role="tablist"
-                    aria-label="Seleccionar equipo estrella"
+                return (
+                  <motion.div
+                    key={machine.id}
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => setSelectedStarIdx(idx)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        setSelectedStarIdx(idx);
+                      }
+                    }}
+                    onMouseEnter={() => setHoveredStarId(machine.id)}
+                    onMouseLeave={() => setHoveredStarId(null)}
+                    whileHover={{ y: -12, scale: 1.04 }}
+                    transition={{ type: "spring", stiffness: 260, damping: 20 }}
+                    className="group relative flex h-[230px] cursor-pointer flex-col justify-between overflow-hidden border p-4 backdrop-blur-md transition-all duration-300 sm:h-[290px] lg:h-[340px] lg:p-5"
+                    style={{
+                      transformStyle: "preserve-3d",
+                      borderColor: isHighlighted
+                        ? machine.accent
+                        : "rgba(255,255,255,0.1)",
+                      backgroundColor: isHovered
+                        ? "rgba(18, 21, 28, 0.92)"
+                        : isSelected
+                          ? "rgba(16, 18, 24, 0.85)"
+                          : "rgba(12, 14, 19, 0.65)",
+                      boxShadow: isHovered
+                        ? `0 24px 50px -12px ${machine.accent}55, inset 0 1px 0 0 ${machine.accent}55`
+                        : isSelected
+                          ? `0 14px 34px -12px ${machine.accent}33`
+                          : "0 10px 30px -15px rgba(0,0,0,0.8)",
+                    }}
                   >
-                    {STAR_MACHINES.map((machine, idx) => {
-                      const isSelected = idx === selectedStarIdx;
-                      return (
-                        <button
-                          key={machine.id}
-                          type="button"
-                          role="tab"
-                          aria-selected={isSelected}
-                          onMouseEnter={() => setHoveredStarId(machine.id)}
-                          onMouseLeave={() => setHoveredStarId(null)}
-                          onClick={() => setSelectedStarIdx(idx)}
-                          className="border px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.16em] transition-all hover:scale-105"
-                          style={{
-                            borderColor: isSelected ? machine.accent : "rgba(255,255,255,0.16)",
-                            backgroundColor: isSelected ? `${machine.accent}26` : "rgba(16,18,23,0.75)",
-                            color: isSelected ? "#F5F6F8" : "#9CA3AF",
-                          }}
-                        >
-                          {machine.name}
-                        </button>
-                      );
-                    })}
-                  </div>
+                    {/* Aura radial 2.5D detrás de la máquina al acercarse */}
+                    <div
+                      className="pointer-events-none absolute inset-0 m-auto h-40 w-40 rounded-full blur-2xl transition-all duration-300 sm:h-48 sm:w-48"
+                      style={{
+                        background: `radial-gradient(circle, ${machine.accent} 0%, transparent 70%)`,
+                        opacity: isHovered ? 0.48 : isSelected ? 0.25 : 0.08,
+                        transform: isHovered ? "scale(1.2)" : "scale(0.95)",
+                      }}
+                      aria-hidden="true"
+                    />
 
-                  {/* CTAs de conversión */}
-                  <div className="mt-6 flex flex-wrap items-center gap-3.5">
-                    <a
-                      href={waLink(
-                        `Hola MAQSYMA, quiero cotizar el equipo estrella ${activeStar.name} (${activeStar.process}).`
-                      )}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2.5 px-6 py-3.5 font-mono text-xs font-semibold uppercase tracking-[0.18em] text-ink transition-all hover:brightness-110"
-                      style={{ backgroundColor: activeStar.accent }}
+                    {/* Header uniforme de tarjeta */}
+                    <div className="relative z-10 flex items-center justify-between gap-2">
+                      <span
+                        className="font-mono text-[9px] uppercase tracking-[0.18em] transition-colors"
+                        style={{ color: isHighlighted ? machine.accent : "#9CA3AF" }}
+                      >
+                        {machine.power}
+                      </span>
+                      <span
+                        className="border px-1.5 py-0.5 font-mono text-[8px] uppercase tracking-[0.16em]"
+                        style={{
+                          borderColor: isHighlighted
+                            ? `${machine.accent}66`
+                            : "rgba(255,255,255,0.12)",
+                          color: isHighlighted ? "#F5F6F8" : "#9CA3AF",
+                        }}
+                      >
+                        {machine.process.split(" ")[0]}
+                      </span>
+                    </div>
+
+                    {/* Imagen PNG en capa elevada 2.5D */}
+                    <motion.div
+                      style={{
+                        x: isHovered ? fgParallaxX : 0,
+                        y: isHovered ? fgParallaxY : 0,
+                      }}
+                      className="relative z-10 flex flex-1 items-center justify-center py-2"
                     >
-                      Cotizar {activeStar.name}
-                      <ArrowUpRight className="h-4 w-4" />
-                    </a>
-                    <button
-                      type="button"
-                      onClick={() => navigate("/catalogo")}
-                      className="inline-flex items-center gap-2 border border-white/20 bg-white/5 px-6 py-3.5 font-mono text-xs uppercase tracking-[0.18em] text-fog transition hover:border-white/40 hover:bg-white/10"
-                    >
-                      Ver Todo el Catálogo
-                    </button>
-                  </div>
-                </motion.div>
-              </AnimatePresence>
+                      <img
+                        src={machine.image}
+                        alt={machine.name}
+                        className="max-h-[115px] w-auto object-contain transition-all duration-300 sm:max-h-[155px] lg:max-h-[190px]"
+                        style={{
+                          transform: isHovered
+                            ? "scale(1.12) translateY(-4px)"
+                            : isSelected
+                              ? "scale(1.04)"
+                              : "scale(0.96)",
+                          filter: isHovered
+                            ? `drop-shadow(0 20px 30px rgba(0,0,0,0.95)) drop-shadow(0 0 18px ${machine.accent}66) brightness(1.08)`
+                            : "drop-shadow(0 14px 22px rgba(0,0,0,0.85))",
+                        }}
+                      />
+                    </motion.div>
+
+                    {/* Footer uniforme de tarjeta */}
+                    <div className="relative z-10 border-t border-white/10 pt-2.5">
+                      <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-mist truncate">
+                        {machine.category}
+                      </p>
+                      <p className="mt-0.5 font-display text-lg font-black uppercase tracking-tight text-fog sm:text-xl truncate">
+                        {machine.name}
+                      </p>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </motion.div>
+
+            {/* Barra de detalle y conversión del equipo seleccionado */}
+            <div className="flex flex-col gap-4 border border-white/10 bg-coal/80 p-4 backdrop-blur-md sm:flex-row sm:items-center sm:justify-between sm:px-6">
+              <div className="max-w-2xl">
+                <div className="flex flex-wrap items-center gap-2.5">
+                  <span
+                    className="font-mono text-[10px] font-semibold uppercase tracking-[0.2em]"
+                    style={{ color: activeStar.accent }}
+                  >
+                    {activeStar.name}
+                  </span>
+                  <span className="text-white/20">·</span>
+                  <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-fog/90">
+                    {activeStar.modality}
+                  </span>
+                  <span className="text-white/20">·</span>
+                  <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-mist">
+                    {activeStar.highlight}
+                  </span>
+                </div>
+                <p className="mt-1.5 text-xs leading-relaxed text-mist sm:text-sm">
+                  {activeStar.description}
+                </p>
+              </div>
+
+              <div className="flex flex-shrink-0 flex-wrap items-center gap-3">
+                <a
+                  href={waLink(
+                    `Hola MAQSYMA, quiero cotizar el equipo estrella ${activeStar.name} (${activeStar.process}).`
+                  )}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-5 py-3 font-mono text-xs font-semibold uppercase tracking-[0.18em] text-ink transition-all hover:brightness-110"
+                  style={{ backgroundColor: activeStar.accent }}
+                >
+                  Cotizar {activeStar.name}
+                  <ArrowUpRight className="h-4 w-4" />
+                </a>
+                <button
+                  type="button"
+                  onClick={() => navigate("/catalogo")}
+                  className="inline-flex items-center gap-2 border border-white/20 bg-white/5 px-5 py-3 font-mono text-xs uppercase tracking-[0.18em] text-fog transition hover:border-white/40 hover:bg-white/10"
+                >
+                  Ver Catálogo
+                </button>
+              </div>
             </div>
           </div>
         </motion.div>
