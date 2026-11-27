@@ -9,6 +9,24 @@ import CinemaOverlay from "../Hero3D/CinemaOverlay";
 gsap.registerPlugin(ScrollTrigger);
 
 const TOTAL_SCENES = 4;
+const OVERLAP = 0.12;
+const DEADZONE = 0.08;
+
+const PARALLAX = {
+  bg: { x: -15, y: -8, scale: 1.12 },
+  mid: { x: -6, y: -4, scale: 1.03 },
+  fg: { x: 20, y: 11, scale: 1.09 },
+};
+
+const SCENE_AMBIENT = [
+  "radial-gradient(ellipse 60% 40% at 50% 70%, rgba(0,240,255,0.08) 0%, transparent 70%)",
+  "radial-gradient(ellipse 60% 40% at 50% 70%, rgba(251,191,36,0.08) 0%, transparent 70%)",
+  "radial-gradient(ellipse 60% 40% at 50% 70%, rgba(56,189,248,0.08) 0%, transparent 70%)",
+  "radial-gradient(ellipse 60% 40% at 50% 70%, rgba(251,146,60,0.08) 0%, transparent 70%)",
+];
+
+const easeInOutQuad = (t) =>
+  t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
 
 export default function HeroParallax({ onReady }) {
   const rm = useReducedMotion();
@@ -17,15 +35,18 @@ export default function HeroParallax({ onReady }) {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
 
-  // Offset de cursor o giroscopio (suavizado)
-  const [mouseOffset, setMouseOffset] = useState({ x: 0, y: 0 });
+  const isMobileRef = useRef(false);
   const mouseTargetRef = useRef({ x: 0, y: 0 });
+  const layerRefs = useRef({});
   const rafRef = useRef(null);
+  const preloadedScenes = useRef(new Set([0]));
 
   // Detección responsive
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
+      const mobile = window.innerWidth < 768;
+      isMobileRef.current = mobile;
+      setIsMobile(mobile);
     };
     checkMobile();
     window.addEventListener("resize", checkMobile);
@@ -63,16 +84,45 @@ export default function HeroParallax({ onReady }) {
     return () => window.removeEventListener("deviceorientation", handleOrientation);
   }, [isMobile, rm]);
 
-  // Smooth RAF loop para el lerp del parallax de cursor/giroscopio
+  // Smooth RAF loop para actualizar transforms de cursor/giroscopio directo en el DOM
   useEffect(() => {
+    if (rm) return;
+
     let currentX = 0;
     let currentY = 0;
 
     const tick = () => {
-      const target = mouseTargetRef.current;
-      currentX += (target.x - currentX) * 0.08;
-      currentY += (target.y - currentY) * 0.08;
-      setMouseOffset({ x: currentX, y: currentY });
+      const raw = mouseTargetRef.current;
+
+      // Deadzone suave — suaviza a 0 si el cursor está cerca del centro
+      const ax =
+        Math.abs(raw.x) > DEADZONE
+          ? raw.x
+          : raw.x * (Math.abs(raw.x) / DEADZONE);
+      const ay =
+        Math.abs(raw.y) > DEADZONE
+          ? raw.y
+          : raw.y * (Math.abs(raw.y) / DEADZONE);
+
+      currentX += (ax - currentX) * 0.07;
+      currentY += (ay - currentY) * 0.06;
+
+      for (let sceneIdx = 0; sceneIdx < TOTAL_SCENES; sceneIdx++) {
+        const bg = layerRefs.current[`scene-${sceneIdx}-bg`];
+        const mid = layerRefs.current[`scene-${sceneIdx}-mid`];
+        const fg = layerRefs.current[`scene-${sceneIdx}-fg`];
+
+        if (bg) {
+          bg.style.transform = `translate3d(${currentX * PARALLAX.bg.x}px, ${currentY * PARALLAX.bg.y}px, 0) scale(${PARALLAX.bg.scale})`;
+        }
+        if (mid) {
+          mid.style.transform = `translate3d(${currentX * PARALLAX.mid.x}px, ${currentY * PARALLAX.mid.y}px, 0) scale(${PARALLAX.mid.scale})`;
+        }
+        if (fg) {
+          fg.style.transform = `translate3d(${currentX * PARALLAX.fg.x}px, ${currentY * PARALLAX.fg.y}px, 0) scale(${PARALLAX.fg.scale})`;
+        }
+      }
+
       rafRef.current = requestAnimationFrame(tick);
     };
 
@@ -80,33 +130,59 @@ export default function HeroParallax({ onReady }) {
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, []);
+  }, [rm]);
 
-  // ScrollTrigger para scroll suave entre escenas
+  // ScrollTrigger para scroll suave entre escenas + preload de la siguiente
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
 
     if (onReady) {
-      // Notificar lista la carga inicial del Hero
       onReady();
     }
+
+    const preloadScene = (sceneIdx) => {
+      if (preloadedScenes.current.has(sceneIdx)) return;
+      preloadedScenes.current.add(sceneIdx);
+
+      const base = `/assets/hero/frames/scene-${sceneIdx + 1}`;
+      const urls = isMobileRef.current
+        ? [`${base}/bg/bg_mobile.webp`, `${base}/mid/mid_mobile.webp`]
+        : [
+            `${base}/bg/bg_desktop.webp`,
+            `${base}/mid/mid_desktop.webp`,
+            `${base}/fg/fg_desktop.webp`,
+          ];
+
+      urls.forEach((href) => {
+        const link = document.createElement("link");
+        link.rel = "preload";
+        link.as = "image";
+        link.href = href;
+        document.head.appendChild(link);
+      });
+    };
 
     const st = ScrollTrigger.create({
       trigger: el,
       start: "top top",
       end: "bottom bottom",
-      scrub: 0.6,
+      scrub: 1.2,
       onUpdate: (self) => {
         const p = self.progress;
         setScrollProgress(p);
 
-        // Mapear el progreso [0, 1] a las 4 escenas [0, 1, 2, 3]
         const sceneIndex = Math.min(
           Math.floor(p * TOTAL_SCENES),
           TOTAL_SCENES - 1
         );
         setActiveScene(sceneIndex);
+
+        // Precargar siguiente escena cuando estamos al 60% de la actual
+        const localP = (p * TOTAL_SCENES) % 1;
+        if (localP > 0.6 && sceneIndex + 1 < TOTAL_SCENES) {
+          preloadScene(sceneIndex + 1);
+        }
       },
     });
 
@@ -115,32 +191,39 @@ export default function HeroParallax({ onReady }) {
     };
   }, [onReady]);
 
-  // Cálculo de opacidad y transform de cada escena en función del progreso continuo
+  // Cálculo de opacidad (easeInOutQuad) y progreso local de cada escena
   const getSceneStyle = (sceneIdx) => {
-    // Rango continuo de la escena: cada una ocupa [idx/4, (idx+1)/4]
     const start = sceneIdx / TOTAL_SCENES;
     const end = (sceneIdx + 1) / TOTAL_SCENES;
     const mid = (start + end) / 2;
 
     let opacity = 0;
-    // Crossfade con ventana de solapamiento
-    if (scrollProgress >= start - 0.08 && scrollProgress <= end + 0.08) {
+    if (scrollProgress >= start - OVERLAP && scrollProgress <= end + OVERLAP) {
       if (scrollProgress < start) {
-        opacity = (scrollProgress - (start - 0.08)) / 0.08;
+        opacity = easeInOutQuad(
+          (scrollProgress - (start - OVERLAP)) / OVERLAP
+        );
       } else if (scrollProgress > end) {
-        opacity = 1 - (scrollProgress - end) / 0.08;
+        opacity = easeInOutQuad(1 - (scrollProgress - end) / OVERLAP);
       } else {
         opacity = 1;
       }
     }
 
-    // Scroll vertical parallax offset por capa (en px o %)
-    const localProgress = (scrollProgress - mid) * TOTAL_SCENES; // de -0.5 a 0.5 dentro del foco
+    const localProgress = (scrollProgress - mid) * TOTAL_SCENES;
 
     return {
       opacity: Math.max(0, Math.min(1, opacity)),
       localProgress,
     };
+  };
+
+  const setLayerRef = (key) => (node) => {
+    if (node) {
+      layerRefs.current[key] = node;
+    } else {
+      delete layerRefs.current[key];
+    }
   };
 
   return (
@@ -158,24 +241,10 @@ export default function HeroParallax({ onReady }) {
           const { opacity, localProgress } = getSceneStyle(sceneIdx);
           if (opacity <= 0.005) return null;
 
-          // Parallax de scroll diferenciado por capa:
-          // BG se mueve lento (profundidad lejana)
-          const bgScrollY = localProgress * -25;
-          // MID es el sujeto de referencia
-          const midScrollY = localProgress * -10;
-          // FG se mueve más rápido (pasa cerca de la lente)
-          const fgScrollY = localProgress * 40;
-
-          // Parallax de mouse / giroscopio:
-          // BG se mueve opuesto al cursor lentamente
-          const bgMouseX = mouseOffset.x * -12;
-          const bgMouseY = mouseOffset.y * -8;
-          // MID con ligero drift
-          const midMouseX = mouseOffset.x * -4;
-          const midMouseY = mouseOffset.y * -3;
-          // FG se mueve adelante con mayor amplitud
-          const fgMouseX = mouseOffset.x * 16;
-          const fgMouseY = mouseOffset.y * 12;
+          // Parallax de scroll diferenciado por capa
+          const bgScrollY = rm ? 0 : localProgress * -55;
+          const midScrollY = rm ? 0 : localProgress * -12;
+          const fgScrollY = rm ? 0 : localProgress * 65;
 
           return (
             <div
@@ -185,30 +254,44 @@ export default function HeroParallax({ onReady }) {
             >
               {/* Capa 1: BACKGROUND (Techo, cerchas, lejanía) */}
               <ParallaxSceneLayer
+                ref={setLayerRef(`scene-${sceneIdx}-bg`)}
                 sceneIndex={sceneIdx}
                 layerType="bg"
                 isMobile={isMobile}
-                transform={`translate3d(${bgMouseX}px, ${bgScrollY + bgMouseY}px, 0) scale(1.06)`}
+                baseScale={PARALLAX.bg.scale}
+                scrollTransform={`translate3d(0, ${bgScrollY}px, 0)`}
               />
 
               {/* Capa 2: MIDGROUND (Máquinas centrales, mostrador, showroom) */}
               <ParallaxSceneLayer
+                ref={setLayerRef(`scene-${sceneIdx}-mid`)}
                 sceneIndex={sceneIdx}
                 layerType="mid"
                 isMobile={isMobile}
-                transform={`translate3d(${midMouseX}px, ${midScrollY + midMouseY}px, 0) scale(1.02)`}
+                baseScale={PARALLAX.mid.scale}
+                scrollTransform={`translate3d(0, ${midScrollY}px, 0)`}
               />
 
               {/* Capa 3: FOREGROUND (Máquinas en primer plano, podio, arbustos) */}
               <ParallaxSceneLayer
+                ref={setLayerRef(`scene-${sceneIdx}-fg`)}
                 sceneIndex={sceneIdx}
                 layerType="fg"
                 isMobile={isMobile}
-                transform={`translate3d(${fgMouseX}px, ${fgScrollY + fgMouseY}px, 0) scale(1.08)`}
+                baseScale={PARALLAX.fg.scale}
+                scrollTransform={`translate3d(0, ${fgScrollY}px, 0)`}
               />
             </div>
           );
         })}
+
+        {/* Respiración atmosférica cromática por escena */}
+        {!rm && (
+          <div
+            className="hero-ambient"
+            style={{ background: SCENE_AMBIENT[activeScene] }}
+          />
+        )}
 
         {/* Chispas de arco de soldadura en Canvas 2D interactivo */}
         {!rm && <SparkCanvas scene={activeScene} />}

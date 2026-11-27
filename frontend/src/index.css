@@ -151,6 +151,31 @@ html.lenis body {
   animation: cta-glow 2.8s ease-in-out infinite;
 }
 
+/* Depth-of-Field simulado para capa BG del HeroParallax */
+.parallax-bg-blur {
+  filter: blur(1.5px);
+}
+
+/* Respiración atmosférica entre escenas del HeroParallax */
+@keyframes ambient-breathe {
+  0%, 100% { opacity: 0.06; }
+  50%       { opacity: 0.14; }
+}
+.hero-ambient {
+  animation: ambient-breathe 4s ease-in-out infinite;
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  transition: background 0.8s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .parallax-bg-blur {
+    filter: none;
+  }
+}
+
 /* Grain */
 .grain::after {
   content: "";

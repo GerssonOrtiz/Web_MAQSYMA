@@ -9,7 +9,8 @@ export default function SparkCanvas({ scene = 0 }) {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    let animId;
+    let animId = null;
+    let isVisible = true;
     let width = (canvas.width = canvas.parentElement.clientWidth || window.innerWidth);
     let height = (canvas.height = canvas.parentElement.clientHeight || window.innerHeight);
 
@@ -57,6 +58,11 @@ export default function SparkCanvas({ scene = 0 }) {
     }
 
     const render = () => {
+      if (!isVisible) {
+        animId = null;
+        return;
+      }
+
       ctx.clearRect(0, 0, width, height);
 
       for (let i = 0; i < particles.length; i++) {
@@ -81,11 +87,23 @@ export default function SparkCanvas({ scene = 0 }) {
       animId = requestAnimationFrame(render);
     };
 
-    render();
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isVisible = entry.isIntersecting;
+        if (isVisible && !animId) {
+          animId = requestAnimationFrame(render);
+        }
+      },
+      { threshold: 0.1 }
+    );
+    observer.observe(canvas);
+
+    animId = requestAnimationFrame(render);
 
     return () => {
-      cancelAnimationFrame(animId);
+      if (animId) cancelAnimationFrame(animId);
       window.removeEventListener("resize", onResize);
+      observer.disconnect();
     };
   }, [scene]);
 
