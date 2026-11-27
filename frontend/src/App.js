@@ -15,6 +15,11 @@ import Footer from "./components/Footer";
 import TrustBar from "./components/TrustBar";
 import WhatsAppFAB from "./components/WhatsAppFAB";
 import LoadingScreen from "./components/LoadingScreen";
+import { AuthProvider } from "./context/AuthContext";
+import AuthPage from "./components/Auth/AuthPage";
+import AccountPage from "./components/Auth/AccountPage";
+import AdminDashboard from "./components/Auth/AdminDashboard";
+import ProtectedRoute from "./components/Auth/ProtectedRoute";
 import { initSmoothScroll, scrollToSection } from "./lib/scroll";
 
 class ErrorBoundary extends Component {
@@ -116,32 +121,62 @@ export default function App() {
 
   return (
     <ErrorBoundary>
-      <BrowserRouter>
-        <RouteScrollManager />
-        <div className="grain min-h-screen overflow-x-clip bg-ink font-sans text-fog">
-          <LoadingScreen
-            isReady={heroReady || loadingComplete}
-            onLoadingComplete={() => setLoadingComplete(true)}
-          />
-          <Navbar />
-          <Routes>
-            <Route
-              path="/"
-              element={<HomePage onHeroReady={() => setHeroReady(true)} />}
+      <AuthProvider>
+        <BrowserRouter>
+          <RouteScrollManager />
+          <div className="grain min-h-screen overflow-x-clip bg-ink font-sans text-fog">
+            <LoadingScreen
+              isReady={heroReady || loadingComplete}
+              onLoadingComplete={() => setLoadingComplete(true)}
             />
-            <Route
-              path="/nosotros"
-              element={<NosotrosPage onReady={() => setHeroReady(true)} />}
-            />
-            <Route
-              path="/catalogo"
-              element={<CatalogPage onReady={() => setHeroReady(true)} />}
-            />
-          </Routes>
-          <Footer />
-          <WhatsAppFAB />
-        </div>
-      </BrowserRouter>
+            <Navbar />
+            <Routes>
+              <Route
+                path="/"
+                element={<HomePage onHeroReady={() => setHeroReady(true)} />}
+              />
+              <Route
+                path="/nosotros"
+                element={<NosotrosPage onReady={() => setHeroReady(true)} />}
+              />
+              <Route
+                path="/catalogo"
+                element={<CatalogPage onReady={() => setHeroReady(true)} />}
+              />
+              <Route
+                path="/login"
+                element={<AuthPage defaultMode="login" onReady={() => setHeroReady(true)} />}
+              />
+              <Route
+                path="/registro"
+                element={<AuthPage defaultMode="register" onReady={() => setHeroReady(true)} />}
+              />
+              <Route
+                path="/admin/login"
+                element={<AuthPage adminOnly onReady={() => setHeroReady(true)} />}
+              />
+              <Route
+                path="/mi-cuenta"
+                element={
+                  <ProtectedRoute>
+                    <AccountPage onReady={() => setHeroReady(true)} />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin"
+                element={
+                  <ProtectedRoute requireAdmin>
+                    <AdminDashboard onReady={() => setHeroReady(true)} />
+                  </ProtectedRoute>
+                }
+              />
+            </Routes>
+            <Footer />
+            <WhatsAppFAB />
+          </div>
+        </BrowserRouter>
+      </AuthProvider>
     </ErrorBoundary>
   );
 }

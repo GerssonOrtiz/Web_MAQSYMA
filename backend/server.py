@@ -1,47 +1,34 @@
-import asyncio
-import os
+import base64
+import hashlib
+import hmac
+import json
 import logging
-from contextlib import suppress
-from datetime import datetime, timezone
-from typing import List, Optional
-
-from bson import ObjectId
-from dotenv import load_dotenv
-from fastapi import FastAPI, APIRouter, HTTPException, Query
-from motor.motor_asyncio import AsyncIOMotorClient
-from pydantic import BaseModel, BeforeValidator, ConfigDict, Field
-from pymongo import ASCENDING, IndexModel
-from starlette.middleware.cors import CORSMiddleware
+import os
+import secrets
+import time
 from pathlib import Path
-from typing_extensions import Annotated
+from typing import List, Optional
+from urllib.parse import urlencode
+from urllib.request import Request, urlopen
+from urllib.error import HTTPError
+
+from dotenv import load_dotenv
+from fastapi import APIRouter, Depends, FastAPI, HTTPException, Query
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from pydantic import BaseModel, ConfigDict, Field
+from starlette.middleware.cors import CORSMiddleware
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / ".env")
 
-mongo_url = os.environ["MONGO_URL"]
-client = AsyncIOMotorClient(mongo_url)
-db = client[os.environ["DB_NAME"]]
-
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-PyObjectId = Annotated[str, BeforeValidator(lambda v: str(v))]
 
+class Product(BaseModel):
+    model_config = ConfigDict(extra="ignore")
 
-class BaseDocument(BaseModel):
-    model_config = ConfigDict(populate_by_name=True, extra="ignore")
-
-    id: PyObjectId = Field(default_factory=lambda: str(ObjectId()), alias="_id")
-
-    def to_mongo(self) -> dict:
-        return self.model_dump(by_alias=True)
-
-    @classmethod
-    def from_mongo(cls, doc: dict):
-        return cls.model_validate(doc)
-
-
-class Product(BaseDocument):
+    id: str
     brand: str
     model: str
     category: str
@@ -63,7 +50,7 @@ class Product(BaseDocument):
     is_example: bool = True
     featured: bool = True
     sort_order: int = 0
-    created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
+    created_at: Optional[str] = None
 
 
 class ProductCreate(BaseModel):
@@ -90,154 +77,285 @@ class ProductCreate(BaseModel):
     sort_order: int = 0
 
 
-INDEXES = {
-    "products": [
-        IndexModel([("sort_order", ASCENDING)], name="sort_order_asc"),
-        IndexModel([("category", ASCENDING)], name="category_asc"),
-    ],
-}
+def _supabase_config(require_service_role: bool = False) -> tuple[str, str]:
+    url = os.environ.get("SUPABASE_URL", "").strip().rstrip("/")
+    service_key = os.environ.get("SUPABASE_SERVICE_ROLE_KEY", "").strip()
+    anon_key = os.environ.get("SUPABASE_ANON_KEY", "").strip()
+    key = service_key if require_service_role else (service_key or anon_key)
+    if not url or not key:
+        raise HTTPException(
+            status_code=503,
+            detail="Supabase no está configurado en el servidor (SUPABASE_URL / SUPABASE_KEY).",
+        )
+    return url, key
 
 
-async def ensure_indexes() -> None:
-    for collection, models in INDEXES.items():
-        for model in models:
-            try:
-                await db[collection].create_indexes([model])
-            except Exception as exc:
-                logger.error("ensure_indexes(%s): %s", collection, exc)
+def _supabase_request(
+    method: str,
+    path: str,
+    *,
+    params: Optional[dict] = None,
+    payload: Optional[dict] = None,
+    require_service_role: bool = False,
+    prefer: Optional[str] = None,
+):
+    base_url, api_key = _supabase_config(require_service_role=require_service_role)
+    query = f"?{urlencode(params)}" if params else ""
+    full_url = f"{base_url}/rest/v1/{path.lstrip('/')}{query}"
 
+    headers = {
+        "apikey": api_key,
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json",
+    }
+    if prefer:
+        headers["Prefer"] = prefer
 
-EXAMPLE_PRODUCTS = [
-    Product(
-        brand="ESAB",
-        model="WARRIOR 500i",
-        category="MMA",
-        process="MMA / TIG",
-        main_image="https://static.prod-images.emergentagent.com/jobs/0367909c-413c-4cc9-aff8-b7b2180f8e4b/images/f42f788aa23b25155a6e843d3b5d79bba0dc6721df8e4e93d9259061ac54e938.jpeg",
-        description="Equipo profesional de ejemplo (dato conceptual del briefing). Registro preparado para ser reemplazado por el producto real desde la base de datos.",
-        amperage="500 A",
-        voltage="380 V",
-        power_supply="TRIFÁSICA 380 V",
-        duty_cycle="",
-        applications=["INDUSTRIAL"],
-        features=["Registro de ejemplo — carga aquí las características reales"],
-        price=None,
-        availability="POR CONFIRMAR",
-        sku="EJEMPLO-500I",
-        sort_order=0,
-    ),
-    Product(
-        brand="EJEMPLO",
-        model="INVERTER MIG 250",
-        category="MIG / MAG",
-        process="MIG / MAG",
-        main_image="https://static.prod-images.emergentagent.com/jobs/0367909c-413c-4cc9-aff8-b7b2180f8e4b/images/9d58211ac3517cb43e551f11609bedce3aaeabb5483e6fc6b6bad4eacbe2442b.jpeg",
-        description="Producto de ejemplo para demostrar la estructura del catálogo. Reemplaza marca, modelo, especificaciones e imágenes desde la base de datos.",
-        amperage="250 A",
-        voltage="220 V",
-        power_supply="MONOFÁSICA 220 V",
-        duty_cycle="",
-        applications=["TALLER", "FABRICACIÓN"],
-        features=["Registro de ejemplo — carga aquí las características reales"],
-        price=None,
-        availability="POR CONFIRMAR",
-        sku="EJEMPLO-MIG250",
-        sort_order=1,
-    ),
-    Product(
-        brand="EJEMPLO",
-        model="TIG AC/DC 200",
-        category="TIG",
-        process="TIG",
-        main_image="https://static.prod-images.emergentagent.com/jobs/0367909c-413c-4cc9-aff8-b7b2180f8e4b/images/71b9e7b9a5586122d8b27f6800ef79bbeba6bd11ee91d599f33d0f0946731756.jpeg",
-        description="Producto de ejemplo para el proceso TIG. La ficha real se carga desde la colección de productos en la base de datos.",
-        amperage="200 A",
-        voltage="220 V",
-        power_supply="MONOFÁSICA 220 V",
-        duty_cycle="",
-        applications=["INOX", "ALUMINIO"],
-        features=["Registro de ejemplo — carga aquí las características reales"],
-        price=None,
-        availability="POR CONFIRMAR",
-        sku="EJEMPLO-TIG200",
-        sort_order=2,
-    ),
-    Product(
-        brand="EJEMPLO",
-        model="CORTE PLASMA 60",
-        category="CORTE PLASMA",
-        process="PLASMA",
-        main_image="https://static.prod-images.emergentagent.com/jobs/0367909c-413c-4cc9-aff8-b7b2180f8e4b/images/35ff09b017256acde509405867c323a6154292ce431c889f7f0481c6c0be1f8d.jpeg",
-        description="Producto de ejemplo para equipos de corte plasma. Sustitúyelo por el equipo real desde la base de datos.",
-        amperage="60 A",
-        voltage="220 V",
-        power_supply="MONOFÁSICA 220 V",
-        duty_cycle="",
-        applications=["CORTE DE CHAPA"],
-        features=["Registro de ejemplo — carga aquí las características reales"],
-        price=None,
-        availability="POR CONFIRMAR",
-        sku="EJEMPLO-PLASMA60",
-        sort_order=3,
-    ),
-]
+    data = json.dumps(payload).encode("utf-8") if payload is not None else None
+    req = Request(full_url, data=data, headers=headers, method=method)
 
-
-async def seed_products() -> None:
     try:
-        if await db.products.count_documents({}) == 0:
-            await db.products.insert_many([p.to_mongo() for p in EXAMPLE_PRODUCTS])
-            logger.info("Seeded %s example products", len(EXAMPLE_PRODUCTS))
-    except Exception as exc:
-        logger.error("seed_products: %s", exc)
+        with urlopen(req, timeout=15) as resp:
+            raw = resp.read().decode("utf-8")
+            return json.loads(raw) if raw else None
+    except HTTPError as exc:
+        body = exc.read().decode("utf-8", errors="ignore")
+        logger.error("Supabase HTTP %s: %s", exc.code, body)
+        raise HTTPException(status_code=exc.code, detail=body or "Error en Supabase") from exc
 
 
-app = FastAPI()
+app = FastAPI(title="MAQSYMA API")
 api_router = APIRouter(prefix="/api")
+
+_EPHEMERAL_JWT_SECRET = secrets.token_urlsafe(32)
+_bearer_scheme = HTTPBearer(auto_error=False)
+
+
+class AdminLoginRequest(BaseModel):
+    username: str = Field(..., min_length=1, max_length=128)
+    password: str = Field(..., min_length=1, max_length=256)
+
+
+class AdminTokenResponse(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+    expires_in: int
+    admin: dict
+
+
+def _get_jwt_secret() -> str:
+    secret = os.environ.get("JWT_SECRET", "").strip()
+    if not secret:
+        logger.warning("JWT_SECRET no definido; usando clave efímera para esta sesión.")
+        return _EPHEMERAL_JWT_SECRET
+    return secret
+
+
+def _b64url_encode(data: bytes) -> str:
+    return base64.urlsafe_b64encode(data).rstrip(b"=").decode("ascii")
+
+
+def _b64url_decode(data: str) -> bytes:
+    padding = "=" * (-len(data) % 4)
+    return base64.urlsafe_b64decode(data + padding)
+
+
+def _create_access_token(subject: str, expires_in: int) -> str:
+    now = int(time.time())
+    header = _b64url_encode(json.dumps({"alg": "HS256", "typ": "JWT"}, separators=(",", ":")).encode())
+    payload = _b64url_encode(
+        json.dumps(
+            {"sub": subject, "role": "admin", "iat": now, "exp": now + expires_in},
+            separators=(",", ":"),
+        ).encode()
+    )
+    signing_input = f"{header}.{payload}".encode("ascii")
+    sig = hmac.new(_get_jwt_secret().encode("utf-8"), signing_input, hashlib.sha256).digest()
+    return f"{header}.{payload}.{_b64url_encode(sig)}"
+
+
+def _decode_access_token(token: str) -> dict:
+    try:
+        parts = token.split(".")
+        if len(parts) != 3:
+            raise ValueError("Formato de token inválido")
+        header_b64, payload_b64, sig_b64 = parts
+        signing_input = f"{header_b64}.{payload_b64}".encode("ascii")
+        expected_sig = hmac.new(
+            _get_jwt_secret().encode("utf-8"), signing_input, hashlib.sha256
+        ).digest()
+        if not hmac.compare_digest(_b64url_decode(sig_b64), expected_sig):
+            raise ValueError("Firma inválida")
+        payload = json.loads(_b64url_decode(payload_b64).decode("utf-8"))
+        if int(payload.get("exp", 0)) < int(time.time()):
+            raise ValueError("Token expirado")
+        return payload
+    except Exception as exc:
+        raise HTTPException(status_code=401, detail="Token inválido o expirado") from exc
+
+
+def _verify_admin_password(password: str) -> bool:
+    password_hash = os.environ.get("ADMIN_PASSWORD_HASH", "").strip()
+    if password_hash:
+        try:
+            scheme, iter_s, salt, digest_hex = password_hash.split("$", 3)
+            if scheme != "pbkdf2_sha256":
+                return False
+            derived = hashlib.pbkdf2_hmac(
+                "sha256", password.encode("utf-8"), salt.encode("utf-8"), int(iter_s)
+            ).hex()
+            return hmac.compare_digest(derived, digest_hex)
+        except ValueError:
+            return False
+
+    plain_password = os.environ.get("ADMIN_PASSWORD", "")
+    if not plain_password:
+        raise HTTPException(
+            status_code=503,
+            detail="Credenciales de administrador no configuradas en el servidor",
+        )
+    return hmac.compare_digest(password, plain_password)
+
+
+def _verify_supabase_admin_token(token: str) -> Optional[dict]:
+    """Valida un access_token emitido por Supabase Auth y verifica role == 'admin' en public.profiles."""
+    base_url = os.environ.get("SUPABASE_URL", "").strip().rstrip("/")
+    api_key = (
+        os.environ.get("SUPABASE_SERVICE_ROLE_KEY", "").strip()
+        or os.environ.get("SUPABASE_ANON_KEY", "").strip()
+    )
+    if not base_url or not api_key:
+        return None
+
+    try:
+        req = Request(
+            f"{base_url}/auth/v1/user",
+            headers={"apikey": api_key, "Authorization": f"Bearer {token}"},
+            method="GET",
+        )
+        with urlopen(req, timeout=10) as resp:
+            user_data = json.loads(resp.read().decode("utf-8"))
+        user_id = user_data.get("id")
+        if not user_id:
+            return None
+
+        rows = _supabase_request(
+            "GET",
+            "profiles",
+            params={"select": "role,email", "id": f"eq.{user_id}", "limit": 1},
+            require_service_role=True,
+        ) or []
+        if not rows or rows[0].get("role") != "admin":
+            raise HTTPException(status_code=403, detail="Permisos de administrador requeridos")
+        return {"username": rows[0].get("email") or user_data.get("email"), "role": "admin", "id": user_id}
+    except HTTPException:
+        raise
+    except Exception:
+        return None
+
+
+async def get_current_admin(
+    credentials: Optional[HTTPAuthorizationCredentials] = Depends(_bearer_scheme),
+) -> dict:
+    if not credentials or credentials.scheme.lower() != "bearer":
+        raise HTTPException(status_code=401, detail="Autenticación requerida")
+
+    supa_admin = _verify_supabase_admin_token(credentials.credentials)
+    if supa_admin is not None:
+        return supa_admin
+
+    payload = _decode_access_token(credentials.credentials)
+    if payload.get("role") != "admin":
+        raise HTTPException(status_code=403, detail="Permisos insuficientes")
+    return {"username": payload.get("sub"), "role": "admin"}
+
+
+@api_router.post("/admin/login", response_model=AdminTokenResponse)
+async def admin_login(body: AdminLoginRequest):
+    expected_user = os.environ.get("ADMIN_USERNAME", "admin")
+    user_ok = hmac.compare_digest(body.username.strip(), expected_user)
+    pass_ok = _verify_admin_password(body.password)
+
+    if not (user_ok and pass_ok):
+        raise HTTPException(status_code=401, detail="Usuario o contraseña incorrectos")
+
+    expires_in = int(os.environ.get("JWT_EXPIRE_SECONDS", "28800"))
+    token = _create_access_token(subject=expected_user, expires_in=expires_in)
+    return AdminTokenResponse(
+        access_token=token,
+        expires_in=expires_in,
+        admin={"username": expected_user, "role": "admin"},
+    )
+
+
+@api_router.get("/admin/me")
+async def admin_me(admin: dict = Depends(get_current_admin)):
+    return admin
 
 
 @api_router.get("/")
 async def root():
-    return {"message": "MAQSYMA API"}
+    return {"message": "MAQSYMA API (Supabase)"}
 
 
-@api_router.get("/products", response_model=List[Product], response_model_by_alias=False)
+@api_router.get("/products", response_model=List[Product])
 async def list_products(category: Optional[str] = Query(None)):
-    query = {"category": category} if category else {}
-    docs = await db.products.find(query).sort("sort_order", ASCENDING).to_list(100)
-    return [Product.from_mongo(d) for d in docs]
+    params = {"select": "*", "order": "sort_order.asc"}
+    if category:
+        params["category"] = f"eq.{category}"
+    rows = _supabase_request("GET", "products", params=params) or []
+    return [Product.model_validate(r) for r in rows]
 
 
-@api_router.get("/products/{product_id}", response_model=Product, response_model_by_alias=False)
+@api_router.get("/products/{product_id}", response_model=Product)
 async def get_product(product_id: str):
-    doc = await db.products.find_one({"_id": product_id})
-    if not doc:
+    rows = _supabase_request(
+        "GET", "products", params={"select": "*", "id": f"eq.{product_id}", "limit": 1}
+    ) or []
+    if not rows:
         raise HTTPException(status_code=404, detail="Producto no encontrado")
-    return Product.from_mongo(doc)
+    return Product.model_validate(rows[0])
 
 
-@api_router.post("/products", response_model=Product, response_model_by_alias=False, status_code=201)
-async def create_product(input: ProductCreate):
-    obj = Product(**input.model_dump())
-    await db.products.insert_one(obj.to_mongo())
-    return obj
-
-
-@api_router.put("/products/{product_id}", response_model=Product, response_model_by_alias=False)
-async def update_product(product_id: str, input: ProductCreate):
-    update = {k: v for k, v in input.model_dump().items()}
-    result = await db.products.find_one_and_update(
-        {"_id": product_id}, {"$set": update}, return_document=True
+@api_router.post("/products", response_model=Product, status_code=201)
+async def create_product(input: ProductCreate, _admin: dict = Depends(get_current_admin)):
+    rows = _supabase_request(
+        "POST",
+        "products",
+        payload=input.model_dump(),
+        require_service_role=True,
+        prefer="return=representation",
     )
-    if not result:
+    return Product.model_validate(rows[0])
+
+
+@api_router.put("/products/{product_id}", response_model=Product)
+async def update_product(
+    product_id: str, input: ProductCreate, _admin: dict = Depends(get_current_admin)
+):
+    rows = _supabase_request(
+        "PATCH",
+        "products",
+        params={"id": f"eq.{product_id}"},
+        payload=input.model_dump(),
+        require_service_role=True,
+        prefer="return=representation",
+    ) or []
+    if not rows:
         raise HTTPException(status_code=404, detail="Producto no encontrado")
-    return Product.from_mongo(result)
+    return Product.model_validate(rows[0])
 
 
 @api_router.delete("/products/{product_id}", status_code=204)
-async def delete_product(product_id: str):
-    result = await db.products.delete_one({"_id": product_id})
-    if result.deleted_count == 0:
+async def delete_product(product_id: str, _admin: dict = Depends(get_current_admin)):
+    rows = _supabase_request(
+        "DELETE",
+        "products",
+        params={"id": f"eq.{product_id}"},
+        require_service_role=True,
+        prefer="return=representation",
+    ) or []
+    if not rows:
         raise HTTPException(status_code=404, detail="Producto no encontrado")
 
 
@@ -250,17 +368,3 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
-@app.on_event("startup")
-async def startup():
-    app.state.index_task = asyncio.create_task(ensure_indexes())
-    await seed_products()
-
-
-@app.on_event("shutdown")
-async def shutdown():
-    app.state.index_task.cancel()
-    with suppress(asyncio.CancelledError):
-        await app.state.index_task
-    client.close()

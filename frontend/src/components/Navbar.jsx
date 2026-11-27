@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
-import { Menu, X } from "lucide-react";
+import { Menu, User, X } from "lucide-react";
 import Logo from "./Logo";
+import { useAuth } from "../context/AuthContext";
 import { scrollToSection } from "../lib/scroll";
 
 const LINKS = [
@@ -19,6 +20,7 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const { isAuthenticated, isAdmin } = useAuth();
 
   useEffect(() => {
     const onKey = (e) => e.key === "Escape" && setOpen(false);
@@ -99,6 +101,15 @@ export default function Navbar() {
               </button>
             );
           })}
+          <button
+            type="button"
+            onClick={() => navigate(isAuthenticated ? (isAdmin ? "/admin" : "/mi-cuenta") : "/login")}
+            className="flex items-center gap-2 border border-white/15 px-3.5 py-2 font-mono text-[10px] uppercase tracking-[0.2em] text-fog transition-colors hover:border-accent hover:text-accent"
+            data-testid="nav-auth-btn"
+          >
+            <User className="h-3.5 w-3.5 text-accent" />
+            {isAuthenticated ? (isAdmin ? "Admin" : "Mi cuenta") : "Ingresar"}
+          </button>
           <span
             className="flex items-center gap-2.5 border border-white/10 px-3.5 py-2"
             data-testid="nav-status"
@@ -148,6 +159,18 @@ export default function Navbar() {
                   <span className="text-accent">→</span>
                 </button>
               ))}
+              <button
+                type="button"
+                onClick={() => {
+                  setOpen(false);
+                  navigate(isAuthenticated ? (isAdmin ? "/admin" : "/mi-cuenta") : "/login");
+                }}
+                className="flex items-center justify-between border-b border-white/5 py-4 font-mono text-xs uppercase tracking-[0.22em] text-accent"
+                data-testid="nav-mobile-auth"
+              >
+                {isAuthenticated ? (isAdmin ? "Panel Admin" : "Mi cuenta") : "Ingresar / Registro"}
+                <span>→</span>
+              </button>
               <span className="flex items-center gap-2.5 py-4">
                 <span className="h-1.5 w-1.5 rounded-full bg-accent animate-ping-soft" />
                 <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-fog/80">

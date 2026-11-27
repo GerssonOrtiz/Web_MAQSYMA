@@ -9,7 +9,7 @@ Página comercial premium (especificada para Framer, construida en React) para M
 3. WhatsApp real: +51 957 082 739 (wa.me/51957082739). Correo, teléfono, ubicación y horario: placeholders [correo]/[teléfono]/[ubicación]/[horario] claramente identificables.
 
 ## Arquitectura
-- Backend FastAPI (puerto 8001, rutas /api): colección `products` en MongoDB con modelo BaseDocument (PyObjectId, to_mongo/from_mongo). CRUD completo: GET/POST/PUT/DELETE /api/products. Seed automático de 4 productos de ejemplo (marcados is_example) solo si la colección está vacía.
+- Backend FastAPI (puerto 8000, rutas /api): tabla `products` en Supabase (PostgreSQL) con validación Pydantic. CRUD completo: GET/POST/PUT/DELETE /api/products y autenticación admin (/api/admin/login, /api/admin/me).
 - Frontend React (puerto 3000): single page, framer-motion + lenis, Tailwind con tema propio (ink #07080A, fog #F4F5F8, mist #94A3B8, accent #00E676). Tipografías: Big Shoulders Display (titulares), Switzer vía Fontshare (texto), JetBrains Mono (datos técnicos).
 - Logo SVG original (M angular + chispa verde) usado en navbar y como favicon.svg.
 

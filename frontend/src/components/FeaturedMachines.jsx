@@ -190,14 +190,24 @@ export default function FeaturedMachines() {
               data-testid={`featured-card-${i}`}
             >
               <div className="grid grid-cols-1 sm:grid-cols-5">
-                <div className="relative flex aspect-[4/3] items-center justify-center overflow-hidden border-b border-white/10 bg-[#0B0D11] p-2 sm:col-span-2 sm:aspect-auto sm:border-b-0 sm:border-r">
+                <div className="relative flex aspect-[4/3] items-center justify-center overflow-visible border-b border-white/10 bg-[#0B0D11] p-4 sm:col-span-2 sm:aspect-auto sm:border-b-0 sm:border-r">
+                  {/* Iluminación ambiental fija al hacer hover */}
+                  <div
+                    aria-hidden="true"
+                    className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_58%,rgba(255,183,3,0.1),transparent_68%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+                  />
+                  {/* Sombra de contacto en el suelo: se reduce cuando la máquina se eleva */}
+                  <div
+                    aria-hidden="true"
+                    className="pointer-events-none absolute bottom-4 left-1/2 h-3.5 w-3/5 -translate-x-1/2 rounded-full bg-black/75 blur-md transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:w-1/2 group-hover:bg-black/45 group-hover:blur-lg"
+                  />
                   <img
                     src={p.main_image}
                     alt={`Máquina de soldar ${p.brand} ${p.model}`}
                     loading="lazy"
-                    className="max-h-44 max-w-full object-contain transition-transform duration-500 group-hover:scale-105"
+                    className="relative z-10 max-h-44 max-w-full object-contain drop-shadow-[0_10px_14px_rgba(0,0,0,0.65)] transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform group-hover:-translate-y-4 group-hover:scale-[1.06] group-hover:drop-shadow-[0_24px_26px_rgba(0,0,0,0.85)]"
                   />
-                  <span className="absolute left-3 top-3 border border-white/15 bg-ink/80 px-2 py-0.5 font-mono text-[9px] uppercase tracking-wider text-accent">
+                  <span className="absolute left-3 top-3 z-20 border border-white/15 bg-ink/80 px-2 py-0.5 font-mono text-[9px] uppercase tracking-wider text-accent">
                     {p.category}
                   </span>
                 </div>
