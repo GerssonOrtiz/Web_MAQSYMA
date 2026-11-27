@@ -4,11 +4,17 @@ import { LogOut, ShieldCheck, Save, ArrowUpRight } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { waLink } from "../../lib/scroll";
 
+const DOC_TYPES = ["DNI", "CE", "RUC", "PASAPORTE"];
+
 export default function AccountPage({ onReady }) {
   const { user, profile, isAdmin, signOut, updateProfile } = useAuth();
   const navigate = useNavigate();
 
-  const [fullName, setFullName] = useState(profile?.full_name || "");
+  const [firstName, setFirstName] = useState(profile?.first_name || "");
+  const [lastName, setLastName] = useState(profile?.last_name || "");
+  const [documentType, setDocumentType] = useState(profile?.document_type || "DNI");
+  const [documentNumber, setDocumentNumber] = useState(profile?.document_number || "");
+  const [phone, setPhone] = useState(profile?.phone || "");
   const [company, setCompany] = useState(profile?.company || "");
   const [saving, setSaving] = useState(false);
   const [statusMsg, setStatusMsg] = useState("");
@@ -18,7 +24,11 @@ export default function AccountPage({ onReady }) {
   }, [onReady]);
 
   useEffect(() => {
-    setFullName(profile?.full_name || "");
+    setFirstName(profile?.first_name || "");
+    setLastName(profile?.last_name || "");
+    setDocumentType(profile?.document_type || "DNI");
+    setDocumentNumber(profile?.document_number || "");
+    setPhone(profile?.phone || "");
     setCompany(profile?.company || "");
   }, [profile]);
 
@@ -27,7 +37,14 @@ export default function AccountPage({ onReady }) {
     setSaving(true);
     setStatusMsg("");
     try {
-      await updateProfile({ fullName, company });
+      await updateProfile({
+        firstName,
+        lastName,
+        documentType,
+        documentNumber,
+        phone,
+        company,
+      });
       setStatusMsg("Perfil actualizado correctamente.");
     } catch (err) {
       setStatusMsg(err?.message || "No se pudo actualizar el perfil.");
@@ -40,6 +57,8 @@ export default function AccountPage({ onReady }) {
     await signOut();
     navigate("/login", { replace: true });
   };
+
+  const displayName = `${firstName} ${lastName}`.trim() || profile?.full_name || user?.email;
 
   return (
     <main className="min-h-screen bg-ink pt-28 pb-20">
@@ -80,18 +99,66 @@ export default function AccountPage({ onReady }) {
         <form onSubmit={handleSave} className="mt-8 border border-white/10 bg-coal/70 p-6 space-y-5">
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
             <div>
-              <label className="mono-label block mb-2">Nombre completo</label>
+              <label className="mono-label block mb-2">Nombres</label>
               <input
                 type="text"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                placeholder="Tu nombre"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                placeholder="Tus nombres"
                 className="w-full border border-white/15 bg-ink px-3.5 py-2.5 text-sm text-fog focus:border-accent focus:outline-none"
               />
             </div>
 
             <div>
-              <label className="mono-label block mb-2">Empresa</label>
+              <label className="mono-label block mb-2">Apellidos</label>
+              <input
+                type="text"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                placeholder="Tus apellidos"
+                className="w-full border border-white/15 bg-ink px-3.5 py-2.5 text-sm text-fog focus:border-accent focus:outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="mono-label block mb-2">Tipo de documento</label>
+              <select
+                value={documentType}
+                onChange={(e) => setDocumentType(e.target.value)}
+                className="w-full border border-white/15 bg-ink px-3.5 py-2.5 text-sm text-fog focus:border-accent focus:outline-none"
+              >
+                {DOC_TYPES.map((d) => (
+                  <option key={d} value={d}>
+                    {d}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="mono-label block mb-2">N° de documento</label>
+              <input
+                type="text"
+                value={documentNumber}
+                onChange={(e) => setDocumentNumber(e.target.value)}
+                placeholder="Número de documento"
+                className="w-full border border-white/15 bg-ink px-3.5 py-2.5 text-sm text-fog focus:border-accent focus:outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="mono-label block mb-2">Celular</label>
+              <input
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="Número de celular"
+                className="w-full border border-white/15 bg-ink px-3.5 py-2.5 text-sm text-fog focus:border-accent focus:outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="mono-label block mb-2">Empresa (opcional)</label>
               <input
                 type="text"
                 value={company}
@@ -102,9 +169,7 @@ export default function AccountPage({ onReady }) {
             </div>
           </div>
 
-          {statusMsg && (
-            <p className="font-mono text-xs text-accent">{statusMsg}</p>
-          )}
+          {statusMsg && <p className="font-mono text-xs text-accent">{statusMsg}</p>}
 
           <div className="flex flex-wrap items-center justify-between gap-4 pt-2">
             <button
@@ -125,7 +190,7 @@ export default function AccountPage({ onReady }) {
                 Explorar catálogo
               </button>
               <a
-                href={waLink(`Hola MAQSYMA, soy ${fullName || user?.email} y necesito asesoría.`)}
+                href={waLink(`Hola MAQSYMA, soy ${displayName} y necesito asesoría.`)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn-ghost !px-4 !py-2.5 !text-[10px]"

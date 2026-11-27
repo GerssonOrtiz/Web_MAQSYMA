@@ -3,11 +3,34 @@ import { supabase } from "../lib/supabase";
 
 const AuthContext = createContext(null);
 
+const PROFILE_COLUMNS =
+  "id, email, first_name, last_name, full_name, document_type, document_number, phone, company, accepted_privacy, role, created_at";
+
 export function AuthProvider({ children }) {
   const [session, setSession] = useState(null);
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(Boolean(supabase));
+
+  const buildFallbackProfile = (authUser) => {
+    const meta = authUser.user_metadata || {};
+    const firstName = meta.first_name || meta.given_name || "";
+    const lastName = meta.last_name || meta.family_name || "";
+    const fullName = meta.full_name || meta.name || `${firstName} ${lastName}`.trim();
+    return {
+      id: authUser.id,
+      email: authUser.email,
+      first_name: firstName,
+      last_name: lastName,
+      full_name: fullName,
+      document_type: meta.document_type || "",
+      document_number: meta.document_number || "",
+      phone: meta.phone || "",
+      company: meta.company || "",
+      accepted_privacy: Boolean(meta.accepted_privacy),
+      role: "customer",
+    };
+  };
 
   const fetchProfile = useCallback(async (authUser) => {
     if (!supabase || !authUser) {
@@ -17,32 +40,18 @@ export function AuthProvider({ children }) {
 
     const { data, error } = await supabase
       .from("profiles")
-      .select("id, email, full_name, company, role, created_at")
+      .select(PROFILE_COLUMNS)
       .eq("id", authUser.id)
       .maybeSingle();
 
-    if (error) {
-      // Fallback seguro si la tabla profiles aún no fue creada en Supabase
-      const fallback = {
-        id: authUser.id,
-        email: authUser.email,
-        full_name: authUser.user_metadata?.full_name || "",
-        company: authUser.user_metadata?.company || "",
-        role: "customer",
-      };
+    if (error || !data) {
+      const fallback = buildFallbackProfile(authUser);
       setProfile(fallback);
       return fallback;
     }
 
-    const resolved = data || {
-      id: authUser.id,
-      email: authUser.email,
-      full_name: authUser.user_metadata?.full_name || "",
-      company: authUser.user_metadata?.company || "",
-      role: "customer",
-    };
-    setProfile(resolved);
-    return resolved;
+    setProfile(data);
+    return data;
   }, []);
 
   useEffect(() => {
@@ -97,17 +106,34 @@ export function AuthProvider({ children }) {
     return { ...data, profile: loadedProfile };
   };
 
-  const signUp = async ({ email, password, fullName = "", company = "" }) => {
+  const signUp = async ({
+    email,
+    password,
+    firstName = "",
+    lastName = "",
+    documentType = "",
+    documentNumber = "",
+    phone = "",
+    company = "",
+    acceptedPrivacy = false,
+  }) => {
     if (!supabase) {
       throw new Error("Supabase no está configurado en el frontend.");
     }
+    const fullName = `${firstName.trim()} ${lastName.trim()}`.trim();
     const { data, error } = await supabase.auth.signUp({
       email: email.trim(),
       password,
       options: {
         data: {
-          full_name: fullName.trim(),
+          first_name: firstName.trim(),
+          last_name: lastName.trim(),
+          full_name: fullName,
+          document_type: documentType.trim(),
+          document_number: documentNumber.trim(),
+          phone: phone.trim(),
           company: company.trim(),
+          accepted_privacy: Boolean(acceptedPrivacy),
         },
       },
     });
@@ -126,16 +152,29 @@ export function AuthProvider({ children }) {
     setProfile(null);
   };
 
-  const updateProfile = async ({ fullName, company }) => {
+  const updateProfile = async ({
+    firstName = "",
+    lastName = "",
+    documentType = "",
+    documentNumber = "",
+    phone = "",
+    company = "",
+  }) => {
     if (!supabase || !user) throw new Error("No hay sesión activa.");
+    const fullName = `${firstName.trim()} ${lastName.trim()}`.trim();
     const { data, error } = await supabase
       .from("profiles")
       .update({
-        full_name: fullName.trim(),
+        first_name: firstName.trim(),
+        last_name: lastName.trim(),
+        full_name: fullName,
+        document_type: documentType.trim(),
+        document_number: documentNumber.trim(),
+        phone: phone.trim(),
         company: company.trim(),
       })
       .eq("id", user.id)
-      .select("id, email, full_name, company, role, created_at")
+      .select(PROFILE_COLUMNS)
       .single();
 
     if (error) throw error;

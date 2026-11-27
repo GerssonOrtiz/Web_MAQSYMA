@@ -1,5 +1,5 @@
 -- ============================================================================
--- MAQSYMA — Supabase Auth + Roles (RBAC) + RLS
+-- MAQSYMA — Supabase Auth + Roles (RBAC) + RLS + Datos de Registro
 -- Ejecutar en el SQL Editor de tu proyecto Supabase
 -- ============================================================================
 
@@ -7,11 +7,27 @@
 create table if not exists public.profiles (
   id uuid primary key references auth.users(id) on delete cascade,
   email text,
+  first_name text default '',
+  last_name text default '',
   full_name text default '',
+  document_type text default '',
+  document_number text default '',
+  phone text default '',
   company text default '',
+  accepted_privacy boolean not null default false,
+  accepted_privacy_at timestamp with time zone,
   role text not null default 'customer' check (role in ('customer', 'admin')),
   created_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
+
+-- Si la tabla ya existía de una versión anterior, agrega las columnas nuevas sin perder datos
+alter table public.profiles add column if not exists first_name text default '';
+alter table public.profiles add column if not exists last_name text default '';
+alter table public.profiles add column if not exists document_type text default '';
+alter table public.profiles add column if not exists document_number text default '';
+alter table public.profiles add column if not exists phone text default '';
+alter table public.profiles add column if not exists accepted_privacy boolean not null default false;
+alter table public.profiles add column if not exists accepted_privacy_at timestamp with time zone;
 
 alter table public.profiles enable row level security;
 
@@ -31,21 +47,54 @@ as $$
   );
 $$;
 
--- 3. Trigger para crear perfil automáticamente al registrarse un usuario
---    (Siempre asigna rol 'customer'; nunca confía en metadata del cliente)
+-- 3. Trigger para crear perfil automáticamente al registrarse (email o Google OAuth)
+--    (Siempre asigna rol 'customer'; nunca confía en metadata del cliente para el rol)
 create or replace function public.handle_new_user()
 returns trigger
 language plpgsql
 security definer
 set search_path = public
 as $$
+declare
+  v_first text;
+  v_last text;
+  v_full text;
+  v_privacy boolean;
 begin
-  insert into public.profiles (id, email, full_name, company, role)
+  v_first := coalesce(
+    new.raw_user_meta_data ->> 'first_name',
+    new.raw_user_meta_data ->> 'given_name',
+    ''
+  );
+  v_last := coalesce(
+    new.raw_user_meta_data ->> 'last_name',
+    new.raw_user_meta_data ->> 'family_name',
+    ''
+  );
+  v_full := coalesce(
+    nullif(trim(new.raw_user_meta_data ->> 'full_name'), ''),
+    nullif(trim(new.raw_user_meta_data ->> 'name'), ''),
+    trim(v_first || ' ' || v_last)
+  );
+  v_privacy := coalesce((new.raw_user_meta_data ->> 'accepted_privacy')::boolean, false);
+
+  insert into public.profiles (
+    id, email, first_name, last_name, full_name,
+    document_type, document_number, phone, company,
+    accepted_privacy, accepted_privacy_at, role
+  )
   values (
     new.id,
     new.email,
-    coalesce(new.raw_user_meta_data ->> 'full_name', ''),
+    v_first,
+    v_last,
+    v_full,
+    coalesce(new.raw_user_meta_data ->> 'document_type', ''),
+    coalesce(new.raw_user_meta_data ->> 'document_number', ''),
+    coalesce(new.raw_user_meta_data ->> 'phone', ''),
     coalesce(new.raw_user_meta_data ->> 'company', ''),
+    v_privacy,
+    case when v_privacy then timezone('utc'::text, now()) else null end,
     'customer'
   )
   on conflict (id) do nothing;
