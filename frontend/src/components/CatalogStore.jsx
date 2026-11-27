@@ -1034,6 +1034,7 @@ function ProductDetailModal({ product: p, isCompared, onToggleCompare, onClose }
                 {typeof p.price_current === "number" ? "Comprar / Consultar" : "Solicitar Cotización"}{" "}
                 <ArrowUpRight className="h-4 w-4" />
               </a>
+              {/* Oculto temporalmente a solicitud del cliente
               {p.datasheet_url && (
                 <a
                   href={p.datasheet_url}
@@ -1044,6 +1045,7 @@ function ProductDetailModal({ product: p, isCompared, onToggleCompare, onClose }
                   Ficha Oficial ESAB
                 </a>
               )}
+              */}
             </div>
           </div>
         </div>

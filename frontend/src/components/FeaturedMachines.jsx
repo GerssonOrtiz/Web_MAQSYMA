@@ -145,11 +145,13 @@ function SpecSheet({ p, index, onClose }) {
           >
             Solicitar cotización <span aria-hidden="true">→</span>
           </a>
+          {/* Oculto temporalmente a solicitud del cliente
           {p.datasheet_url && (
             <a className="btn-ghost" href={p.datasheet_url} target="_blank" rel="noopener noreferrer">
               Ficha técnica oficial
             </a>
           )}
+          */}
         </div>
       </motion.div>
     </motion.div>
